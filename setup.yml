@@ -1,0 +1,161 @@
+---
+# Damien Dart's Ansible Playbook
+#
+#   - This playbook has been tested on Ubuntu 18.04.
+#   - Ubuntu 18.04 comes with Python 3 preinstalled, so Ansible needs to
+#     be told to use Python 3 on the Ansible-managed machines.
+#
+# TODO: Install Certbot.
+# TODO: Configure Monit.
+
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: Ensure timezone is set correctly
+      timezone:
+          name: Europe/London
+
+    - name: Ensure a non-root user exists
+      user:
+        append: yes
+        name: "{{ NON_ROOT_USERNAME }}"
+        password: "{{ NON_ROOT_PASSWORD }}"
+        update_password: on_create
+        groups:
+          - sudo
+
+    - name: Ensure SSH keys for non-root user exist
+      authorized_key:
+        user: "{{ NON_ROOT_USERNAME }}"
+        key: "https://github.com/{{ GITHUB_USERNAME }}.keys"
+
+    - name: Ensure SSH doesn't allow passwords or root access
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^{{ item }}"
+        line: "{{ item }} no"
+        state: present
+      with_items:
+        - PasswordAuthentication
+        - PermitRootLogin
+      notify: Restart sshd
+
+    - name: Ensure currently installed packages have been upgraded
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        upgrade: yes
+
+    - name: Ensure stuff is installed
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - apache2
+        - fail2ban
+        - logrotate
+        - logwatch
+        - monit
+        # TODO: Explain what msmtp-mta is?
+        - msmtp-mta
+          # "php-fpm" is required for HTTP/2 support.
+        - php-fpm
+          # Kirby-powered websites require the following packages.
+        - php-mbstring
+        - php-imagick
+
+    - name: Ensure the required Apache mods are enabled
+      apache2_module:
+        state: present
+        name: "{{ item }}"
+      with_items:
+        - expires
+        - headers
+        - http2
+        - mpm_event
+        - proxy_fcgi
+        - rewrite
+        - setenvif
+      notify: Restart Apache
+
+    - name: Ensure unrequired Apache mods are disabled
+      apache2_module:
+        state: absent
+        name: mpm_prefork
+
+    - name: Ensure custom configuration files exists
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "{{ item.mode }}"
+      with_items:
+        - src: msmtprc.j2
+          dest: /etc/msmtprc
+          mode: "0644"
+        - src: logwatch.conf.j2
+          dest: /etc/logwatch/conf/logwatch.conf
+          mode: "0644"
+        - src: monitrc.j2
+          # The weird name is so this configuration file is loaded last.
+          dest: /etc/monit/conf.d/zzz.conf
+          mode: "0600"
+        - src: apache.conf.j2
+          # The weird name is so this configuration file is loaded last.
+          dest: /etc/apache2/conf-available/zzz.conf
+          mode: "0600"
+
+    - name: Ensure the zzz.conf configuration file is active
+      command: a2enconf zzz
+      args:
+        creates: /etc/apache2/conf-enabled/zzz.conf
+      notify:
+        - Restart Apache
+
+    - name: Ensure the php*-fpm configuration file is active
+      command: a2enconf php*-fpm
+      args:
+        creates: /etc/apache2/conf-enabled/php*-fpm.conf
+      notify:
+        - Restart Apache
+        - Restart php-fpm
+
+    - name: Ensure ufw's Apache and OpenSSH profiles are enabled
+      ufw:
+        name: "{{ item }}"
+        rule: allow
+        state: enabled
+      notify: Restart ufw
+      with_items:
+        - Apache Full
+        - OpenSSH
+
+    - name: Ensure Fail2ban is configured.
+      template:
+        src: jail.local.j2
+        dest: /etc/fail2ban/jail.local
+        owner: root
+        group: root
+        mode: 0600
+      notify: Restart Fail2ban
+
+  handlers:
+    - name: Restart Apache
+      service: name=apache2 state=restarted
+
+    - name: Restart Fail2ban
+      service: name=fail2ban state=restarted
+
+    - name: Restart php-fpm
+      # HACK: "service" doesn't like globs.
+      command: service php*-fpm restart
+      args:
+        warn: false
+
+    - name: Restart sshd
+      service: name=ssh state=restarted
+
+    - name: Restart ufw
+      service: name=ufw state=restarted
