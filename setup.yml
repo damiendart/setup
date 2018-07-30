@@ -23,15 +23,16 @@
     - name: Ensure a non-root user exists
       user:
         append: yes
-        name: "{{ NON_ROOT_USERNAME }}"
-        password: "{{ NON_ROOT_PASSWORD }}"
+        name: "{{ lookup('env', 'USER') }}"
+        # The "password_hash" filter doesn't require passlib.
+        password: "{{ lookup('password', 'credentials/' + inventory_hostname + '.txt length=22') | password_hash('sha512')}}"
         update_password: on_create
         groups:
           - sudo
 
     - name: Ensure SSH keys for non-root user exist
       authorized_key:
-        user: "{{ NON_ROOT_USERNAME }}"
+        user: "{{ lookup('env', 'USER') }}"
         key: "https://github.com/{{ GITHUB_USERNAME }}.keys"
 
     - name: Ensure SSH doesn't allow passwords or root access
