@@ -108,11 +108,11 @@
         - src: monitrc.j2
           # The weird name is so this configuration file is loaded last.
           dest: /etc/monit/conf.d/zzz.conf
-          mode: "0600"
+          mode: "0644"
         - src: apache.conf.j2
           # The weird name is so this configuration file is loaded last.
           dest: /etc/apache2/conf-available/zzz.conf
-          mode: "0600"
+          mode: "0644"
 
     - name: Ensure the zzz.conf configuration file is active
       command: a2enconf zzz
@@ -145,7 +145,7 @@
         dest: /etc/fail2ban/jail.local
         owner: root
         group: root
-        mode: 0600
+        mode: 0644
       notify: Restart Fail2ban
 
     - name: Ensure site folders are present
