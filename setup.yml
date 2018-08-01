@@ -129,15 +129,17 @@
         - Restart Apache
         - Restart php-fpm
 
-    - name: Ensure ufw's Apache and OpenSSH profiles are enabled
+    - name: Ensure ufw is configured.
       ufw:
-        name: "{{ item }}"
-        rule: allow
+        name: "{{ item.profile }}"
+        rule: "{{ item.rule }}"
         state: enabled
       notify: Restart ufw
       with_items:
-        - Apache Full
-        - OpenSSH
+        - profile: Apache Full
+          rule: allow
+        - profile: OpenSSH
+          rule: limit
 
     - name: Ensure Fail2ban is configured.
       template:
