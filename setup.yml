@@ -15,6 +15,8 @@
 
 - hosts: all
   become: yes
+  vars_files:
+    - vars.yml
   tasks:
     - name: Ensure timezone is set correctly
       timezone:
@@ -145,6 +147,24 @@
         group: root
         mode: 0600
       notify: Restart Fail2ban
+
+    - name: Ensure site folders are present
+      file:
+        group: www-data
+        mode: 0750
+        owner: "{{ lookup('env', 'USER') }}"
+        path: "/var/www/{{ item.key }}/public"
+        state: directory
+      with_dict: "{{ sites }}"
+
+    - name: Ensure site-specific Apache configuration files exist
+      template:
+        src: site-apache.conf.j2
+        dest: "/etc/apache2/sites-available/{{ item.key }}.conf"
+        owner: root
+        group: root
+        mode: 0644
+      with_dict: "{{ sites }}"
 
   handlers:
     - name: Restart Apache
