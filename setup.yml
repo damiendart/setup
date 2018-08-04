@@ -11,6 +11,7 @@
 #
 # TODO: Install Certbot.
 # TODO: Configure Monit.
+# TODO: Configure Tarsnap.
 
 
 - hosts: all
@@ -48,6 +49,17 @@
         - PermitRootLogin
       notify: Restart sshd
 
+    - name: Ensure the Tarsnap deb packaging key is present
+      apt_key:
+        url: https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc
+        state: present
+
+    - name: Ensure the Tarsnap binary package repository is present
+      apt_repository:
+        repo: "deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./"
+        state: present
+        filename: tarsnap
+
     - name: Ensure currently installed packages have been upgraded
       apt:
         update_cache: yes
@@ -68,9 +80,10 @@
         - msmtp-mta
           # "php-fpm" is required for HTTP/2 support.
         - php-fpm
-          # Kirby-powered websites require the following packages.
+          # Kirby-powered websites require the following two packages.
         - php-mbstring
         - php-imagick
+        - tarsnap
 
     - name: Ensure the required Apache mods are enabled
       apache2_module:
