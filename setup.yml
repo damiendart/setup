@@ -9,7 +9,6 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE file.
 #
-# TODO: Install Certbot.
 # TODO: Configure Monit.
 # TODO: Configure Tarsnap.
 
@@ -54,11 +53,16 @@
         url: https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc
         state: present
 
-    - name: Ensure the Tarsnap binary package repository is present
+    - name: Ensure required external repositories are present
       apt_repository:
-        repo: "deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./"
+        repo: "{{ item.repo }}"
         state: present
-        filename: tarsnap
+        filename: "{{ item.filename }}"
+      with_items:
+        - repo: "deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./"
+          filename: tarsnap
+        - repo: "ppa:certbot/certbot"
+          filename: certbot
 
     - name: Ensure currently installed packages have been upgraded
       apt:
@@ -83,6 +87,7 @@
           # Kirby-powered websites require the following two packages.
         - php-mbstring
         - php-imagick
+        - python-certbot-apache
         - tarsnap
 
     - name: Ensure the required Apache mods are enabled
