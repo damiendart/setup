@@ -9,7 +9,6 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE file.
 #
-# TODO: Configure Monit.
 # TODO: Configure Tarsnap.
 
 
@@ -128,6 +127,7 @@
         - src: monitrc.j2
           # The weird name is so this configuration file is loaded last.
           dest: /etc/monit/conf.d/zzz.conf
+          notify: Restart Monit
         - src: apache.conf.j2
           # The weird name is so this configuration file is loaded last.
           dest: /etc/apache2/conf-available/zzz.conf
@@ -147,6 +147,12 @@
       notify:
         - Restart Apache
         - Restart php-fpm
+
+    - name: Ensure customised Certbot cron job is present
+      replace:
+        path: /etc/cron.d/certbot
+        regexp: "certbot -q renew$"
+        replace: "certbot -q renew --webroot --webroot-path /var/www/html --renew-hook 'service apache2 graceful'"
 
     - name: Ensure ufw is configured.
       ufw:
@@ -184,6 +190,9 @@
 
     - name: Restart Fail2ban
       service: name=fail2ban state=restarted
+
+    - name: Restart Monit
+      service: name=monit state=restarted
 
     - name: Restart php-fpm
       # HACK: "service" doesn't like globs.
