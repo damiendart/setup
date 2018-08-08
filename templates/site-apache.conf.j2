@@ -38,8 +38,12 @@
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
     </IfModule>
 
+    # Allow individual site customisations at the virtual host level.
+    IncludeOptional /var/www/{{ item.key }}/virtualhost.apache.con[f]
+
     <Directory /var/www/{{ item.key }}/public>
-      IncludeOptional /var/www/{{ item.key }}/*.apache.conf
+      IncludeOptional /var/www/{{ item.key }}/directory.apache.con[f]
     </Directory>
+
   </VirtualHost>
 </IfModule>
