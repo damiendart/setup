@@ -27,6 +27,7 @@
     DocumentRoot /var/www/{{ item.key }}/public
 
     Include /etc/letsencrypt/options-ssl-apache.conf
+    # For more information, see <https://serverfault.com/a/846583>.
     SSLCertificateFile /var/www/{{ item.key }}/fullchain.pem
     SSLCertificateKeyFile /var/www/{{ item.key }}/privkey.pem
 
