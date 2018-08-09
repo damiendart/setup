@@ -108,7 +108,10 @@
     - name: Ensure unrequired Apache mods are disabled
       apache2_module:
         state: absent
-        name: mpm_prefork
+        name: "{{ item }}"
+      with_items:
+        - mpm_prefork
+        - status
 
     - name: Ensure custom configuration files exists
       template:
