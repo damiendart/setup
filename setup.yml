@@ -112,6 +112,7 @@
       with_items:
         - mpm_prefork
         - status
+      notify: Restart Apache
 
     - name: Ensure custom configuration files exists
       template:
