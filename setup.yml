@@ -1,16 +1,23 @@
 ---
 # Damien Dart's Ansible Playbook
 #
+# This playbook is used to provision the server I host some simple
+# websites on and my development environments.
+#
 #   - This playbook has been tested on Ubuntu 18.04.
-#   - Ubuntu 18.04 comes with Python 3 preinstalled, so Ansible needs to
-#     be told to use Python 3 on the Ansible-managed machines.
+#   - For Ubuntu 18.04 machines, Ansible needs to be told to use Python
+#     3 (by setting "ansible_python_interpreter").
 #   - Things to do on each machine after running this playbook:
 #     - If using Tarsnap, ensure a valid (and ideally a write-only) key
 #       file is present at "/root/tarsnap.key".
+#     - In each virtual site directory, ensure there are symlinks to
+#       valid "fullchain.pem" and "privkey.pem" files. For more
+#       information, see the accompanying
+#       "templates/site-apache.conf.j2" file.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
-# more information, please refer to the accompanying "UNLICENCE file.
+# more information, please refer to the accompanying "UNLICENCE" file.
 
 
 - hosts: all
@@ -89,8 +96,11 @@
         - php-imagick
         - python-certbot-apache
         - tarsnap
+        # As of Debian 9 (and Ubuntu 16.04), everything required for
+        # unattended upgrades is installed by default.
+        # - unattended-upgrades
 
-    - name: Ensure the required Apache mods are enabled
+    - name: Ensure required Apache modules are enabled
       apache2_module:
         state: present
         name: "{{ item }}"
@@ -163,7 +173,7 @@
         regexp: "certbot -q renew$"
         replace: "certbot -q renew --webroot --webroot-path /var/www/html --renew-hook 'service apache2 graceful'"
 
-    - name: Ensure ufw is configured.
+    - name: Ensure ufw is configured
       ufw:
         name: "{{ item.profile }}"
         rule: "{{ item.rule }}"
