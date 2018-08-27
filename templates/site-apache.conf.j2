@@ -6,34 +6,48 @@
 
 <VirtualHost *:80>
   ServerAdmin {{ EMAIL_ADDRESS }}
-  ServerName {{ item.key }}
-  ServerAlias {{ item.value.aliases | join(" ") }}
+  {% if development is defined %}
+    ServerName {{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io
+  {% else %}
+    ServerName {{ item.key }}
+    ServerAlias {{ item.value.aliases | join(" ") }}
+  {% endif %}
 
   ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
   CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
-  Redirect permanent "/" "https://{{ item.key }}/"
+  {% if development is defined %}
+    Redirect permanent "/" "https://{{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io/"
+  {% else %}
+    Redirect permanent "/" "https://{{ item.key }}/"
+  {% endif %}
 </VirtualHost>
 
 <IfModule mod_ssl.c>
   <VirtualHost *:443>
     ServerAdmin {{ EMAIL_ADDRESS }}
-    ServerName {{ item.key }}
-    ServerAlias {{ item.value.aliases | join(" ") }}
+    {% if development is defined %}
+      ServerName {{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io
+    {% else %}
+      ServerName {{ item.key }}
+      ServerAlias {{ item.value.aliases | join(" ") }}
+    {% endif %}
 
     ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
     CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
     DocumentRoot /var/www/{{ item.key }}/public
 
-    Include /etc/letsencrypt/options-ssl-apache.conf
+    Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
     # For more information, see <https://serverfault.com/a/846583>.
     SSLCertificateFile /var/www/{{ item.key }}/fullchain.pem
     SSLCertificateKeyFile /var/www/{{ item.key }}/privkey.pem
 
-    <If "%{HTTP_HOST} != '{{ item.key }}'">
-      Redirect permanent "/" "https://{{ item.key }}/"
-    </If>
+    {% if development is not defined %}
+      <If "%{HTTP_HOST} != '{{ item.key }}'">
+        Redirect permanent "/" "https://{{ item.key }}/"
+      </If>
+    {% endif %}
 
     <IfModule mod_headers.c>
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
