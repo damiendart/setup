@@ -23,7 +23,7 @@
 - hosts: all
   become: yes
   vars_files:
-    - vars.yml
+    - secret/vars.yml
   tasks:
     - name: Ensure timezone is set correctly
       timezone:
@@ -34,7 +34,7 @@
         append: yes
         name: "{{ lookup('env', 'USER') }}"
         # The "password_hash" filter doesn't require passlib.
-        password: "{{ lookup('password', 'credentials/' + inventory_hostname + '.txt length=22') | password_hash('sha512')}}"
+        password: "{{ lookup('password', 'secret/credentials-' + inventory_hostname + '.txt length=22') | password_hash('sha512')}}"
         update_password: on_create
         groups:
           - sudo
