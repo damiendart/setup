@@ -77,7 +77,7 @@
         cache_valid_time: 3600
         upgrade: yes
 
-    - name: Ensure stuff is installed
+    - name: Ensure required packages are installed
       apt:
         name: "{{ item }}"
         state: present
@@ -99,6 +99,18 @@
         # As of Debian 9 (and Ubuntu 16.04), everything required for
         # unattended upgrades is installed by default.
         # - unattended-upgrades
+
+    - name: "DEV: Ensure development packages are installed"
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - ruby
+        - ruby-dev
+        - nodejs
+        - npm
+        - build-essential
+      when: development is defined and development
 
     - name: Ensure required Apache modules are enabled
       apache2_module:
@@ -152,6 +164,18 @@
         - src: tarsnap-cron.sh.j2
           dest: /etc/cron.daily/tarsnap
           mode: "0755"
+
+    - name: "DEV: Ensure development configuration files exists"
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "{{ lookup('env', 'USER') }}"
+        group: "{{ lookup('env', 'USER') }}"
+        mode: "{{ item.mode | default('0644') }}"
+      with_items:
+        - src: bash_profile.sh
+          dest: /etc/profile.d/bash_profile.sh
+      when: development is defined and development
 
     - name: Ensure the zzz.conf configuration file is active
       command: a2enconf zzz
