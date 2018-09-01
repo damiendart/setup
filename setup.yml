@@ -228,6 +228,17 @@
         mode: 0644
       with_dict: "{{ sites }}"
 
+    - name: Ensure Kirby-related files are installed
+      git:
+        repo: "{{ item.repo }}"
+        dest: "/usr/local/share/kirby/{{ item.name }}"
+        version: 2.5.12
+      with_items:
+        - name: base
+          repo: https://github.com/getkirby/kirby.git
+        - name: panel
+          repo: https://github.com/getkirby/panel.git
+
   handlers:
     - name: Restart Apache
       service: name=apache2 state=restarted
