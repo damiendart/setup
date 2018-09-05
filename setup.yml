@@ -239,6 +239,17 @@
         - name: panel
           repo: https://github.com/getkirby/panel.git
 
+    - name: Ensure PHP's maximum upload file size is increased
+      lineinfile:
+        dest: /etc/php/7.2/fpm/php.ini
+        regexp: "^{{ item }}"
+        line: "{{ item }} = 20M"
+        state: present
+      with_items:
+        - post_max_size
+        - upload_max_filesize
+      notify: Restart php-fpm
+
   handlers:
     - name: Restart Apache
       service: name=apache2 state=restarted
