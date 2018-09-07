@@ -84,6 +84,9 @@
       with_items:
         - apache2
         - fail2ban
+        # Kirby uses the ImageMagick command-line tools instead of the
+        # native PHP extension Imagick.
+        - imagemagick
         - logrotate
         - logwatch
         - monit
@@ -91,9 +94,8 @@
         - msmtp-mta
           # "php-fpm" is required for HTTP/2 support.
         - php-fpm
-          # Kirby-powered websites require the following two packages.
+          # Kirby-powered websites require the following package.
         - php-mbstring
-        - php-imagick
         - python-certbot-apache
         - tarsnap
         # As of Debian 9 (and Ubuntu 16.04), everything required for
