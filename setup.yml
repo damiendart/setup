@@ -102,6 +102,19 @@
         # unattended upgrades is installed by default.
         # - unattended-upgrades
 
+    - name: Ensure Canonical Livepatch is installed
+      command: snap install canonical-livepatch
+
+    - name: Get Canonical Livepatch status
+      command: canonical-livepatch status
+      register: livepatch_status
+
+    - name: Ensure Canonical Livepatch is enabled
+      command: "canonical-livepatch enable {{ livepatch_key }}"
+      when:
+        - development is not defined or development == false
+        - livepatch_status.stdout is search("Machine is not enabled.")
+
     - name: "DEV: Ensure development packages are installed"
       apt:
         name: "{{ item }}"
