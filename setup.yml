@@ -109,13 +109,13 @@
       command: canonical-livepatch status
       register: livepatch_status
 
-    - name: Ensure Canonical Livepatch is enabled
+    - name: "PROD: Ensure Canonical Livepatch is enabled"
       command: "canonical-livepatch enable {{ livepatch_key }}"
       when:
         - development is not defined or development == false
         - livepatch_status.stdout is search("Machine is not enabled.")
 
-    - name: "DEV: Ensure development packages are installed"
+    - name: "DEV: Ensure development-related packages are installed"
       apt:
         name: "{{ item }}"
         state: present
