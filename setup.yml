@@ -87,6 +87,7 @@
         # Kirby uses the ImageMagick command-line tools instead of the
         # native PHP extension Imagick.
         - imagemagick
+        - goaccess
         - logrotate
         - logwatch
         - monit
