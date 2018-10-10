@@ -109,6 +109,7 @@
     - name: Get Canonical Livepatch status
       command: canonical-livepatch status
       register: livepatch_status
+      ignore_errors: yes
 
     - name: "PROD: Ensure Canonical Livepatch is enabled"
       command: "canonical-livepatch enable {{ livepatch_key }}"
