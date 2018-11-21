@@ -81,29 +81,28 @@
 
     - name: Ensure required packages are installed
       apt:
-        name: "{{ item }}"
+        name:
+          - apache2
+          - fail2ban
+          # Kirby uses the ImageMagick command-line tools instead of the
+          # native PHP extension Imagick.
+          - imagemagick
+          - goaccess
+          - logrotate
+          - logwatch
+          - monit
+          # TODO: Explain what msmtp-mta is?
+          - msmtp-mta
+            # "php-fpm" is required for HTTP/2 support.
+          - php-fpm
+            # Kirby-powered websites require the following package.
+          - php-mbstring
+          - python-certbot-apache
+          - tarsnap
+          # As of Debian 9 (and Ubuntu 16.04), everything required for
+          # unattended upgrades is installed by default.
+          # - unattended-upgrades
         state: present
-      with_items:
-        - apache2
-        - fail2ban
-        # Kirby uses the ImageMagick command-line tools instead of the
-        # native PHP extension Imagick.
-        - imagemagick
-        - goaccess
-        - logrotate
-        - logwatch
-        - monit
-        # TODO: Explain what msmtp-mta is?
-        - msmtp-mta
-          # "php-fpm" is required for HTTP/2 support.
-        - php-fpm
-          # Kirby-powered websites require the following package.
-        - php-mbstring
-        - python-certbot-apache
-        - tarsnap
-        # As of Debian 9 (and Ubuntu 16.04), everything required for
-        # unattended upgrades is installed by default.
-        # - unattended-upgrades
 
     - name: Ensure Canonical Livepatch is installed
       command: snap install canonical-livepatch
@@ -121,16 +120,15 @@
 
     - name: "DEV: Ensure development-related packages are installed"
       apt:
-        name: "{{ item }}"
+        name:
+          - python-pip
+          - python3-pip
+          - ruby
+          - ruby-dev
+          - nodejs
+          - npm
+          - build-essential
         state: present
-      with_items:
-        - python-pip
-        - python3-pip
-        - ruby
-        - ruby-dev
-        - nodejs
-        - npm
-        - build-essential
       when: development is defined and development
 
     - name: Ensure required Apache modules are enabled
