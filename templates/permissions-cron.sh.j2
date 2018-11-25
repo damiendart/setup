@@ -1,0 +1,32 @@
+#!/bin/bash
+# {{ ansible_managed }}
+#
+# Fixes file permissions issues.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+
+USERNAME="{{ lookup('env', 'USER') }}"
+
+for DIR in /var/www/*/; do
+  [ "$DIR" = "/var/www/html/" ] && continue
+  # This is a very fragile check for a Kirby-powered site.
+  if [ -d "${DIR}site/" ]; then
+    KIRBY_FOLDERS='-path *public/assets -o -path *site/accounts -o -path *site/cache'
+    find "$DIR" \( ${KIRBY_FOLDERS// -o/* -o}* \) -type d -exec chmod 0770 {} +;
+    find "$DIR" \( ${KIRBY_FOLDERS// -o/* -o}* \) -type f -exec chmod 0660 {} +;
+    find "$DIR" \( ${KIRBY_FOLDERS// -o/* -o}* \) -type f -exec chown "www-data:www-data" {} +;
+    find "$DIR" \( $KIRBY_FOLDERS \) -prune -o -type d -exec chmod 0750 {} +;
+    find "$DIR" \( ${KIRBY_FOLDERS// -o/* -o}* \) -prune -o -type f -exec chmod 0640 {} +;
+    find "$DIR" \( ${KIRBY_FOLDERS// -o/* -o}* -o -iname "*.apache.conf" \) \
+        -prune -o -exec chown "$USERNAME:www-data" {} +;
+  else
+    find "$DIR" -type d -exec chmod 0750 {} \;
+    find "$DIR" -type f -exec chmod 0640 {} \;
+    find "$DIR" -name "*.apache.conf" -prune -o \
+        -exec chown "$USERNAME:www-data" {} +;
+  fi
+  find "$DIR" -iname "*.apache.conf" -exec chown "$USERNAME:root" {} +;
+done

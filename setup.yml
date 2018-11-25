@@ -183,6 +183,9 @@
         - src: tarsnap-cron.sh.j2
           dest: /etc/cron.daily/tarsnap
           mode: "0755"
+        - src: permissions-cron.sh.j2
+          dest: /etc/cron.daily/zzz-permissions
+          mode: "0755"
 
     - name: "DEV: Ensure development configuration files exists"
       template:
