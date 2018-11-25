@@ -10,8 +10,8 @@ tls on
 tls_trust_file /etc/ssl/certs/ca-certificates.crt
 
 account default
-host {{ EMAIL_HOST }}
+host {{ email_host }}
 port 587
-user {{ EMAIL_ADDRESS }}
-from {{ EMAIL_ADDRESS }}
-password {{ EMAIL_PASSWORD }}
+user {{ email_address }}
+from {{ email_address }}
+password {{ email_password }}

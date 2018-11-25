@@ -5,7 +5,7 @@
 # more information, please refer to the accompanying "UNLICENCE file.
 
 <VirtualHost *:80>
-  ServerAdmin {{ EMAIL_ADDRESS }}
+  ServerAdmin {{ email_address }}
   {% if development is defined %}
     ServerName {{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io
   {% else %}
@@ -25,7 +25,7 @@
 
 <IfModule mod_ssl.c>
   <VirtualHost *:443>
-    ServerAdmin {{ EMAIL_ADDRESS }}
+    ServerAdmin {{ email_address }}
     {% if development is defined %}
       ServerName {{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io
     {% else %}

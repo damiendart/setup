@@ -44,7 +44,7 @@
     - name: Ensure SSH keys for non-root user exist
       authorized_key:
         user: "{{ lookup('env', 'USER') }}"
-        key: "https://github.com/{{ GITHUB_USERNAME }}.keys"
+        key: "https://github.com/{{ github_username }}.keys"
 
     - name: Ensure SSH doesn't allow passwords or root access
       lineinfile:

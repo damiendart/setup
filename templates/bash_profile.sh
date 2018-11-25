@@ -13,7 +13,7 @@ export PATH="$PATH:$GEM_HOME/bin:$NPM_CONFIG_PREFIX/bin"
 
 git config --global core.excludesfile "$HOME/.gitignore"
 git config --global user.name "{{ full_name }}"
-git config --global user.email "{{ EMAIL_ADDRESS }}"
+git config --global user.email "{{ email_address }}"
 cat > "$HOME/.gitignore" <<GITIGNORE
 *.swp
 node_modules
