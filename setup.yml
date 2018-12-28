@@ -186,6 +186,9 @@
         - src: permissions-cron.sh.j2
           dest: /etc/cron.daily/zzz-permissions
           mode: "0755"
+        - src: webstats.sh.j2
+          dest: /usr/local/bin/webstats
+          mode: "0755"
 
     - name: "DEV: Ensure development configuration files exists"
       template:
