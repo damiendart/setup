@@ -13,7 +13,7 @@
 #     - In each virtual site directory, ensure there are symlinks to
 #       valid "fullchain.pem" and "privkey.pem" files. For more
 #       information, see the accompanying
-#       "templates/site-apache.conf.j2" file.
+#       "templates/apache2/virtualhost.conf.j2" file.
 #   - This playbook works with the Mitogen plugin. For more information,
 #     see <https://mitogen.readthedocs.io/en/stable/ansible.html>.
 #
@@ -165,28 +165,28 @@
         mode: "{{ item.mode | default('0644') }}"
       notify: "{{ item.notify | default([]) }}"
       with_items:
-        - src: jail.local.j2
+        - src: fail2ban/jail.local.j2
           dest: /etc/fail2ban/jail.local
           notify: Restart Fail2ban
-        - src: msmtprc.j2
+        - src: msmtp/msmtprc.j2
           dest: /etc/msmtprc
-        - src: logwatch.conf.j2
+        - src: logwatch/logwatch.conf.j2
           dest: /etc/logwatch/conf/logwatch.conf
-        - src: monitrc.j2
+        - src: monit/monitrc.j2
           # The weird name is so this configuration file is loaded last.
           dest: /etc/monit/conf.d/zzz.conf
           notify: Restart Monit
-        - src: apache.conf.j2
+        - src: apache2/apache2.conf.j2
           # The weird name is so this configuration file is loaded last.
           dest: /etc/apache2/conf-available/zzz.conf
           notify: Restart Apache
-        - src: tarsnap-cron.sh.j2
+        - src: cron/tarsnap.sh.j2
           dest: /etc/cron.daily/tarsnap
           mode: "0755"
-        - src: permissions-cron.sh.j2
+        - src: cron/www-permissions.sh.j2
           dest: /etc/cron.daily/zzz-permissions
           mode: "0755"
-        - src: webstats.sh.j2
+        - src: bin/webstats.sh.j2
           dest: /usr/local/bin/webstats
           mode: "0755"
 
@@ -198,7 +198,7 @@
         group: "{{ lookup('env', 'USER') }}"
         mode: "{{ item.mode | default('0644') }}"
       with_items:
-        - src: bash_profile.sh
+        - src: bash/bash_profile.sh.j2
           dest: /etc/profile.d/bash_profile.sh
       when: development is defined and development
 
@@ -246,7 +246,7 @@
 
     - name: Ensure site-specific Apache configuration files exist
       template:
-        src: site-apache.conf.j2
+        src: apache2/virtualhost.conf.j2
         dest: "/etc/apache2/sites-available/{{ item.key }}.conf"
         owner: root
         group: root
