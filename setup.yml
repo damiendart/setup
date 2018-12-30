@@ -253,7 +253,7 @@
         mode: 0644
       with_dict: "{{ sites }}"
 
-    - name: Ensure Kirby-related files are installed
+    - name: Ensure Kirby core files are installed
       git:
         repo: "{{ item.repo }}"
         dest: "/usr/local/share/kirby/{{ item.name }}"
@@ -263,6 +263,36 @@
           repo: https://github.com/getkirby/kirby.git
         - name: panel
           repo: https://github.com/getkirby/panel.git
+
+    - name: Ensure customised index.php exists for Kirby-powered sites.
+      template:
+        src: kirby/index.php.j2
+        dest: "/var/www/{{ item.key }}/public/index.php"
+        group: www-data
+        mode: 0640
+        owner: "{{ lookup('env', 'USER') }}"
+      with_dict: "{{ sites }}"
+      when: item.value.kirby_key is defined
+
+    - name: Ensure Kirby panel folders are present for Kirby-powered sites.
+      file:
+        group: www-data
+        mode: 0750
+        owner: "{{ lookup('env', 'USER') }}"
+        path: "/var/www/{{ item.key }}/public/panel"
+        state: directory
+      with_dict: "{{ sites }}"
+      when: item.value.kirby_key is defined
+
+    - name: Ensure customised panel/index.php exists for Kirby-powered sites.
+      template:
+        src: kirby/panel.php.j2
+        dest: "/var/www/{{ item.key }}/public/panel/index.php"
+        group: www-data
+        mode: 0640
+        owner: "{{ lookup('env', 'USER') }}"
+      with_dict: "{{ sites }}"
+      when: item.value.kirby_key is defined
 
     - name: Ensure PHP's maximum upload file size is increased
       lineinfile:

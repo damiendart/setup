@@ -1,0 +1,29 @@
+<?php
+
+// {{ ansible_managed }}
+//
+// This file was written by Damien Dart, <damiendart@pobox.com>. This is
+// free and unencumbered software released into the public domain. For
+// more information, please refer to the accompanying "UNLICENCE" file.
+
+
+use Kirby\Panel;
+
+
+require("/usr/local/share/kirby/base/bootstrap.php");
+require("/usr/local/share/kirby/panel/app/bootstrap.php");
+
+
+$kirby = kirby();
+$kirby->roots->avatars = dirname(__DIR__) . "/assets/avatars";
+$kirby->roots->content = dirname(__DIR__) . "/assets";
+$kirby->roots->site = "../../site";
+$kirby->roots->thumbs = dirname(__DIR__) . "/assets/thumbs";
+$kirby->urls->avatars = $kirby->urls->index . "/assets/avatars";
+$kirby->urls->content = $kirby->urls->index . "/assets";
+$kirby->urls->thumbs = $kirby->urls->index . "/assets/thumbs";
+
+$panel = new Panel($kirby, "/usr/local/share/kirby/panel");  
+echo $panel->launch();
+
+?>

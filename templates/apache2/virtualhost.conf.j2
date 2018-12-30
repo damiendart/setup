@@ -53,6 +53,14 @@
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
     </IfModule>
 
+    {% if item.value.kirby_key is defined %}
+      <Directory /usr/local/share/kirby/panel/assets>
+        Require all granted
+      </Directory>
+
+      Alias "/panel/assets/" "/usr/local/share/kirby/panel/assets/"
+    {% endif %}
+
     # Allow individual site customisations at the virtual host level.
     IncludeOptional /var/www/{{ item.key }}/virtualhost.apache.con[f]
 
@@ -77,12 +85,12 @@
           # Block text files in the "content" folder from being accessed.
           RewriteRule ^assets/(.*)\.(txt|md|mdown)$ index.php [L]
           # Make Kirby Panel links work.
-          RewriteCond %{REQUEST_FILENAME} !-f
-          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteCond %{REQUEST_URI} !^/panel/assets/.*
           RewriteRule ^panel/(.*) panel/index.php [L]
           # Make site links work.
           RewriteCond %{REQUEST_FILENAME} !-f
           RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteCond %{REQUEST_URI} !^/panel/assets/.*
           RewriteRule ^(.*) index.php [L]
         {% else %}
           # Remove query strings from URLs.
