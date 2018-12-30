@@ -57,7 +57,40 @@
     IncludeOptional /var/www/{{ item.key }}/virtualhost.apache.con[f]
 
     <Directory /var/www/{{ item.key }}/public>
+      <IfModule mod_rewrite.c>
+        # Remove groups of slashes.
+        RewriteCond %{THE_REQUEST} //
+        RewriteRule ^.*$ $0 [L,NE,R=permanent]
+        {% if item.value.kirby_key is defined %}
+          # Remove query strings from URLs.
+          RewriteCond %{QUERY_STRING} !=""
+          RewriteRule ^(.*)$ $1? [L,R=permanent]
+        {% endif %}
+      </IfModule>
+
       IncludeOptional /var/www/{{ item.key }}/directory.apache.con[f]
+
+      <IfModule mod_rewrite.c>
+        RewriteEngine on
+        RewriteBase /
+        {% if item.value.kirby_key is not defined %}
+          # Remove query strings from URLs.
+          RewriteCond %{QUERY_STRING} !=""
+          RewriteRule ^(.*)$ $1? [L,R=permanent]
+        {% endif %}
+        # Remove "index.html" and "index.php" from URLs.
+        RewriteCond %{REQUEST_FILENAME} -f
+        RewriteCond %{THE_REQUEST} ^.*/index\.(html|php)
+        RewriteRule ^(.*)index\.(html|php)$ $1 [L,NE,R=permanent]
+        # Remove file extensions from some URLs.
+        RewriteCond %{REQUEST_FILENAME} -f
+        # TODO: Use negative lookahead to combine the two conditions?
+        RewriteCond %{THE_REQUEST} !^.*/index\.html
+        RewriteCond %{THE_REQUEST} ^.*\.html
+        RewriteRule ^(.*).html$ $1 [L,NE,R=permanent]
+        RewriteCond %{REQUEST_FILENAME}\.html -f
+        RewriteRule ^([^\.]+)$ $1.html [L,NC]
+      </IfModule>
     </Directory>
 
   </VirtualHost>
