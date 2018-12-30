@@ -73,7 +73,18 @@
       <IfModule mod_rewrite.c>
         RewriteEngine on
         RewriteBase /
-        {% if item.value.kirby_key is not defined %}
+        {% if item.value.kirby_key is defined %}
+          # Block text files in the "content" folder from being accessed.
+          RewriteRule ^assets/(.*)\.(txt|md|mdown)$ index.php [L]
+          # Make Kirby Panel links work.
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteRule ^panel/(.*) panel/index.php [L]
+          # Make site links work.
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteRule ^(.*) index.php [L]
+        {% else %}
           # Remove query strings from URLs.
           RewriteCond %{QUERY_STRING} !=""
           RewriteRule ^(.*)$ $1? [L,R=permanent]
