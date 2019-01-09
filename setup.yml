@@ -184,7 +184,7 @@
           dest: /etc/cron.daily/tarsnap
           mode: "0755"
         - src: cron/www-permissions.sh.j2
-          dest: /etc/cron.daily/zzz-permissions
+          dest: /etc/cron.hourly/zzz-permissions
           mode: "0755"
         - src: bin/webstats.sh.j2
           dest: /usr/local/bin/webstats
