@@ -253,6 +253,19 @@
         mode: 0644
       with_dict: "{{ sites }}"
 
+    - name: Ensure site-specific cron helper scripts exist
+      template:
+        src: cron/www-cron.sh.j2
+        dest: "/etc/cron.{{ item }}/www-cron"
+        owner: root
+        group: root
+        mode: 0755
+      with_items:
+        - hourly
+        - daily
+        - weekly
+        - monthly
+
     - name: Ensure Kirby core files are installed
       git:
         repo: "{{ item.repo }}"

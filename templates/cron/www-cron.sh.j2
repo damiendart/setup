@@ -1,0 +1,12 @@
+#!/bin/bash
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+
+for DIR in /var/www/*/; do
+  [ "$DIR" = "/var/www/html/" ] && continue
+  test -f ${DIR}cron-{{ item }} && bash ${DIR}cron-{{ item }}
+done
