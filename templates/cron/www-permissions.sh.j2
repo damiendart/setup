@@ -25,7 +25,7 @@ for DIR in /var/www/*/; do
   else
     find "$DIR" -type d -exec chmod 0750 {} \;
     find "$DIR" -type f -exec chmod 0640 {} \;
-    find "$DIR" -name "*.apache.conf" -prune -o \
+    find "$DIR" -name '*.apache.conf' -prune -o \
         -exec chown "$USERNAME:www-data" {} +;
   fi
   find "$DIR" -iname '*.apache.conf' -exec chown "$USERNAME:root" {} +;
