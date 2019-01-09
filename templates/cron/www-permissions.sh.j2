@@ -29,4 +29,8 @@ for DIR in /var/www/*/; do
         -exec chown "$USERNAME:www-data" {} +;
   fi
   find "$DIR" -iname '*.apache.conf' -exec chown "$USERNAME:root" {} +;
+  find "$DIR" -path '*bin*' -type f -exec chown "$USERNAME:root" {} +;
+  find "$DIR" -path '*bin*' -type f -exec chmod 0750 {} +;
+  find "$DIR" -iname 'cron-*' -exec chown "$USERNAME:root" {} +;
+  find "$DIR" -iname 'cron-*' -exec chmod 0750 {} +;
 done
