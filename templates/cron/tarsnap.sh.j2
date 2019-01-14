@@ -6,7 +6,5 @@
 # more information, please refer to the accompanying "UNLICENCE file.
 
 
-# TODO: Add option to add additional folders to back up.
-test -f /root/tarsnap.key && /usr/bin/tarsnap -c \
-    -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" \
-    /etc/letsencrypt /var/www
+/usr/bin/tarsnap -c --keyfile /root/tarsnap.key \
+    -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" /etc/letsencrypt /var/www
