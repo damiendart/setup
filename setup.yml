@@ -273,9 +273,9 @@
         version: 2.5.12
       with_items:
         - name: base
-          repo: https://github.com/getkirby/kirby.git
+          repo: https://github.com/getkirby-v2/kirby.git
         - name: panel
-          repo: https://github.com/getkirby/panel.git
+          repo: https://github.com/getkirby-v2/panel.git
 
     - name: Ensure customised index.php exists for Kirby-powered sites.
       template:
