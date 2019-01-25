@@ -72,6 +72,7 @@
         {% if item.value.kirby_key is defined %}
           # Remove query strings from URLs.
           RewriteCond %{QUERY_STRING} !=""
+          RewriteCond %{REQUEST_URI} !^/panel/.*
           RewriteRule ^(.*)$ $1? [L,R=permanent]
         {% endif %}
       </IfModule>
