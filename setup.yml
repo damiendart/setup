@@ -145,7 +145,7 @@
         - rewrite
         - setenvif
         - ssl
-      notify: Restart Apache
+      notify: Restart Apache gracefully
 
     - name: Ensure unrequired Apache mods are disabled
       apache2_module:
@@ -154,7 +154,7 @@
       with_items:
         - mpm_prefork
         - status
-      notify: Restart Apache
+      notify: Restart Apache gracefully
 
     - name: Ensure custom configuration files exists
       template:
@@ -179,7 +179,7 @@
         - src: apache2/apache2.conf.j2
           # The weird name is so this configuration file is loaded last.
           dest: /etc/apache2/conf-available/zzz.conf
-          notify: Restart Apache
+          notify: Restart Apache gracefully
         - src: cron/tarsnap.sh.j2
           dest: /etc/cron.daily/tarsnap
           mode: "0755"
@@ -209,14 +209,14 @@
       args:
         creates: /etc/apache2/conf-enabled/zzz.conf
       notify:
-        - Restart Apache
+        - Restart Apache gracefully
 
     - name: Ensure the php7.2-fpm configuration file is active
       command: a2enconf php7.2-fpm
       args:
         creates: /etc/apache2/conf-enabled/php7.2-fpm.conf
       notify:
-        - Restart Apache
+        - Restart Apache gracefully
         - Reload php-fpm
 
     - name: Ensure customised Certbot cron job is present
@@ -321,8 +321,11 @@
       notify: Reload php-fpm
 
   handlers:
-    - name: Restart Apache
-      service: name=apache2 state=restarted
+    # The "service" module does not support graceful restarts.
+    - name: Restart Apache gracefully
+      command: service apache2 graceful
+      args:
+        warn: false
 
     - name: Restart Fail2ban
       service: name=fail2ban state=restarted
