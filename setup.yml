@@ -189,6 +189,8 @@
         - src: bin/webstats.sh.j2
           dest: /usr/local/bin/webstats
           mode: "0755"
+        - src: bash/webstats_bash_completion.sh.j2
+          dest: /etc/bash_completion.d/webstats
 
     - name: "DEV: Ensure development configuration files exists"
       template:
