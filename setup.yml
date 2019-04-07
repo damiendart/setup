@@ -94,7 +94,7 @@
           # TODO: Explain what msmtp-mta is?
           - msmtp-mta
             # "php-fpm" is required for HTTP/2 support.
-          - php-fpm
+          - php7.2-fpm
             # Kirby-powered websites require the following package.
           - php-mbstring
           - python-certbot-apache
@@ -211,13 +211,13 @@
       notify:
         - Restart Apache
 
-    - name: Ensure the php*-fpm configuration file is active
-      command: a2enconf php*-fpm
+    - name: Ensure the php7.2-fpm configuration file is active
+      command: a2enconf php7.2-fpm
       args:
-        creates: /etc/apache2/conf-enabled/php*-fpm.conf
+        creates: /etc/apache2/conf-enabled/php7.2-fpm.conf
       notify:
         - Restart Apache
-        - Restart php-fpm
+        - Reload php-fpm
 
     - name: Ensure customised Certbot cron job is present
       replace:
@@ -318,7 +318,7 @@
       with_items:
         - post_max_size
         - upload_max_filesize
-      notify: Restart php-fpm
+      notify: Reload php-fpm
 
   handlers:
     - name: Restart Apache
@@ -330,11 +330,8 @@
     - name: Restart Monit
       service: name=monit state=restarted
 
-    - name: Restart php-fpm
-      # HACK: "service" doesn't like globs.
-      command: service php*-fpm restart
-      args:
-        warn: false
+    - name: Reload php-fpm
+      service: name=php7.2-fpm state=reloaded
 
     - name: Restart sshd
       service: name=ssh state=restarted
