@@ -6,5 +6,5 @@
 # more information, please refer to the accompanying "UNLICENCE file.
 
 
-/usr/bin/tarsnap -c --keyfile /root/tarsnap.key \
+/usr/bin/tarsnap -c --quiet --no-print-stats --keyfile /root/tarsnap.key \
     -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" /etc/letsencrypt /var/www
