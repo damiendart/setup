@@ -4,6 +4,14 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE file.
 
+Define PROJECT_ROOT /var/www/{{ item.key }}
+{% if item.value.wwwstuff_deploy is defined %}
+  Include /var/www/{{ item.key }}/release.apache2.conf
+  Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${RELEASE}
+{% else %}
+  Define RELEASE_ROOT /var/www/{{ item.key }}
+{% endif %}
+
 <VirtualHost *:80>
   ServerAdmin {{ email_address }}
   {% if development is defined %}
@@ -36,12 +44,17 @@
     ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
     CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
-    DocumentRoot /var/www/{{ item.key }}/public
+    DocumentRoot ${RELEASE_ROOT}/public/
 
     Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
     # For more information, see <https://serverfault.com/a/846583>.
-    SSLCertificateFile /var/www/{{ item.key }}/fullchain.pem
-    SSLCertificateKeyFile /var/www/{{ item.key }}/privkey.pem
+    {% if item.value.wwwstuff_deploy is defined %}
+      SSLCertificateFile ${PROJECT_ROOT}/shared/ssl/fullchain.pem
+      SSLCertificateKeyFile ${PROJECT_ROOT}/shared/ssl/privkey.pem
+    {% else %}
+      SSLCertificateFile ${PROJECT_ROOT}/fullchain.pem
+      SSLCertificateKeyFile ${PROJECT_ROOT}/privkey.pem
+    {% endif %}
 
     {% if development is not defined %}
       <If "%{HTTP_HOST} != '{{ item.key }}'">
@@ -62,9 +75,13 @@
     {% endif %}
 
     # Allow individual site customisations at the virtual host level.
-    IncludeOptional /var/www/{{ item.key }}/virtualhost.apache.con[f]
+    {% if item.value.wwwstuff_deploy is defined %}
+      IncludeOptional ${RELEASE_ROOT}/resources/apache2/virtualhost.apache.con[f]
+    {% else %}
+      IncludeOptional ${RELEASE_ROOT}/virtualhost.apache.con[f]
+    {% endif %}
 
-    <Directory /var/www/{{ item.key }}/public>
+    <Directory ${RELEASE_ROOT}/public>
       <IfModule mod_rewrite.c>
         # Remove groups of slashes.
         RewriteCond %{THE_REQUEST} //
@@ -77,7 +94,11 @@
         {% endif %}
       </IfModule>
 
-      IncludeOptional /var/www/{{ item.key }}/directory.apache.con[f]
+      {% if item.value.wwwstuff_deploy is defined %}
+        IncludeOptional ${RELEASE_ROOT}/resources/apache2/directory.apache.con[f]
+      {% else %}
+        IncludeOptional ${RELEASE_ROOT}/directory.apache.con[f]
+      {% endif %}
 
       <IfModule mod_rewrite.c>
         RewriteEngine on

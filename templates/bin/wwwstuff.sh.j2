@@ -1,0 +1,148 @@
+#!/bin/bash
+# {{ ansible_managed }}
+#
+# A website deployment doohickey.
+#
+# TODO: Explain what this script does.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+set -e
+unset IFS
+umask 0137
+
+USERNAME='{{ lookup('env', 'USER') }}'
+
+log() 
+{
+  case "$1" in
+    error) echo "$(tput bold; tput setaf 7; tput setab 1)ERROR: $2$(tput sgr 0)" >&2 ;;
+    info) echo "$(tput setaf 3)INFO: $2$(tput sgr 0)" ;;
+    step) echo "$(tput setaf 6)ACTION: $2$(tput sgr 0)" ;;
+    success) echo "$(tput setaf 2)SUCCESS: $2$(tput sgr 0)" ;;
+  esac
+}
+
+BASENAME=$(basename "$0")
+COMMAND="$1"
+shift
+
+[ -z "$COMMAND" ] && { printf 'No command supplied' >&2; exit 2; }
+
+case "$COMMAND" in
+  current)
+    USAGE="USAGE: $BASENAME current DOMAIN"
+    [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
+
+    if [[ -f "/var/www/$1/release.apache2.conf" ]]; then
+      cut -d ' ' -f 3 "/var/www/$1/release.apache2.conf"
+    else
+      log error 'No release has been deployed';
+      exit 2;
+    fi
+  ;;
+
+  deploy)
+    USAGE="USAGE: $BASENAME deploy DOMAIN [RELEASE]"
+    [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
+
+    [ -f "/var/www/$1/release.apache2.conf" ] &&
+        CURRENT_RELEASE=$(bash "${BASH_SOURCE[0]}" current "$1")
+    if [ -n "$2" ]; then
+      RELEASE_TO_DEPLOY="$2"
+      [ "$CURRENT_RELEASE" = "$RELEASE_TO_DEPLOY" ] &&
+          { log info "Release $RELEASE_TO_DEPLOY has already been deployed"; exit; }
+    else
+      RELEASE_TO_DEPLOY=$(ls -1 "/var/www/$1/releases/" | sort | tail -n 1)
+      [ "$CURRENT_RELEASE" = "$RELEASE_TO_DEPLOY" ] &&
+          { log info 'Latest release has already been deployed'; exit; }
+      log info "Using latest release $RELEASE_TO_DEPLOY"
+    fi
+    bash "${BASH_SOURCE[0]}" permissions "$1" "$RELEASE_TO_DEPLOY"
+    log step "Updating /var/www/$1/release.apache2.conf"
+    echo "Define RELEASE $RELEASE_TO_DEPLOY" > "/var/www/$1/release.apache2.conf"
+    log step 'Gracefully restarting Apache and friends'
+    sudo apache2ctl -k graceful
+    sudo service php7.2-fpm reload
+    [ -n "$CURRENT_RELEASE" ] && echo "$CURRENT_RELEASE" >> "/var/www/$1/deploy_history"
+    SUCCESS_MESSAGE="$1 is now using release $RELEASE_TO_DEPLOY"
+    ;;
+
+  init)
+    USAGE="USAGE: $BASENAME init DOMAIN"
+    [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
+
+    [ -d "/var/www/$1" ] && { log error "Folder for $1 already exists"; exit 2; }
+    sudo mkdir -m 750 "/var/www/$1/"
+    sudo chown "$USERNAME:www-data" "/var/www/$1/"
+    sudo mkdir -m 750 "/var/www/$1/releases"
+    sudo chown "$USERNAME:www-data" "/var/www/$1/releases"
+    sudo mkdir -m 750 -p "/var/www/$1/shared/"
+    sudo chown "$USERNAME:www-data" "/var/www/$1/shared"
+    sudo mkdir -m 750 -p "/var/www/$1/shared/ssl"
+    sudo chown "$USERNAME:root" "/var/www/$1/shared/ssl"
+    SUCCESS_MESSAGE="Folder structure for $1 has been created"
+    ;;
+
+  permissions)
+    USAGE="USAGE: $BASENAME permissions DOMAIN RELEASE"
+    [ "$#" -lt 2 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
+
+    log step "Updating permissions and friends"
+    sudo find "/var/www/$1/releases/$2/" -exec chown "$USERNAME:root" {} +;
+    sudo find "/var/www/$1/releases/$2/public" -exec chown "$USERNAME:www-data" {} +;
+    find "/var/www/$1/releases/$2/" -type d -exec chmod 0750 {} +;
+    find "/var/www/$1/releases/$2/" -type f -exec chmod 0640 {} +;
+    find "/var/www/$1/releases/$2/resources/bin/" -type f -exec chmod 0750 {} +;
+    # This is required otherwise Apache will complain about missing
+    # search permissions on a component of the path (AH00035).
+    # TODO: See if there's a better way of doing this.
+    sudo chmod 0755 "/var/www/$1/releases/$2/"
+    SUCCESS_MESSAGE="Permissions and friends updated for $1's $2 release"
+    ;;
+
+  rollback)
+    USAGE="USAGE: $BASENAME rollback DOMAIN"
+    [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
+
+    DEPLOY_HISTORY_FILE="/var/www/$1/deploy_history"
+    [ ! -f "$DEPLOY_HISTORY_FILE" ] || [ ! -s "$DEPLOY_HISTORY_FILE" ] &&
+        { log error "No previously deployed release to rollback to"; exit 2; }
+    PREVIOUS_DEPLOY=$(tail -n 1 "$DEPLOY_HISTORY_FILE")
+    log info "Reverting to previously deployed release $PREVIOUS_DEPLOY"
+    bash "${BASH_SOURCE[0]}" deploy "$1" "$PREVIOUS_DEPLOY"
+    sed -i '$ d' "$DEPLOY_HISTORY_FILE"
+    sed -i '$ d' "$DEPLOY_HISTORY_FILE"
+    SUCCESS_MESSAGE="$1 has been rolled back to release $PREVIOUS_DEPLOY"
+    ;;
+
+  upload)
+    USAGE="USAGE: $BASENAME upload DOMAIN [FOLDER]"
+    [ "$#" -lt 1 ] && { printf 'Not enough operands\n%s\n' "$USAGE" >&2; exit 2; }
+
+    PROJECT_DIR=$(readlink -f "${2:-.}")
+    TIMESTAMP=$(date +%Y%m%d%H%M%S)
+    [ ! -d "$PROJECT_DIR/public" ] &&
+        { log error 'A project release must include a public directory'; exit 2; }
+    log step 'Creating and uploading release'
+    find "$PROJECT_DIR" -type d \( -name public -o -name resources \) -exec basename {} \; |
+        tar -czf - --exclude-vcs --exclude-backups -C "$PROJECT_DIR" -T - | \
+        ssh $1 "cat > /tmp/$TIMESTAMP.tar.gz \
+            && mkdir -pm 0750 /var/www/$1/releases/$TIMESTAMP \
+            && tar -xzf /tmp/$TIMESTAMP.tar.gz -C /var/www/$1/releases/$TIMESTAMP \
+            && rm /tmp/$TIMESTAMP.tar.gz" 
+    SUCCESS_MESSAGE="Release $TIMESTAMP uploaded for $1"
+    ;;
+
+  *)
+    echo "Unknown command" >&2
+    exit 2
+    ;;
+esac
+
+if [[ -n "$SUCCESS_MESSAGE" ]]; then
+  # TODO: Explain the following line.
+  [[ "$(ps -o args= $PPID)" == *"${BASH_SOURCE[0]}"* ]] || log success "$SUCCESS_MESSAGE"
+fi
