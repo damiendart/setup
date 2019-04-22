@@ -118,6 +118,15 @@ case "$COMMAND" in
     SUCCESS_MESSAGE="$1 has been rolled back to release $PREVIOUS_DEPLOY"
     ;;
 
+  stats)
+    USAGE="USAGE: $BASENAME stats DOMAIN"
+    [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
+
+    LOG_FILES=$(find '/var/log/apache2/' -iname "$1.access*")
+    [ -z "${LOG_FILES// }" ] && { log error 'No access log files found'; exit 2; }
+    zcat -f $LOG_FILES | goaccess --log-format=COMBINED -
+    ;;
+
   upload)
     USAGE="USAGE: $BASENAME upload DOMAIN [FOLDER]"
     [ "$#" -lt 1 ] && { printf 'Not enough operands\n%s\n' "$USAGE" >&2; exit 2; }
