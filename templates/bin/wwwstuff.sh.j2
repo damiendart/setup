@@ -63,10 +63,16 @@ case "$COMMAND" in
     bash "${BASH_SOURCE[0]}" permissions "$1" "$RELEASE_TO_DEPLOY"
     log step "Updating /var/www/$1/release.apache2.conf"
     echo "Define RELEASE $RELEASE_TO_DEPLOY" > "/var/www/$1/release.apache2.conf"
+    chmod 640 "/var/www/$1/release.apache2.conf"
+    sudo chown "$USERNAME:root" "/var/www/$1/release.apache2.conf"
     log step 'Gracefully restarting Apache and friends'
     sudo apache2ctl -k graceful
     sudo service php7.2-fpm reload
-    [ -n "$CURRENT_RELEASE" ] && echo "$CURRENT_RELEASE" >> "/var/www/$1/deploy_history"
+    if [ -n "$CURRENT_RELEASE" ]; then
+      echo "$CURRENT_RELEASE" >> "/var/www/$1/deploy_history"
+      chmod 640 "/var/www/$1/deploy_history"
+      sudo chown "$USERNAME:root" "/var/www/$1/deploy_history"
+    fi
     SUCCESS_MESSAGE="$1 is now using release $RELEASE_TO_DEPLOY"
     ;;
 
@@ -74,14 +80,13 @@ case "$COMMAND" in
     USAGE="USAGE: $BASENAME init DOMAIN"
     [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
 
-    [ -d "/var/www/$1" ] && { log error "Folder for $1 already exists"; exit 2; }
-    sudo mkdir -m 750 "/var/www/$1/"
-    sudo chown "$USERNAME:www-data" "/var/www/$1/"
-    sudo mkdir -m 750 "/var/www/$1/releases"
-    sudo chown "$USERNAME:www-data" "/var/www/$1/releases"
-    sudo mkdir -m 750 -p "/var/www/$1/shared/"
-    sudo chown "$USERNAME:www-data" "/var/www/$1/shared"
-    sudo mkdir -m 750 -p "/var/www/$1/shared/ssl"
+    log step 'Creating folders (if required)'
+    sudo mkdir -p "/var/www/$1/releases/" "/var/www/$1/shared/ssl/"
+    log step 'Updating permissions and friends'
+    sudo chmod 750 "/var/www/$1/" "/var/www/$1/releases/" \
+        "/var/www/$1/shared" "/var/www/$1/shared/ssl"
+    sudo chown "$USERNAME:www-data" "/var/www/$1/" \
+        "/var/www/$1/releases/" "/var/www/$1/shared"
     sudo chown "$USERNAME:root" "/var/www/$1/shared/ssl"
     SUCCESS_MESSAGE="Folder structure for $1 has been created"
     ;;
@@ -90,16 +95,15 @@ case "$COMMAND" in
     USAGE="USAGE: $BASENAME permissions DOMAIN RELEASE"
     [ "$#" -lt 2 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
 
-    log step "Updating permissions and friends"
-    sudo find "/var/www/$1/releases/$2/" -exec chown "$USERNAME:root" {} +;
+    log step 'Updating permissions and friends'
+    sudo chown "$USERNAME:www-data" "/var/www/$1/releases/$2/"
     sudo find "/var/www/$1/releases/$2/public" -exec chown "$USERNAME:www-data" {} +;
+    [ -d "/var/www/$1/releases/$2/resources" ] &&
+        sudo find "/var/www/$1/releases/$2/resources" -exec chown "$USERNAME:root" {} +;
     find "/var/www/$1/releases/$2/" -type d -exec chmod 0750 {} +;
     find "/var/www/$1/releases/$2/" -type f -exec chmod 0640 {} +;
-    find "/var/www/$1/releases/$2/resources/bin/" -type f -exec chmod 0750 {} +;
-    # This is required otherwise Apache will complain about missing
-    # search permissions on a component of the path (AH00035).
-    # TODO: See if there's a better way of doing this.
-    sudo chmod 0755 "/var/www/$1/releases/$2/"
+    [ -d "/var/www/$1/releases/$2/resources/bin" ] &&
+        find "/var/www/$1/releases/$2/resources/bin/" -type f -exec chmod 0750 {} +;
     SUCCESS_MESSAGE="Permissions and friends updated for $1's $2 release"
     ;;
 
@@ -139,7 +143,7 @@ case "$COMMAND" in
     find "$PROJECT_DIR" -type d \( -name public -o -name resources \) -exec basename {} \; |
         tar -czf - --exclude-vcs --exclude-backups -C "$PROJECT_DIR" -T - | \
         ssh $1 "cat > /tmp/$TIMESTAMP.tar.gz \
-            && mkdir -pm 0750 /var/www/$1/releases/$TIMESTAMP \
+            && mkdir /var/www/$1/releases/$TIMESTAMP \
             && tar -xzf /tmp/$TIMESTAMP.tar.gz -C /var/www/$1/releases/$TIMESTAMP \
             && rm /tmp/$TIMESTAMP.tar.gz" 
     SUCCESS_MESSAGE="Release $TIMESTAMP uploaded for $1"
