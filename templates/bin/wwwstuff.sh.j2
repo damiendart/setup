@@ -142,7 +142,7 @@ case "$COMMAND" in
     log step 'Creating and uploading release'
     find "$PROJECT_DIR" -type d \( -name public -o -name resources \) -exec basename {} \; |
         tar -czf - --exclude-vcs --exclude-backups -C "$PROJECT_DIR" -T - | \
-        ssh $1 "cat > /tmp/$TIMESTAMP.tar.gz \
+        ssh "$1" "cat > /tmp/$TIMESTAMP.tar.gz \
             && mkdir /var/www/$1/releases/$TIMESTAMP \
             && tar -xzf /tmp/$TIMESTAMP.tar.gz -C /var/www/$1/releases/$TIMESTAMP \
             && rm /tmp/$TIMESTAMP.tar.gz" 
