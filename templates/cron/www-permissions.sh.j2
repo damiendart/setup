@@ -12,6 +12,8 @@ USERNAME='{{ lookup('env', 'USER') }}'
 
 for DIR in /var/www/*/; do
   [ "$DIR" = "/var/www/html/" ] && continue
+  # Websites deployed with "wwwstuff" do not need this.
+  [ -d "${DIR}/releases/" ] && continue
   # This is a very fragile check for a Kirby-powered site.
   if [ -d "${DIR}site/" ]; then
     KIRBY_FOLDERS='-path *public/assets -o -path *site/accounts -o -path *site/cache'
