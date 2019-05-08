@@ -17,10 +17,12 @@ set mailserver {{ email_host }} port 587
   username "{{ email_address }}" password "{{ email_password }}"
   using TLSV1 with timeout 30 seconds
 
-check file ssh_logins with path /var/log/auth.log
-  if match "Accepted publickey" then alert
+{% if development is not defined %}
+  check file ssh_logins with path /var/log/auth.log
+    if match "Accepted publickey" then alert
 
-# One day I will do this properly and use the "conf-enabled" thing.
-# include /etc/monit/conf-available/apache2
-include /etc/monit/conf-available/cron
-include /etc/monit/conf-available/openssh-server
+  # One day I will do this properly and use the "conf-enabled" thing.
+  # include /etc/monit/conf-available/apache2
+  include /etc/monit/conf-available/cron
+  include /etc/monit/conf-available/openssh-server
+{% endif %}
