@@ -60,7 +60,8 @@ case "$COMMAND" in
           { log info 'Latest release has already been deployed'; exit; }
       log info "Using latest release $RELEASE_TO_DEPLOY"
     fi
-    bash "${BASH_SOURCE[0]}" permissions "$1" "$RELEASE_TO_DEPLOY"
+    [[ ! "$RELEASE_TO_DEPLOY" =~ .*develop$ ]] &&
+        bash "${BASH_SOURCE[0]}" permissions "$1" "$RELEASE_TO_DEPLOY"
     log step "Updating /var/www/$1/release.apache2.conf"
     echo "Define RELEASE $RELEASE_TO_DEPLOY" > "/var/www/$1/release.apache2.conf"
     chmod 640 "/var/www/$1/release.apache2.conf"
@@ -120,6 +121,20 @@ case "$COMMAND" in
     sed -i '$ d' "$DEPLOY_HISTORY_FILE"
     sed -i '$ d' "$DEPLOY_HISTORY_FILE"
     SUCCESS_MESSAGE="$1 has been rolled back to release $PREVIOUS_DEPLOY"
+    ;;
+
+  setup-dev)
+    USAGE="USAGE: $BASENAME setup-dev DOMAIN [FOLDER]"
+    [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
+
+    PROJECT_DIR=$(readlink -f "${2:-.}")
+    TIMESTAMP=$(date +%Y%m%d%H%M%S)
+    [ ! -d "$PROJECT_DIR/public" ] &&
+        { log error 'A project release must include a public directory'; exit 2; }
+    log step 'Creating symlink to project directory'
+    ln -s "$PROJECT_DIR" "/var/www/$1/releases/$TIMESTAMP-develop"
+    bash "${BASH_SOURCE[0]}" deploy "$1" "$TIMESTAMP-develop"
+    SUCCESS_MESSAGE="Development \"release\" created for $1"
     ;;
 
   stats)
