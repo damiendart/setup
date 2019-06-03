@@ -108,6 +108,8 @@ case "$COMMAND" in
     find "/var/www/$1/releases/$2/" -type f -exec chmod 0640 {} +;
     [ -d "/var/www/$1/releases/$2/resources/bin" ] &&
         find "/var/www/$1/releases/$2/resources/bin/" -type f -exec chmod 0750 {} +;
+    [ -d "/var/www/$1/releases/$2/resources/cron" ] &&
+        find "/var/www/$1/releases/$2/resources/cron/" -type f -exec chmod 0750 {} +;
     SUCCESS_MESSAGE="Permissions and friends updated for $1's $2 release"
     ;;
 
