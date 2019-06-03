@@ -66,6 +66,9 @@ case "$COMMAND" in
     echo "Define RELEASE $RELEASE_TO_DEPLOY" > "/var/www/$1/release.apache2.conf"
     chmod 640 "/var/www/$1/release.apache2.conf"
     sudo chown "$USERNAME:root" "/var/www/$1/release.apache2.conf"
+    log step "Creating symlink to current release"
+    sudo ln -s "/var/www/$1/releases/$RELEASE_TO_DEPLOY" "/var/www/$1/tmp"
+    sudo mv -Tf "/var/www/$1/tmp" "/var/www/$1/current_release"
     log step 'Gracefully restarting Apache and friends'
     sudo apache2ctl -k graceful
     sudo service php7.2-fpm reload
