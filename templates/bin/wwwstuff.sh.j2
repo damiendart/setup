@@ -48,36 +48,51 @@ case "$COMMAND" in
     USAGE="USAGE: $BASENAME deploy DOMAIN [RELEASE]"
     [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
 
-    [ -f "/var/www/$1/current_release.apache2.conf" ] &&
-        CURRENT_RELEASE=$(bash "${BASH_SOURCE[0]}" current "$1")
-    if [ -n "$2" ]; then
-      RELEASE_TO_DEPLOY="$2"
+    CURRENT_RELEASE=$(bash "${BASH_SOURCE[0]}" current "$1"  2>/dev/null || echo '')
+    RELEASE_TO_DEPLOY="$2"
+
+    if [ -n "$RELEASE_TO_DEPLOY" ]; then
+      [ ! -d "/var/www/$1/releases/$RELEASE_TO_DEPLOY" ] &&
+          { log error "Release not found"; exit 2; }
       [ "$CURRENT_RELEASE" = "$RELEASE_TO_DEPLOY" ] &&
-          { log info "Release $RELEASE_TO_DEPLOY has already been deployed"; exit; }
+          { log info "Specified release is already deployed"; exit; }
     else
       RELEASE_TO_DEPLOY=$(ls -1 "/var/www/$1/releases/" | sort | tail -n 1)
-      [ "$CURRENT_RELEASE" = "$RELEASE_TO_DEPLOY" ] &&
-          { log info 'Latest release has already been deployed'; exit; }
-      log info "Using latest release $RELEASE_TO_DEPLOY"
+      if [ "$CURRENT_RELEASE" = "$RELEASE_TO_DEPLOY" ]; then
+        log info 'Latest release is already deployed'
+        exit
+      else
+        log info "Using latest release $RELEASE_TO_DEPLOY"
+      fi
     fi
+
+    [ ! -d "/var/www/$1/releases/$RELEASE_TO_DEPLOY/public" ] &&
+      { log error "Release does not contain a public folder"; exit 2; }
+
     [[ ! "$RELEASE_TO_DEPLOY" =~ .*develop$ ]] &&
         bash "${BASH_SOURCE[0]}" permissions "$1" "$RELEASE_TO_DEPLOY"
-    log step "Updating /var/www/$1/current_release.apache2.conf"
+
+    log step "Updating Apache configuration file"
     echo "Define CURRENT_RELEASE $RELEASE_TO_DEPLOY" > "/var/www/$1/current_release.apache2.conf"
-    chmod 640 "/var/www/$1/current_release.apache2.conf"
     sudo chown "$USERNAME:root" "/var/www/$1/current_release.apache2.conf"
-    log step "Creating symlink to current release"
-    sudo ln -s "/var/www/$1/releases/$RELEASE_TO_DEPLOY" "/var/www/$1/tmp"
-    sudo mv -Tf "/var/www/$1/tmp" "/var/www/$1/current_release"
-    log step 'Gracefully restarting Apache and friends'
-    sudo apache2ctl -k graceful
-    sudo service php7.2-fpm reload
+
     if [ -n "$CURRENT_RELEASE" ]; then
+      log step 'Updating deployment history'
       echo "$CURRENT_RELEASE" >> "/var/www/$1/deploy_history"
-      chmod 640 "/var/www/$1/deploy_history"
       sudo chown "$USERNAME:root" "/var/www/$1/deploy_history"
     fi
-    SUCCESS_MESSAGE="$1 is now using release $RELEASE_TO_DEPLOY"
+
+    log step "Creating convenience symbolic link to deployed release"
+    # Atomically update the symbolic link. For more information, see
+    # <http://blog.moertel.com/posts/2005-08-22-how-to-change-symlinks-atomically.html>
+    sudo ln -s "/var/www/$1/releases/$RELEASE_TO_DEPLOY" "/var/www/$1/tmp"
+    sudo mv -Tf "/var/www/$1/tmp" "/var/www/$1/current_release"
+
+    log step 'Gracefully restarting Apache and PHP-FPM'
+    sudo apache2ctl -k graceful
+    sudo service php7.2-fpm reload
+
+    SUCCESS_MESSAGE="$1 is now live using release $RELEASE_TO_DEPLOY"
     ;;
 
   init)
