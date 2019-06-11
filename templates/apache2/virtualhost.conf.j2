@@ -5,9 +5,10 @@
 # more information, please refer to the accompanying "UNLICENCE file.
 
 Define PROJECT_ROOT /var/www/{{ item.key }}
+Define SHARED_ROOT /var/www/{{ item.key }}/shared
 {% if item.value.wwwstuff_deploy is defined %}
-  Include /var/www/{{ item.key }}/release.apache2.conf
-  Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${RELEASE}
+  Include /var/www/{{ item.key }}/current_release.apache2.conf
+  Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
 {% else %}
   Define RELEASE_ROOT /var/www/{{ item.key }}
 {% endif %}
@@ -44,13 +45,13 @@ Define PROJECT_ROOT /var/www/{{ item.key }}
     ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
     CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
-    DocumentRoot ${RELEASE_ROOT}/public/
+    DocumentRoot ${RELEASE_ROOT}/public
 
     Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
     # For more information, see <https://serverfault.com/a/846583>.
     {% if item.value.wwwstuff_deploy is defined %}
-      SSLCertificateFile ${PROJECT_ROOT}/shared/ssl/fullchain.pem
-      SSLCertificateKeyFile ${PROJECT_ROOT}/shared/ssl/privkey.pem
+      SSLCertificateFile ${SHARED_ROOT}/private/ssl/fullchain.pem
+      SSLCertificateKeyFile ${SHARED_ROOT}/private/ssl/privkey.pem
     {% else %}
       SSLCertificateFile ${PROJECT_ROOT}/fullchain.pem
       SSLCertificateKeyFile ${PROJECT_ROOT}/privkey.pem
@@ -76,7 +77,7 @@ Define PROJECT_ROOT /var/www/{{ item.key }}
 
     # Allow individual site customisations at the virtual host level.
     {% if item.value.wwwstuff_deploy is defined %}
-      IncludeOptional ${RELEASE_ROOT}/resources/apache2/virtualhost.apache.con[f]
+      IncludeOptional ${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]
     {% else %}
       IncludeOptional ${RELEASE_ROOT}/virtualhost.apache.con[f]
     {% endif %}
@@ -95,7 +96,7 @@ Define PROJECT_ROOT /var/www/{{ item.key }}
       </IfModule>
 
       {% if item.value.wwwstuff_deploy is defined %}
-        IncludeOptional ${RELEASE_ROOT}/resources/apache2/directory.apache.con[f]
+        IncludeOptional ${RELEASE_ROOT}/private/apache2/directory.apache.con[f]
       {% else %}
         IncludeOptional ${RELEASE_ROOT}/directory.apache.con[f]
       {% endif %}
