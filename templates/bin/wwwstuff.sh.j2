@@ -73,7 +73,7 @@ case "$COMMAND" in
         bash "${BASH_SOURCE[0]}" permissions "$1" "$RELEASE_TO_DEPLOY"
 
     log step "Updating Apache configuration file"
-    echo "Define CURRENT_RELEASE $RELEASE_TO_DEPLOY" > "/var/www/$1/current_release.apache2.conf"
+    echo "Define DEPLOYED_RELEASE $RELEASE_TO_DEPLOY" > "/var/www/$1/current_release.apache2.conf"
     sudo chown "$USERNAME:root" "/var/www/$1/current_release.apache2.conf"
 
     if [ -n "$CURRENT_RELEASE" ]; then
@@ -199,7 +199,7 @@ case "$COMMAND" in
     [ ! -d "$PROJECT_DIR/public" ] &&
         { log error 'A project release must include a public directory'; exit 2; }
     log step 'Creating and uploading release'
-    find "$PROJECT_DIR" -type d \( -name public -o -name private -name protected \) -exec basename {} \; |
+    find "$PROJECT_DIR" -type d \( -name public -o -name private -o -name protected \) -exec basename {} \; |
         tar -czf - --exclude-vcs --exclude-backups -C "$PROJECT_DIR" -T - | \
         ssh "$1" "cat > /tmp/$TIMESTAMP.tar.gz \
             && mkdir /var/www/$1/releases/$TIMESTAMP \
