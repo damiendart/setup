@@ -99,12 +99,12 @@ case "$COMMAND" in
     USAGE="USAGE: $BASENAME init DOMAIN"
     [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
 
-    log step 'Creating folders'
+    log step 'Creating folder structure'
     sudo mkdir -p "/var/www/$1/releases"
     sudo mkdir -p "/var/www/$1/shared/private/ssl"
     sudo mkdir -p "/var/www/$1/shared/protected"
 
-    log step 'Updating permissions and friends'
+    log step 'Updating ownerships and permissions'
     sudo chmod 750 "/var/www/$1/"
     sudo chmod 750 "/var/www/$1/releases/"
     sudo chmod 750 "/var/www/$1/shared"
@@ -117,6 +117,16 @@ case "$COMMAND" in
     sudo chown "$USERNAME:www-data" "/var/www/$1/shared/protected"
     sudo chown "$USERNAME:root" "/var/www/$1/shared/private"
     sudo chown "$USERNAME:root" "/var/www/$1/shared/private/ssl"
+
+    if sudo test -d "/etc/letsencrypt/live/$1"; then
+      log step "Creating symbolic links to Let's Encrypt certificates"
+      sudo ln -s "/etc/letsencrypt/live/$1/fullchain.pem" \
+          "/var/www/$1/shared/private/ssl/fullchain.pem"
+      sudo ln -s "/etc/letsencrypt/live/$1/privkey.pem" \
+          "/var/www/$1/shared/private/ssl/privkey.pem"
+    else
+      log info "Manual installation of certificates for $1 required!"
+    fi
 
     SUCCESS_MESSAGE="Folder structure for $1 has been created"
     ;;
