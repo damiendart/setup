@@ -7,6 +7,7 @@
 
 
 for DIR in /var/www/*/; do
-  [ -x "$DIR/current_release/private/cron/cron-{{ item }}" ] &&
+  if [ -x "$DIR/current_release/private/cron/cron-{{ item }}" ]; then
       "$DIR/current_release/private/cron/cron-{{ item }}"
+  fi
 done
