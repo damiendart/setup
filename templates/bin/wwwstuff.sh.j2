@@ -118,6 +118,9 @@ case "$COMMAND" in
     sudo chown "$USERNAME:root" "/var/www/$1/shared/private"
     sudo chown "$USERNAME:root" "/var/www/$1/shared/private/ssl"
 
+    log step 'Creating .env file'
+    echo "SHARED_ROOT: /var/www/$w/shared" >> "/var/www/$1/shared/protected/.env"
+
     if sudo test -d "/etc/letsencrypt/live/$1"; then
       log step "Creating symbolic links to Let's Encrypt certificates"
       sudo ln -s "/etc/letsencrypt/live/$1/fullchain.pem" \
