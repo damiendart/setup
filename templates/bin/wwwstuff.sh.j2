@@ -32,6 +32,18 @@ shift
 [ -z "$COMMAND" ] && { printf 'No command supplied' >&2; exit 2; }
 
 case "$COMMAND" in
+  cleanup)
+    USAGE="USAGE: $BASENAME cleanup DOMAIN"
+    [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
+    
+    ls -1tr "/var/www/$1/releases" | head -n -4 | while IFS= read -r release; do
+      log step "Deleting release $release"
+      rm -fr "/var/www/$1/releases/$release"
+    done 
+
+    SUCCESS_MESSAGE="$1's releases folder now only contains the four latest releases"
+  ;;
+
   current)
     USAGE="USAGE: $BASENAME current DOMAIN"
     [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
