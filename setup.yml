@@ -283,7 +283,7 @@
         group: www-data
         mode: 0750
         owner: "{{ lookup('env', 'USER') }}"
-        path: "/var/www/{{ item.key }}/public"
+        path: "/var/www/{{ item.key }}"
         state: directory
       with_dict: "{{ sites }}"
 
