@@ -13,6 +13,14 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
   Define RELEASE_ROOT /var/www/{{ item.key }}
 {% endif %}
 
+Define QUERY_STRING_WHITELIST_REGEX ""
+
+{% if item.value.wwwstuff_deploy is defined %}
+  IncludeOptional ${RELEASE_ROOT}/private/apache2/querystring.apache.con[f]
+{% else %}
+  IncludeOptional ${RELEASE_ROOT}/querystring.apache.con[f]
+{% endif %}
+
 <VirtualHost *:80>
   ServerAdmin {{ email_address }}
   {% if development is defined %}
@@ -67,14 +75,6 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
     </IfModule>
 
-    {% if item.value.kirby_key is defined %}
-      <Directory /usr/local/share/kirby/panel/assets>
-        Require all granted
-      </Directory>
-
-      Alias "/panel/assets/" "/usr/local/share/kirby/panel/assets/"
-    {% endif %}
-
     # Allow individual site customisations at the virtual host level.
     {% if item.value.wwwstuff_deploy is defined %}
       IncludeOptional ${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]
@@ -84,46 +84,25 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
 
     <Directory ${RELEASE_ROOT}/public>
       <IfModule mod_rewrite.c>
+        RewriteEngine on
+        RewriteBase /
+
         # Remove groups of slashes.
         RewriteCond %{THE_REQUEST} //
         RewriteRule ^.*$ $0 [L,NE,R=permanent]
-        {% if item.value.kirby_key is defined %}
-          # Remove query strings from URLs.
-          RewriteCond %{QUERY_STRING} !=""
-          RewriteCond %{REQUEST_URI} !^/panel/.*
-          RewriteRule ^(.*)$ $1? [L,R=permanent]
-        {% endif %}
-      </IfModule>
 
-      {% if item.value.wwwstuff_deploy is defined %}
-        IncludeOptional ${RELEASE_ROOT}/private/apache2/directory.apache.con[f]
-      {% else %}
-        IncludeOptional ${RELEASE_ROOT}/directory.apache.con[f]
-      {% endif %}
+        # Remove query strings from URLs.
+        RewriteCond %{QUERY_STRING} !=""
+        <IfDefine QUERY_STRING_WHITELIST_REGEX>
+          RewriteCond %{REQUEST_URI} ${QUERY_STRING_WHITELIST_REGEX}
+        </IfDefine>
+        RewriteRule ^(.*)$ $1? [L,R=permanent]
 
-      <IfModule mod_rewrite.c>
-        RewriteEngine on
-        RewriteBase /
-        {% if item.value.kirby_key is defined %}
-          # Block text files in the "content" folder from being accessed.
-          RewriteRule ^assets/(.*)\.(txt|md|mdown)$ index.php [L]
-          # Make Kirby Panel links work.
-          RewriteCond %{REQUEST_URI} !^/panel/assets/.*
-          RewriteRule ^panel/(.*) panel/index.php [L]
-          # Make site links work.
-          RewriteCond %{REQUEST_FILENAME} !-f
-          RewriteCond %{REQUEST_FILENAME} !-d
-          RewriteCond %{REQUEST_URI} !^/panel/assets/.*
-          RewriteRule ^(.*) index.php [L]
-        {% else %}
-          # Remove query strings from URLs.
-          RewriteCond %{QUERY_STRING} !=""
-          RewriteRule ^(.*)$ $1? [L,R=permanent]
-        {% endif %}
         # Remove "index.html" and "index.php" from URLs.
         RewriteCond %{REQUEST_FILENAME} -f
         RewriteCond %{THE_REQUEST} ^.*/index\.(html|php)
         RewriteRule ^(.*)index\.(html|php)$ $1 [L,NE,R=permanent]
+
         # Remove file extensions from some URLs.
         RewriteCond %{REQUEST_FILENAME} -f
         # TODO: Use negative lookahead to combine the two conditions?
@@ -133,7 +112,12 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
         RewriteCond %{REQUEST_FILENAME}\.html -f
         RewriteRule ^([^\.]+)$ $1.html [L,NC]
       </IfModule>
-    </Directory>
 
+      {% if item.value.wwwstuff_deploy is defined %}
+        IncludeOptional ${RELEASE_ROOT}/private/apache2/directory.apache.con[f]
+      {% else %}
+        IncludeOptional ${RELEASE_ROOT}/directory.apache.con[f]
+      {% endif %}
+    </Directory>
   </VirtualHost>
 </IfModule>
