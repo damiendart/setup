@@ -13,14 +13,6 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
   Define RELEASE_ROOT /var/www/{{ item.key }}
 {% endif %}
 
-Define QUERY_STRING_WHITELIST_REGEX ""
-
-{% if item.value.wwwstuff_deploy is defined %}
-  IncludeOptional ${RELEASE_ROOT}/private/apache2/querystring.apache.con[f]
-{% else %}
-  IncludeOptional ${RELEASE_ROOT}/querystring.apache.con[f]
-{% endif %}
-
 <VirtualHost *:80>
   ServerAdmin {{ email_address }}
   {% if development is defined %}
@@ -90,13 +82,6 @@ Define QUERY_STRING_WHITELIST_REGEX ""
         # Remove groups of slashes.
         RewriteCond %{THE_REQUEST} //
         RewriteRule ^.*$ $0 [L,NE,R=permanent]
-
-        # Remove query strings from URLs.
-        RewriteCond %{QUERY_STRING} !=""
-        <IfDefine QUERY_STRING_WHITELIST_REGEX>
-          RewriteCond %{REQUEST_URI} ${QUERY_STRING_WHITELIST_REGEX}
-        </IfDefine>
-        RewriteRule ^(.*)$ $1? [L,R=permanent]
 
         # Remove "index.html" and "index.php" from URLs.
         RewriteCond %{REQUEST_FILENAME} -f

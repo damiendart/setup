@@ -186,6 +186,7 @@
         - expires
         - headers
         - http2
+        - macro
         - mpm_event
         - proxy_fcgi
         - rewrite

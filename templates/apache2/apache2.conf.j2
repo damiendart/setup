@@ -42,3 +42,16 @@ Protocols h2 h2c http/1.1
   AddType text/x-python py
   AddType text/x-shellscript sh
 </IfModule>
+
+<IfModule mod_macro.c>
+  <Macro NoQueryStrings>
+    RewriteCond %{QUERY_STRING} !=""
+    RewriteRule ^(.*)$ $1? [L,R=permanent]
+  </Macro>
+
+  <Macro AllowSomeQueryStrings $regex>
+    RewriteCond %{QUERY_STRING} !=""
+    RewriteCond %{REQUEST_URI} $regex
+    RewriteRule ^(.*)$ $1? [L,R=permanent]
+  </Macro>
+</IfModule>
