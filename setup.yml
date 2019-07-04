@@ -95,7 +95,9 @@
           - msmtp-mta
             # "php-fpm" is required for HTTP/2 support.
           - php7.2-fpm
-            # Kirby-powered websites require the following package.
+            # Kirby 3 requires the following three PHP extensions.
+          - php-curl
+          - php-gd
           - php-mbstring
           - python-certbot-apache
           - tarsnap
@@ -173,6 +175,7 @@
           - npm
           - build-essential
           - tig
+          - tree
           - shellcheck
         state: present
       when: development is defined and development
