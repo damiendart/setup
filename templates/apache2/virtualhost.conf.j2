@@ -47,6 +47,8 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
 
     DocumentRoot ${RELEASE_ROOT}/public
 
+    SetEnv SHARED_ROOT ${SHARED_ROOT}
+
     Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
     # For more information, see <https://serverfault.com/a/846583>.
     {% if item.value.wwwstuff_deploy is defined %}
