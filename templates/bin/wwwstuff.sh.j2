@@ -11,7 +11,7 @@
 
 set -e
 unset IFS
-umask 0137
+umask 0037
 
 USERNAME='{{ lookup('env', 'USER') }}'
 
@@ -81,8 +81,20 @@ case "$COMMAND" in
     [ ! -d "/var/www/$1/releases/$RELEASE_TO_DEPLOY/public" ] &&
       { log error "Release does not contain a public folder"; exit 2; }
 
-    [[ ! "$RELEASE_TO_DEPLOY" =~ .*develop$ ]] &&
-        bash "${BASH_SOURCE[0]}" permissions "$1" "$RELEASE_TO_DEPLOY"
+    if [[ ! "$RELEASE_TO_DEPLOY" =~ .*develop$ ]]; then
+      if [ -f "/var/www/$1/releases/$RELEASE_TO_DEPLOY/composer.json" ]; then
+        log step "Installing dependencies using Composer"
+        composer install --no-dev --working-dir "/var/www/$1/releases/$RELEASE_TO_DEPLOY"
+
+        if grep -q 'getkirby\/cms' "/var/www/$1/releases/$RELEASE_TO_DEPLOY/composer.json"; then
+          log step "Creating Kirby-related folders"
+          sudo mkdir -p "/var/www/$1/releases/$RELEASE_TO_DEPLOY/protected/cache"
+          sudo mkdir -p "/var/www/$1/releases/$RELEASE_TO_DEPLOY/public/media"
+        fi
+      fi
+
+      bash "${BASH_SOURCE[0]}" permissions "$1" "$RELEASE_TO_DEPLOY"
+    fi
 
     log step "Updating Apache configuration file"
     echo "Define DEPLOYED_RELEASE $RELEASE_TO_DEPLOY" > "/var/www/$1/current_release.apache2.conf"
@@ -108,13 +120,18 @@ case "$COMMAND" in
     ;;
 
   init)
-    USAGE="USAGE: $BASENAME init DOMAIN"
+    USAGE="USAGE: $BASENAME init DOMAIN [--kirby]"
     [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
 
     log step 'Creating folder structure'
     sudo mkdir -p "/var/www/$1/releases"
     sudo mkdir -p "/var/www/$1/shared/private/ssl"
     sudo mkdir -p "/var/www/$1/shared/protected"
+    if [ "$2" = '--kirby' ]; then
+      sudo mkdir -p "/var/www/$1/shared/protected/accounts"
+      sudo mkdir -p "/var/www/$1/shared/protected/content"
+      sudo mkdir -p "/var/www/$1/shared/protected/sessions"
+    fi
 
     log step 'Updating ownerships and permissions'
     sudo chmod 750 "/var/www/$1/"
@@ -129,9 +146,17 @@ case "$COMMAND" in
     sudo chown "$USERNAME:www-data" "/var/www/$1/shared/protected"
     sudo chown "$USERNAME:root" "/var/www/$1/shared/private"
     sudo chown "$USERNAME:root" "/var/www/$1/shared/private/ssl"
+    if [ "$2" = '--kirby' ]; then
+      sudo chmod 2750 "/var/www/$1/shared/protected/accounts"
+      sudo chmod 2750 "/var/www/$1/shared/protected/content"
+      sudo chmod 2750 "/var/www/$1/shared/protected/sessions"
+      sudo chown "www-data:www-data" "/var/www/$1/shared/protected/accounts"
+      sudo chown "www-data:www-data" "/var/www/$1/shared/protected/content"
+      sudo chown "www-data:www-data" "/var/www/$1/shared/protected/sessions"
+    fi
 
     log step 'Creating .env file'
-    echo "SHARED_ROOT: /var/www/$w/shared" >> "/var/www/$1/shared/protected/.env"
+    touch "/var/www/$1/shared/protected/.env"
 
     if sudo test -d "/etc/letsencrypt/live/$1"; then
       log step "Creating symbolic links to Let's Encrypt certificates"
@@ -150,7 +175,7 @@ case "$COMMAND" in
     USAGE="USAGE: $BASENAME permissions DOMAIN RELEASE"
     [ "$#" -lt 2 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
 
-    log step 'Updating permissions and friends'
+    log step 'Updating permissions and friends for default files and folders'
     sudo chown "$USERNAME:www-data" "/var/www/$1/releases/$2/"
     sudo find "/var/www/$1/releases/$2/public" -exec chown "$USERNAME:www-data" {} +;
     [ -d "/var/www/$1/releases/$2/private" ] &&
@@ -163,6 +188,18 @@ case "$COMMAND" in
         find "/var/www/$1/releases/$2/private/bin" -type f -exec chmod 0750 {} +;
     [ -d "/var/www/$1/releases/$2/private/cron" ] &&
         find "/var/www/$1/releases/$2/private/cron" -type f -exec chmod 0750 {} +;
+
+    if grep -sq 'getkirby\/cms' "/var/www/$1/releases/$2/composer.json"; then
+      log step 'Updating permissions and friends for Kirby-related files and folders'
+      if [ -d "/var/www/$1/releases/$2/protected/cache" ]; then
+        sudo find "/var/www/$1/releases/$2/protected/cache" -type d -exec chmod 2750 {} +;
+        sudo find "/var/www/$1/releases/$2/protected/cache" -exec chown "www-data:www-data" {} +;
+      fi
+      if [ -d "/var/www/$1/releases/$2/public/media" ]; then
+        sudo find "/var/www/$1/releases/$2/public/media" -type d -exec chmod 2750 {} +;
+        sudo find "/var/www/$1/releases/$2/public/media" -exec chown "www-data:www-data" {} +;
+      fi
+    fi
 
     SUCCESS_MESSAGE="Permissions and friends updated for $1's $2 release"
     ;;
@@ -214,8 +251,13 @@ case "$COMMAND" in
     [ ! -d "$PROJECT_DIR/public" ] &&
         { log error 'A project release must include a public directory'; exit 2; }
     log step 'Creating and uploading release'
-    find "$PROJECT_DIR" -type d \( -name public -o -name private -o -name protected \) -exec basename {} \; |
-        tar -czf - --exclude-vcs --exclude-backups -C "$PROJECT_DIR" -T - | \
+    find "$PROJECT_DIR" -maxdepth 1 \( \( -type f -name composer.\* \) -o \
+        \( -type d \( -name public -o -name private -o -name protected \) \) \) -exec basename {} \; |
+        tar -czf - --exclude-vcs --exclude-backups -C "$PROJECT_DIR" \
+            --exclude='protected/cache' \
+            --exclude='protected/site/plugins/kirby-twig' \
+            --exclude='protected/vendor' \
+            --exclude='public/media' -T - | \
         ssh "$1" "cat > /tmp/$TIMESTAMP.tar.gz \
             && mkdir /var/www/$1/releases/$TIMESTAMP \
             && tar -xzf /tmp/$TIMESTAMP.tar.gz -C /var/www/$1/releases/$TIMESTAMP \
