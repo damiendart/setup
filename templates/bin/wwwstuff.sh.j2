@@ -13,7 +13,7 @@ set -e
 unset IFS
 umask 0037
 
-USERNAME='{{ lookup('env', 'USER') }}'
+USERNAME=$(whoami)
 
 log() 
 {
