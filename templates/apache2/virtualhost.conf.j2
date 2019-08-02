@@ -4,14 +4,11 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE file.
 
+Include /var/www/{{ item.key }}/current_release.apache2.conf
+
 Define PROJECT_ROOT /var/www/{{ item.key }}
 Define SHARED_ROOT /var/www/{{ item.key }}/shared
-{% if item.value.wwwstuff_deploy is defined %}
-  Include /var/www/{{ item.key }}/current_release.apache2.conf
-  Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
-{% else %}
-  Define RELEASE_ROOT /var/www/{{ item.key }}
-{% endif %}
+Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
 
 <VirtualHost *:80>
   ServerAdmin {{ email_address }}
@@ -51,13 +48,8 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
 
     Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
     # For more information, see <https://serverfault.com/a/846583>.
-    {% if item.value.wwwstuff_deploy is defined %}
-      SSLCertificateFile ${SHARED_ROOT}/private/ssl/fullchain.pem
-      SSLCertificateKeyFile ${SHARED_ROOT}/private/ssl/privkey.pem
-    {% else %}
-      SSLCertificateFile ${PROJECT_ROOT}/fullchain.pem
-      SSLCertificateKeyFile ${PROJECT_ROOT}/privkey.pem
-    {% endif %}
+    SSLCertificateFile ${SHARED_ROOT}/private/ssl/fullchain.pem
+    SSLCertificateKeyFile ${SHARED_ROOT}/private/ssl/privkey.pem
 
     {% if development is not defined %}
       <If "%{HTTP_HOST} != '{{ item.key }}'">
@@ -70,11 +62,7 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
     </IfModule>
 
     # Allow individual site customisations at the virtual host level.
-    {% if item.value.wwwstuff_deploy is defined %}
-      IncludeOptional ${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]
-    {% else %}
-      IncludeOptional ${RELEASE_ROOT}/virtualhost.apache.con[f]
-    {% endif %}
+    IncludeOptional ${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]
 
     <Directory ${RELEASE_ROOT}/public>
       <IfModule mod_rewrite.c>
@@ -100,11 +88,7 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
         RewriteRule ^([^\.]+)$ $1.html [L,NC]
       </IfModule>
 
-      {% if item.value.wwwstuff_deploy is defined %}
-        IncludeOptional ${RELEASE_ROOT}/private/apache2/directory.apache.con[f]
-      {% else %}
-        IncludeOptional ${RELEASE_ROOT}/directory.apache.con[f]
-      {% endif %}
+      IncludeOptional ${RELEASE_ROOT}/private/apache2/directory.apache.con[f]
     </Directory>
   </VirtualHost>
 </IfModule>
