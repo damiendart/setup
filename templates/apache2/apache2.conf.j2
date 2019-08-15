@@ -15,6 +15,12 @@ ServerTokens ProductOnly
 ServerSignature Off
 Protocols h2 h2c http/1.1
 
+{% if development is defined %}
+  ServerName {{ server_name }}.{{ ansible_default_ipv4.address }}.xip.io
+{% else %}
+  ServerName {{ server_name }}
+{% endif %}
+
 <IfModule mod_expires.c>
   ExpiresActive on
   ExpiresByType application/xhtml+xml "access plus 0 seconds"
