@@ -62,6 +62,12 @@
         url: https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc
         state: present
 
+    - name: "DEV: Ensure the NodeSource package signing key is present"
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+      when: development is defined and development
+
     - name: Ensure required external repositories are present
       apt_repository:
         repo: "{{ item.repo }}"
@@ -72,6 +78,14 @@
           filename: tarsnap
         - repo: "ppa:certbot/certbot"
           filename: certbot
+
+    - name: "DEV: Ensure development external repositories are present"
+      apt_repository:
+        repo: "{{ item.repo }}"
+        state: present
+      with_items:
+        - repo: "deb https://deb.nodesource.com/node_10.x {{ ansible_distribution_release }} main"
+      when: development is defined and development
 
     - name: Ensure currently installed packages have been upgraded
       apt:
@@ -172,7 +186,6 @@
           - ruby
           - ruby-dev
           - nodejs
-          - npm
           - build-essential
           - tig
           - tree
