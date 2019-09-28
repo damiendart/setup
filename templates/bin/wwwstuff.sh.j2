@@ -247,7 +247,13 @@ case "$COMMAND" in
     [ "$#" -lt 1 ] && { printf 'Not enough operands\n%s\n' "$USAGE" >&2; exit 2; }
 
     PROJECT_DIR=$(readlink -f "${2:-.}")
+
+    [ ! -z "$(git --git-dir "$PROJECT_DIR/.git" status --porcelain)" ] \
+      && { log error 'Project working directory is dirty!'; exit 2; }
+
+    GIT_HASH=$(git --git-dir "$PROJECT_DIR/.git" rev-parse --verify HEAD)
     TIMESTAMP=$(date +%Y%m%d%H%M%S)
+
     [ ! -d "$PROJECT_DIR/public" ] &&
         { log error 'A project release must include a public directory'; exit 2; }
     log step 'Creating and uploading release'
@@ -258,11 +264,11 @@ case "$COMMAND" in
             --exclude='protected/site/plugins/kirby-twig' \
             --exclude='protected/vendor' \
             --exclude='public/media' -T - | \
-        ssh "$1" "cat > /tmp/$TIMESTAMP.tar.gz \
-            && mkdir /var/www/$1/releases/$TIMESTAMP \
-            && tar -xzf /tmp/$TIMESTAMP.tar.gz -C /var/www/$1/releases/$TIMESTAMP \
-            && rm /tmp/$TIMESTAMP.tar.gz" 
-    SUCCESS_MESSAGE="Release $TIMESTAMP uploaded for $1"
+        ssh "$1" "cat > /tmp/$TIMESTAMP-$GIT_HASH.tar.gz \
+            && mkdir /var/www/$1/releases/$TIMESTAMP-$GIT_HASH \
+            && tar -xzf /tmp/$TIMESTAMP-$GIT_HASH.tar.gz -C /var/www/$1/releases/$TIMESTAMP-$GIT_HASH\
+            && rm /tmp/$TIMESTAMP-$GIT_HASH.tar.gz"
+    SUCCESS_MESSAGE="Release $TIMESTAMP-$GIT_HASH uploaded for $1"
     ;;
 
   *)
