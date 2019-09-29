@@ -84,7 +84,9 @@ case "$COMMAND" in
     if [[ ! "$RELEASE_TO_DEPLOY" =~ .*develop$ ]]; then
       if [ -f "/var/www/$1/releases/$RELEASE_TO_DEPLOY/composer.json" ]; then
         log step "Installing dependencies using Composer"
-        composer install --no-dev --working-dir "/var/www/$1/releases/$RELEASE_TO_DEPLOY"
+        composer install --no-dev --no-ansi --no-interaction --no-progress \
+	  --no-suggest --optimize-autoloader \
+          --working-dir "/var/www/$1/releases/$RELEASE_TO_DEPLOY"
 
         if grep -q 'getkirby\/cms' "/var/www/$1/releases/$RELEASE_TO_DEPLOY/composer.json"; then
           log step "Creating Kirby-related folders"
