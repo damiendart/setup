@@ -295,14 +295,54 @@
         - profile: OpenSSH
           rule: limit
 
-    - name: Ensure site folders are present
+    - name: Ensure Apache virtual host folders are present
       file:
-        group: www-data
-        mode: 0750
-        owner: "{{ lookup('env', 'USER') }}"
-        path: "/var/www/{{ item.key }}"
+        group: "{{ item[1].group }}"
+        mode: "{{ item[1].mode }}"
+        owner: "{{ item[1].owner }}"
+        path: "/var/www/{{ item[0].key }}/{{ item[1].directory }}"
         state: directory
+      with_nested:
+        # TODO: Find a way to extract just the keys.
+        - "{{ lookup('dict', sites) }}"
+        - - { directory: "", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "www-data" }
+          - { directory: "releases", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "www-data" }
+          - { directory: "shared", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "www-data" }
+          - { directory: "shared/private", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "root" }
+          - { directory: "shared/private/ssl", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "root" }
+          - { directory: "shared/protected", mode: "2750", owner: "{{ lookup('env', 'USER') }}", group: "www-data" }
+
+    - name: Ensure Apache virtual host Kirby-related folders are present
+      file:
+        group: "www-data"
+        mode: "2750"
+        owner: "www-data"
+        path: "/var/www/{{ item[0].key }}/{{ item[1] }}"
+        state: directory
+      with_nested:
+        # TODO: Find a way to extract just the keys.
+        - "{{ lookup('dict', sites) }}"
+        - [ "shared/protected/accounts", "shared/protected/content", "shared/protected/sessions" ]
+      when: item[0].value.kirby_key is defined
+
+    - name: 'Ensure ".env" files exist'
+      file:
+        group: "www-data"
+        mode: "0640"
+        owner: "{{ lookup('env', 'USER') }}"
+        path: "/var/www/{{ item.key }}/shared/protected/.env"
+        state: touch
       with_dict: "{{ sites }}"
+
+    - name: Get available Let's Encrypt certificates
+      command: certbot certificates
+      become: yes
+      register: certbot_output
+    - set_fact:
+        lets_encrypt_certificates: "{{ lets_encrypt_certificates | default([]) | union(item | regex_search(': ([^\\s]*)', '\\1')) }}"
+      when: item is match('.*Certificate Name:.*')
+      with_items: 
+        - "{{ certbot_output.stdout_lines }}"
 
     - name: Ensure site-specific Apache configuration files exist
       template:

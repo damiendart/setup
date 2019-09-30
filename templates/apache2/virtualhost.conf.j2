@@ -47,9 +47,13 @@ Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
     SetEnv SHARED_ROOT ${SHARED_ROOT}
 
     Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
-    # For more information, see <https://serverfault.com/a/846583>.
-    SSLCertificateFile ${SHARED_ROOT}/private/ssl/fullchain.pem
-    SSLCertificateKeyFile ${SHARED_ROOT}/private/ssl/privkey.pem
+    {% if lets_encrypt_certificates is defined and item.key in lets_encrypt_certificates %}
+      SSLCertificateFile /etc/letsencrypt/live/{{ item.key }}/fullchain.pem
+      SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.key }}/privkey.pem
+    {% else %}
+      SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+      SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+    {% endif %}
 
     {% if development is not defined %}
       <If "%{HTTP_HOST} != '{{ item.key }}'">

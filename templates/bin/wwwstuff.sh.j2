@@ -121,58 +121,6 @@ case "$COMMAND" in
     SUCCESS_MESSAGE="$1 is now live using release $RELEASE_TO_DEPLOY"
     ;;
 
-  init)
-    USAGE="USAGE: $BASENAME init DOMAIN [--kirby]"
-    [ "$#" -lt 1 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
-
-    log step 'Creating folder structure'
-    sudo mkdir -p "/var/www/$1/releases"
-    sudo mkdir -p "/var/www/$1/shared/private/ssl"
-    sudo mkdir -p "/var/www/$1/shared/protected"
-    if [ "$2" = '--kirby' ]; then
-      sudo mkdir -p "/var/www/$1/shared/protected/accounts"
-      sudo mkdir -p "/var/www/$1/shared/protected/content"
-      sudo mkdir -p "/var/www/$1/shared/protected/sessions"
-    fi
-
-    log step 'Updating ownerships and permissions'
-    sudo chmod 750 "/var/www/$1/"
-    sudo chmod 750 "/var/www/$1/releases/"
-    sudo chmod 750 "/var/www/$1/shared"
-    sudo chmod 2750 "/var/www/$1/shared/protected"
-    sudo chmod 750 "/var/www/$1/shared/private"
-    sudo chmod 750 "/var/www/$1/shared/private/ssl"
-    sudo chown "$USERNAME:www-data" "/var/www/$1/"
-    sudo chown "$USERNAME:www-data" "/var/www/$1/releases/"
-    sudo chown "$USERNAME:www-data" "/var/www/$1/shared"
-    sudo chown "$USERNAME:www-data" "/var/www/$1/shared/protected"
-    sudo chown "$USERNAME:root" "/var/www/$1/shared/private"
-    sudo chown "$USERNAME:root" "/var/www/$1/shared/private/ssl"
-    if [ "$2" = '--kirby' ]; then
-      sudo chmod 2750 "/var/www/$1/shared/protected/accounts"
-      sudo chmod 2750 "/var/www/$1/shared/protected/content"
-      sudo chmod 2750 "/var/www/$1/shared/protected/sessions"
-      sudo chown "www-data:www-data" "/var/www/$1/shared/protected/accounts"
-      sudo chown "www-data:www-data" "/var/www/$1/shared/protected/content"
-      sudo chown "www-data:www-data" "/var/www/$1/shared/protected/sessions"
-    fi
-
-    log step 'Creating .env file'
-    touch "/var/www/$1/shared/protected/.env"
-
-    if sudo test -d "/etc/letsencrypt/live/$1"; then
-      log step "Creating symbolic links to Let's Encrypt certificates"
-      sudo ln -s "/etc/letsencrypt/live/$1/fullchain.pem" \
-          "/var/www/$1/shared/private/ssl/fullchain.pem"
-      sudo ln -s "/etc/letsencrypt/live/$1/privkey.pem" \
-          "/var/www/$1/shared/private/ssl/privkey.pem"
-    else
-      log info "Manual installation of certificates for $1 required!"
-    fi
-
-    SUCCESS_MESSAGE="Folder structure for $1 has been created"
-    ;;
-
   permissions)
     USAGE="USAGE: $BASENAME permissions DOMAIN RELEASE"
     [ "$#" -lt 2 ] && { printf "Not enough operands\n%s\n" "$USAGE" >&2; exit 2; }
