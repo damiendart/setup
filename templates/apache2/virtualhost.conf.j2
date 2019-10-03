@@ -16,7 +16,9 @@ Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
     ServerName {{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io
   {% else %}
     ServerName {{ item.key }}
-    ServerAlias {{ item.value.aliases | join(" ") }}
+    {% if item.value.aliases is defined %}
+      ServerAlias {{ item.value.aliases | join(" ") }}
+    {% endif %}
   {% endif %}
 
   ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
@@ -36,7 +38,9 @@ Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
       ServerName {{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io
     {% else %}
       ServerName {{ item.key }}
-      ServerAlias {{ item.value.aliases | join(" ") }}
+      {% if item.value.aliases is defined %}
+        ServerAlias {{ item.value.aliases | join(" ") }}
+      {% endif %}
     {% endif %}
 
     ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
@@ -69,6 +73,14 @@ Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
     IncludeOptional ${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]
 
     <Directory ${RELEASE_ROOT}/public>
+      {% if item.value.auth.password is defined and item.value.auth.username is defined %}
+        AuthType Basic
+        AuthName "{{ item.key }}"
+        AuthBasicProvider file
+        AuthUserFile "/var/www/{{ item.key }}/shared/protected/.htpasswd"
+        Require user {{ item.value.auth.username }}
+      {% endif %}
+
       <IfModule mod_rewrite.c>
         RewriteEngine on
         RewriteBase /

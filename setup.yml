@@ -114,6 +114,8 @@
           - php-gd
           - php-mbstring
           - python-certbot-apache
+          # Ansible requires Passlib for certain functions.
+          - python3-passlib
           - tarsnap
           # As of Debian 9 (and Ubuntu 16.04), everything required for
           # unattended upgrades is installed by default.
@@ -351,6 +353,17 @@
         owner: root
         group: root
         mode: 0644
+      with_dict: "{{ sites }}"
+
+    - name: Ensure password-protected sites are set up
+      htpasswd:
+        group: "www-data"
+        mode: "0640"
+        owner: "root"
+        path: "/var/www/{{ item.key }}/shared/protected/.htpasswd"
+        name: "{{ item.value.auth.username }}"
+        password: "{{ item.value.auth.password }}"
+      when: item.value.auth.password is defined and item.value.auth.username is defined
       with_dict: "{{ sites }}"
 
     - name: Ensure site-specific cron helper scripts exist
