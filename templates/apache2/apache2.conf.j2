@@ -6,10 +6,10 @@
 
 AddDefaultCharset utf-8
 Alias /.well-known/acme-challenge/ "/var/www/html/.well-known/acme-challenge/"
-# TODO: Spruce up error responses.
-ErrorDocument 403 "<pre>403</pre>"
-ErrorDocument 404 "<pre>404</pre>"
-ErrorDocument 410 "<pre>410</pre>"
+ErrorDocument 401 "<!DOCTYPE html><title>401</title><pre>401</pre>"
+ErrorDocument 403 "<!DOCTYPE html><title>401</title><pre>403</pre>"
+ErrorDocument 404 "<!DOCTYPE html><title>401</title><pre>404</pre>"
+ErrorDocument 410 "<!DOCTYPE html><title>401</title><pre>410</pre>"
 FileETag None
 ServerTokens ProductOnly
 ServerSignature Off
