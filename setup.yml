@@ -328,12 +328,12 @@
       when: item[0].value.kirby_key is defined
 
     - name: 'Ensure ".env" files exist'
-      file:
+      template:
+        src: dotenv/dotenv.j2
         group: "www-data"
         mode: "0640"
         owner: "{{ lookup('env', 'USER') }}"
-        path: "/var/www/{{ item.key }}/shared/protected/.env"
-        state: touch
+        dest: "/var/www/{{ item.key }}/shared/protected/.env"
       with_dict: "{{ sites }}"
 
     - name: Get available Let's Encrypt certificates
