@@ -24,9 +24,7 @@
 
 - hosts: all
   become: yes
-  vars_files:
-    - secret/vars.yml
-  tasks:
+  pre_tasks:
     - name: Ensure timezone is set correctly
       timezone:
           name: Europe/London
@@ -36,7 +34,7 @@
         append: yes
         name: "{{ lookup('env', 'USER') }}"
         # The "password_hash" filter doesn't require passlib.
-        password: "{{ lookup('password', 'secret/credentials-' + inventory_hostname + '.txt length=22') | password_hash('sha512')}}"
+        password: "{{ lookup('password', 'inventory/credentials-' + inventory_hostname + '.txt length=22') | password_hash('sha512')}}"
         update_password: on_create
         groups:
           - sudo
@@ -62,12 +60,6 @@
         url: https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc
         state: present
 
-    - name: "DEV: Ensure the NodeSource package signing key is present"
-      apt_key:
-        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-        state: present
-      when: development is defined and development
-
     - name: Ensure required external repositories are present
       apt_repository:
         repo: "{{ item.repo }}"
@@ -78,14 +70,6 @@
           filename: tarsnap
         - repo: "ppa:certbot/certbot"
           filename: certbot
-
-    - name: "DEV: Ensure development external repositories are present"
-      apt_repository:
-        repo: "{{ item.repo }}"
-        state: present
-      with_items:
-        - repo: "deb https://deb.nodesource.com/node_10.x {{ ansible_distribution_release }} main"
-      when: development is defined and development
 
     - name: Ensure currently installed packages have been upgraded
       apt:
@@ -192,21 +176,6 @@
         - development is not defined or development == false
         - livepatch_status.stdout is search("Machine is not enabled.")
 
-    - name: "DEV: Ensure development-related packages are installed"
-      apt:
-        name:
-          - python-pip
-          - python3-pip
-          - ruby
-          - ruby-dev
-          - nodejs
-          - build-essential
-          - tig
-          - tree
-          - shellcheck
-        state: present
-      when: development is defined and development
-
     - name: Ensure required Apache modules are enabled
       apache2_module:
         state: present
@@ -263,18 +232,6 @@
         - src: bin/wwwstuff.sh.j2
           dest: /usr/local/bin/wwwstuff
           mode: "0755"
-
-    - name: "DEV: Ensure development configuration files exists"
-      template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: "{{ lookup('env', 'USER') }}"
-        group: "{{ lookup('env', 'USER') }}"
-        mode: "{{ item.mode | default('0644') }}"
-      with_items:
-        - src: bash/bash_profile.sh.j2
-          dest: /etc/profile.d/bash_profile.sh
-      when: development is defined and development
 
     - name: Ensure the zzz.conf configuration file is active
       command: a2enconf zzz
@@ -423,3 +380,8 @@
 
     - name: Restart ufw
       service: name=ufw state=restarted
+
+- hosts: local
+  become: yes
+  roles:
+    - development
