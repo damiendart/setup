@@ -1,0 +1,6 @@
+---
+skip_list:
+  # Skip checking the "meta/main.yml should contain relevant info" rule
+  # as the roles contained in this project are not intended to be
+  # imported or used by Ansible Galaxy.
+  - '701'
