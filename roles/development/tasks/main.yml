@@ -24,6 +24,16 @@
       - tree
     state: present
 
+- name: 'Ensure development-related Python packages are installed in administrator home directory'
+  pip:
+    name:
+      - virtualenv
+      - virtualenvwrapper
+    executable: /usr/bin/pip3
+    extra_args: --user
+  become: yes
+  become_user: "{{ administrator_username }}"
+
 - name: 'Ensure custom ".bash_profile" exists in administrator home directory'
   template:
     src: bash_profile.sh.j2

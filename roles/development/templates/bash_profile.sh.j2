@@ -8,7 +8,7 @@
 export EDITOR="vim"
 export GEM_HOME="$HOME/.gem"
 export NPM_CONFIG_PREFIX="$HOME/.npm"
-export PATH="$PATH:$GEM_HOME/bin:$NPM_CONFIG_PREFIX/bin"
+export PATH="$PATH:$GEM_HOME/bin:$NPM_CONFIG_PREFIX/bin:$HOME/.local/bin"
 
 git config --global core.excludesfile "$HOME/.gitignore"
 cat > "$HOME/.gitignore" <<GITIGNORE
@@ -20,3 +20,6 @@ GITIGNORE
   git config --global user.email "{{ administrator_email_address }}"
   git config --global user.name "{{ administrator_full_name }}"
 {% endif %}
+
+export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
+source "$HOME/.local/bin/virtualenvwrapper_lazy.sh"
