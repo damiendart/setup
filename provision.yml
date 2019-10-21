@@ -106,18 +106,6 @@
           # - unattended-upgrades
         state: present
 
-    - name: Ensure sentry-cli is installed
-      get_url:
-        url: https://github.com/getsentry/sentry-cli/releases/download/1.47.2/sentry-cli-Linux-x86_64
-        dest: /usr/local/bin/sentry-cli
-        mode: "0755"
-        group: root
-        owner: root
-
-    - name: Ensure sentry-cli is up-to-date
-      command: sentry-cli update
-      # TODO: Add "changed_when" stuff.
-
     - name: Check if Composer is installed
       stat:
         path: /usr/local/bin/composer
