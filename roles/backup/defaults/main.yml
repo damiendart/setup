@@ -1,0 +1,5 @@
+---
+# folders_to_backup:
+#   - /example-1
+#   - /example-2
+# tarsnap_write_only_key: ""

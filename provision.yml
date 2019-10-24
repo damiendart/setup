@@ -8,8 +8,6 @@
 #   - For Ubuntu 18.04 machines, Ansible needs to be told to use Python
 #     3 (by setting "ansible_python_interpreter").
 #   - Things to do on each machine after running this playbook:
-#     - If using Tarsnap, ensure a valid (and ideally a write-only) key
-#       file is present at "/root/tarsnap.key".
 #     - In each virtual site directory, ensure there are symlinks to
 #       valid "fullchain.pem" and "privkey.pem" files. For more
 #       information, see the accompanying
@@ -55,19 +53,12 @@
         - PermitRootLogin
       notify: Restart sshd
 
-    - name: Ensure the Tarsnap deb packaging key is present
-      apt_key:
-        url: https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc
-        state: present
-
     - name: Ensure required external repositories are present
       apt_repository:
         repo: "{{ item.repo }}"
         state: present
         filename: "{{ item.filename }}"
       with_items:
-        - repo: "deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./"
-          filename: tarsnap
         - repo: "ppa:certbot/certbot"
           filename: certbot
 
@@ -100,7 +91,6 @@
           - python-certbot-apache
           # Ansible requires Passlib for certain functions.
           - python3-passlib
-          - tarsnap
           # As of Debian 9 (and Ubuntu 16.04), everything required for
           # unattended upgrades is installed by default.
           # - unattended-upgrades
@@ -214,9 +204,6 @@
           # The weird name is so this configuration file is loaded last.
           dest: /etc/apache2/conf-available/zzz.conf
           notify: Restart Apache gracefully
-        - src: cron/tarsnap.sh.j2
-          dest: /etc/cron.daily/tarsnap
-          mode: "0755"
         - src: bin/wwwstuff.sh.j2
           dest: /usr/local/bin/wwwstuff
           mode: "0755"
@@ -368,6 +355,11 @@
 
     - name: Restart ufw
       service: name=ufw state=restarted
+
+- hosts: production
+  become: yes
+  roles:
+    - backup
 
 - hosts: local
   become: yes

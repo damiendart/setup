@@ -7,4 +7,4 @@
 
 
 /usr/bin/tarsnap -c --quiet --no-print-stats --keyfile /root/tarsnap.key \
-    -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" /etc/letsencrypt /var/www
+    -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" {{ folders_to_backup | join(' ') }}

@@ -1,0 +1,31 @@
+---
+- name: Ensure the Tarsnap package signing key is present for APT
+  apt_key:
+    url: https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc
+    state: present
+
+- name: Ensure the Tarsnap repository is present in APT sources list
+  apt_repository:
+    repo: "deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./"
+    state: present
+
+- name: Ensure the Tarsnap package is installed
+  apt:
+    force_apt_get: yes
+    name: tarsnap
+
+- name: Ensure a write-only Tarsnap key is present
+  copy:
+    content: "{{ tarsnap_write_only_key }}"
+    dest: /root/tarsnap.key
+    group: root
+    mode: "0600"
+    owner: root
+
+- name: Ensure the daily Tarsnap cron task is installed
+  template:
+    dest: /etc/cron.daily/tarsnap
+    group: root
+    mode: "0755"
+    src: tarsnap-cron.sh.j2
+    owner: root
