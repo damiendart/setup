@@ -140,20 +140,6 @@
     - name: Ensure Composer plays nicely with GitHub
       command: "composer config -g github-oauth.github.com {{ composer_github_token }}"
 
-    - name: Ensure Canonical Livepatch is installed
-      command: snap install canonical-livepatch
-
-    - name: Get Canonical Livepatch status
-      command: canonical-livepatch status
-      register: livepatch_status
-      ignore_errors: yes
-
-    - name: "PROD: Ensure Canonical Livepatch is enabled"
-      command: "canonical-livepatch enable {{ livepatch_key }}"
-      when:
-        - development is not defined or development == false
-        - livepatch_status.stdout is search("Machine is not enabled.")
-
     - name: Ensure required Apache modules are enabled
       apache2_module:
         state: present
@@ -360,6 +346,7 @@
   become: yes
   roles:
     - backup
+    - livepatch
 
 - hosts: local
   become: yes

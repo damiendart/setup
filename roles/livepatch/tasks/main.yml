@@ -1,0 +1,15 @@
+---
+- name: Ensure the Canonical Livepatch snap is installed
+  snap:
+    name: canonical-livepatch
+    state: present
+
+- name: Get current Canonical Livepatch status
+  command: canonical-livepatch status --verbose
+  changed_when: false
+  register: livepatch_status
+  ignore_errors: yes
+
+- name: Ensure Canonical Livepatch is enabled
+  command: "canonical-livepatch enable {{ livepatch_key }}"
+  when: livepatch_status is defined and livepatch_status.rc is defined and livepatch_status.rc != 0
