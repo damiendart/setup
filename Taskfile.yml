@@ -1,0 +1,20 @@
+---
+version: 2
+
+output: prefixed
+
+tasks:
+  default:
+    deps:
+      - task: lint
+
+  dependencies:
+    cmds:
+      - pip3 install -r requirements.txt
+    desc: Install Python dependencies
+
+  lint:
+    cmds:
+      - yamllint .
+      - ansible-lint provision.yml
+    desc: Run a bunch of linting stuff

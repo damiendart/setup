@@ -24,6 +24,12 @@
       - tree
     state: present
 
+- name: Ensure the Task snap is installed
+  snap:
+    classic: yes
+    name: task
+    state: present
+
 - name: Ensure development-related Python packages are installed in administrator home directory
   pip:
     name:
