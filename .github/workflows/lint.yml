@@ -1,0 +1,21 @@
+---
+name: Lint Project
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  lint-yaml:
+    name: Lint Ansible-related files and YAML files
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Check out repository
+      - uses: actions/checkout@v1
+      - name: Install Task
+        run: curl -sL https://taskfile.dev/install.sh | sh
+      - name: Install project dependencies
+        run: ./bin/task dependencies
+      - name: Lint Ansible-related files and YAML files
+        run: ./bin/task lint
