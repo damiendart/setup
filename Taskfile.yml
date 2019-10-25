@@ -15,6 +15,6 @@ tasks:
 
   lint:
     cmds:
-      - yamllint .
-      - ansible-lint provision.yml
+      - yamllint -s -f parsable .
+      - ansible-lint -p --nocolor provision.yml
     desc: Run a bunch of linting stuff
