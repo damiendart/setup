@@ -32,7 +32,7 @@
         append: yes
         name: "{{ lookup('env', 'USER') }}"
         # The "password_hash" filter doesn't require passlib.
-        password: "{{ lookup('password', 'inventory/credentials-' + inventory_hostname + '.txt length=22') | password_hash('sha512')}}"
+        password: "{{ lookup('password', 'inventory/credentials-' + inventory_hostname + '.txt length=22') | password_hash('sha512') }}"
         update_password: on_create
         groups:
           - sudo
@@ -139,6 +139,7 @@
 
     - name: Ensure Composer plays nicely with GitHub
       command: "composer config -g github-oauth.github.com {{ composer_github_token }}"
+      changed_when: false
 
     - name: Ensure required Apache modules are enabled
       apache2_module:
@@ -266,14 +267,17 @@
         dest: "/var/www/{{ item.key }}/shared/protected/.env"
       with_dict: "{{ sites }}"
 
-    - name: Get available Let's Encrypt certificates
+    - name: Get Let's Encrypt status
       command: certbot certificates
       become: yes
       register: certbot_output
-    - set_fact:
+      changed_when: false
+
+    - name: Get available Let's Encrypt certificates
+      set_fact:
         lets_encrypt_certificates: "{{ lets_encrypt_certificates | default([]) | union(item | regex_search(': ([^\\s]*)', '\\1')) }}"
       when: item is match('.*Certificate Name:.*')
-      with_items: 
+      with_items:
         - "{{ certbot_output.stdout_lines }}"
 
     - name: Ensure site-specific Apache configuration files exist
