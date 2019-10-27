@@ -17,9 +17,6 @@ set mailserver {{ monitoring_email_hostname }} port 587
   username "{{ monitoring_email_username }}" password "{{ monitoring_email_password }}"
   using TLSV1 with timeout 30 seconds
 
-check file ssh_logins with path /var/log/auth.log
-  if match "Accepted publickey" then alert
-
 # One day I will do this properly and use the "conf-enabled" thing.
 # include /etc/monit/conf-available/apache2
 include /etc/monit/conf-available/cron

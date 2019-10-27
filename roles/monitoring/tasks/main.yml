@@ -10,6 +10,28 @@
       - msmtp-mta
     state: present
 
+- name: Ensure custom notfication scripts exist
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0700'
+  with_items:
+    - { src: session-notify.sh.j2, dest: /usr/local/bin/session-notify }
+
+- name: Ensure SSH session notifications are enabled
+  pamd:
+    name: sshd
+    new_control: optional
+    new_module_path: pam_exec.so
+    new_type: session
+    module_arguments: /usr/local/bin/session-notify
+    state: after
+    type: session
+    module_path: pam_mail.so
+    control: optional
+
 - name: Ensure custom msmtp configuration file exist
   template:
     src: msmtprc.j2

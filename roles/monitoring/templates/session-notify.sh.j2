@@ -1,0 +1,34 @@
+#!/bin/bash
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+NOTIFICATION_MESSAGE="Session opened from $PAM_RHOST at $(date)"
+NOTIFICATION_PRIORITY='0'
+NOTIFICATION_TITLE="$PAM_SERVICE: $PAM_USER@$HOSTNAME"
+
+case "$PAM_TYPE" in
+  close_session)
+    NOTIFICATION_MESSAGE="${NOTIFICATION_MESSAGE/opened/closed}"
+    NOTIFICATION_PRIORITY="-1"
+    ;;
+  open_session)
+    ;;
+  *)
+    exit 0;
+    ;;
+esac
+
+[ "$PAM_USER" = 'root' ] && NOTIFICATION_PRIORITY='2'
+
+PUSHOVER_RESULT="$(curl --silent --output /dev/null --write-out '%{http_code}' -v \
+  --form-string "message=$NOTIFICATION_MESSAGE" \
+  --form-string "priority=$NOTIFICATION_PRIORITY" \
+  --form-string "title=$NOTIFICATION_TITLE" \
+  --form-string 'token={{ monitoring_pushover_api_token }}' \
+  --form-string 'user={{ administrator_pushover_user_key }}' \
+  https://api.pushover.net/1/messages.json 2>/dev/null)"
+
+[ "$PUSHOVER_RESULT" != '200' ] && exit 1
