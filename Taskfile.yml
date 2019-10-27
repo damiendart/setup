@@ -15,4 +15,5 @@ tasks:
     cmds:
       - yamllint -s -f parsable .
       - ansible-lint -p --nocolor provision.yml
+      - shellcheck roles/*/*/*.sh*
     desc: Run a bunch of linting stuff

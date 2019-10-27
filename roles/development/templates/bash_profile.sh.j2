@@ -1,3 +1,4 @@
+#!/bin/bash
 # {{ ansible_managed }}
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
@@ -16,10 +17,9 @@ cat > "$HOME/.gitignore" <<GITIGNORE
 node_modules
 GITIGNORE
 
-{% if administrator_email_address is defined and administrator_full_name is defined %}
-  git config --global user.email "{{ administrator_email_address }}"
-  git config --global user.name "{{ administrator_full_name }}"
-{% endif %}
+git config --global user.email "{{ administrator_email_address }}"
+git config --global user.name "{{ administrator_full_name }}"
 
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
+# shellcheck source=/dev/null
 source "$HOME/.local/bin/virtualenvwrapper_lazy.sh"
