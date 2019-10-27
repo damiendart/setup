@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+defaults
+auth on
+tls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+
+account default
+host {{ monitoring_email_hostname }}
+port 587
+user {{ monitoring_email_username }}
+from {{ administrator_email_address }}
+password {{ monitoring_email_password }}

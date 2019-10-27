@@ -72,16 +72,10 @@
       apt:
         name:
           - apache2
-          - fail2ban
           # Kirby uses the ImageMagick command-line tools instead of the
           # native PHP extension Imagick.
           - imagemagick
           - goaccess
-          - logrotate
-          - logwatch
-          - monit
-          # TODO: Explain what msmtp-mta is?
-          - msmtp-mta
             # "php-fpm" is required for HTTP/2 support.
           - php7.2-fpm
             # Kirby 3 requires the following three PHP extensions.
@@ -176,17 +170,6 @@
         mode: "{{ item.mode | default('0644') }}"
       notify: "{{ item.notify | default([]) }}"
       with_items:
-        - src: fail2ban/jail.local.j2
-          dest: /etc/fail2ban/jail.local
-          notify: Restart Fail2ban
-        - src: msmtp/msmtprc.j2
-          dest: /etc/msmtprc
-        - src: logwatch/logwatch.conf.j2
-          dest: /etc/logwatch/conf/logwatch.conf
-        - src: monit/monitrc.j2
-          # The weird name is so this configuration file is loaded last.
-          dest: /etc/monit/conf.d/zzz.conf
-          notify: Restart Monit
         - src: apache2/apache2.conf.j2
           # The weird name is so this configuration file is loaded last.
           dest: /etc/apache2/conf-available/zzz.conf
@@ -331,12 +314,6 @@
       args:
         warn: false
 
-    - name: Restart Fail2ban
-      service: name=fail2ban state=restarted
-
-    - name: Restart Monit
-      service: name=monit state=restarted
-
     - name: Reload php-fpm
       service: name=php7.2-fpm state=reloaded
 
@@ -351,6 +328,7 @@
   roles:
     - backup
     - livepatch
+    - monitoring
 
 - hosts: local
   become: yes

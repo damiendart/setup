@@ -4,14 +4,12 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE file.
 
-defaults
-auth on
-tls on
-tls_trust_file /etc/ssl/certs/ca-certificates.crt
-
-account default
-host {{ email_host }}
-port 587
-user {{ email_address }}
-from {{ email_address }}
-password {{ email_password }}
+Detail = High
+Format = text
+MailTo = {{ administrator_email_address }}
+MailFrom = {{ administrator_email_address }}
+Output = mail
+Service = "-fail2ban"
+Service = "-postfix"
+Service = "-sendmail"
+Service = "-sshd"

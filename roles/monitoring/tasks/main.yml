@@ -1,0 +1,56 @@
+---
+- name: Ensure monitoring-related packages are installed
+  apt:
+    force_apt_get: yes
+    name:
+      - fail2ban
+      - logrotate
+      - logwatch
+      - monit
+      - msmtp-mta
+    state: present
+
+- name: Ensure custom msmtp configuration file exist
+  template:
+    src: msmtprc.j2
+    dest: /etc/msmtprc
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Ensure custom Fail2ban configuration file exist
+  template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Restart Fail2ban
+
+- name: Ensure custom Logwatch configuration file exist
+  template:
+    src: logwatch.conf.j2
+    dest: /etc/logwatch/conf/logwatch.conf
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Ensure custom Monit configuration file exist
+  template:
+    src: monitrc.j2
+    # The weird name is to ensure this configuration file is loaded last.
+    dest: /etc/monit/conf.d/zzz.conf
+    owner: root
+    group: root
+    mode: '0600'
+    validate: monit -c %s -t
+  notify: Restart Monit
+
+- name: Ensure monitoring-related services are operational and set to run on boot
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - fail2ban
+    - monit

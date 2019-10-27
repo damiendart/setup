@@ -1,0 +1,10 @@
+---
+- name: Restart Fail2ban
+  service:
+    name: fail2ban
+    state: restarted
+
+- name: Restart Monit
+  service:
+    name: monit
+    state: restarted

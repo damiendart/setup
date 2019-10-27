@@ -1,0 +1,26 @@
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+
+set alert {{ administrator_email_address }}
+
+set httpd port 2812 and
+  use address localhost
+  allow localhost
+
+set mail-format { from: {{ administrator_email_address }} }
+
+set mailserver {{ monitoring_email_hostname }} port 587
+  username "{{ monitoring_email_username }}" password "{{ monitoring_email_password }}"
+  using TLSV1 with timeout 30 seconds
+
+check file ssh_logins with path /var/log/auth.log
+  if match "Accepted publickey" then alert
+
+# One day I will do this properly and use the "conf-enabled" thing.
+# include /etc/monit/conf-available/apache2
+include /etc/monit/conf-available/cron
+include /etc/monit/conf-available/openssh-server
