@@ -21,7 +21,7 @@ case "$PAM_TYPE" in
     ;;
 esac
 
-[ "$PAM_USER" = 'root' ] && NOTIFICATION_PRIORITY='2'
+[ "$PAM_USER" = 'root' ] && NOTIFICATION_PRIORITY='1'
 
 PUSHOVER_RESULT="$(curl --silent --output /dev/null --write-out '%{http_code}' -v \
   --form-string "message=$NOTIFICATION_MESSAGE" \
@@ -31,4 +31,6 @@ PUSHOVER_RESULT="$(curl --silent --output /dev/null --write-out '%{http_code}' -
   --form-string 'user={{ administrator_pushover_user_key }}' \
   https://api.pushover.net/1/messages.json 2>/dev/null)"
 
-[ "$PUSHOVER_RESULT" != '200' ] && exit 1
+if [ "$PUSHOVER_RESULT" != '200' ]; then
+  exit 1
+fi
