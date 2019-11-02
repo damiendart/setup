@@ -53,15 +53,6 @@
         - PermitRootLogin
       notify: Restart sshd
 
-    - name: Ensure required external repositories are present
-      apt_repository:
-        repo: "{{ item.repo }}"
-        state: present
-        filename: "{{ item.filename }}"
-      with_items:
-        - repo: "ppa:certbot/certbot"
-          filename: certbot
-
     - name: Ensure currently installed packages have been upgraded
       apt:
         update_cache: yes
@@ -82,7 +73,6 @@
           - php-curl
           - php-gd
           - php-mbstring
-          - python-certbot-apache
           # Ansible requires Passlib for certain functions.
           - python3-passlib
           # As of Debian 9 (and Ubuntu 16.04), everything required for
@@ -192,12 +182,6 @@
       notify:
         - Restart Apache gracefully
         - Reload php-fpm
-
-    - name: Ensure customised Certbot cron job is present
-      replace:
-        path: /etc/cron.d/certbot
-        regexp: "certbot -q renew$"
-        replace: "certbot -q renew --webroot --webroot-path /var/www/html --renew-hook 'service apache2 graceful'"
 
     - name: Ensure ufw is configured
       ufw:
@@ -327,6 +311,7 @@
   become: yes
   roles:
     - backup
+    - letsencrypt
     - livepatch
     - monitoring
 

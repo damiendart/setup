@@ -1,0 +1,16 @@
+---
+- name: Ensure the Certbot PPA is present in APT source list
+  apt_repository:
+    repo: 'ppa:certbot/certbot'
+    state: present
+
+- name: Ensure Certbot is installed
+  apt:
+    force_apt_get: yes
+    name: python-certbot-apache
+
+- name: Ensure the customised Certbot cron task is present
+  replace:
+    path: /etc/cron.d/certbot
+    regexp: 'certbot -q renew$'
+    replace: "certbot -q renew --webroot --webroot-path /var/www/html --renew-hook 'service apache2 graceful'"
