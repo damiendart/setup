@@ -14,3 +14,13 @@
     path: /etc/cron.d/certbot
     regexp: 'certbot -q renew$'
     replace: "certbot -q renew --webroot --webroot-path /var/www/html --renew-hook 'service apache2 graceful'"
+
+- name: Ensure Certbot-issued certificates include the correct domain names
+  script: "certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(' ') }}"
+  args:
+    executable: /usr/bin/python3
+  register: certbot_update
+  changed_when: certbot_update.stdout is search('Certificate')
+  loop: "{{ sites | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
