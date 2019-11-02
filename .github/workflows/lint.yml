@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint-yaml:
-    name: Lint Ansible-related files and YAML files
+    name: Lint project
     runs-on: ubuntu-18.04
     steps:
       - name: Check out repository
