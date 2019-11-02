@@ -13,8 +13,28 @@ tasks:
 
   lint:
     cmds:
-      - yamllint -s -f parsable .
+      - task: lint:ansible
+      - task: lint:python
+      - task: lint:shell
+      - task: lint:yaml
+    desc: Run all linting-related tasks
+
+  lint:ansible:
+    cmds:
       - ansible-lint -p --nocolor provision.yml
-      - shellcheck roles/*/*/*.sh*
+    desc: Lint Ansible-related files with Ansible Lint
+
+  lint:python:
+    cmds:
       - flake8 roles/*/*/*.py*
-    desc: Run a bunch of linting stuff
+    desc: Lint Python scripts with Flake8
+
+  lint:shell:
+    cmds:
+      - shellcheck roles/*/*/*.sh*
+    desc: Lint shell scripts with ShellCheck
+
+  lint:yaml:
+    cmds:
+      - yamllint -s -f parsable .
+    desc: Lint YAML files with yamllint
