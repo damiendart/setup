@@ -7,11 +7,6 @@
 #   - This playbook has been tested on Ubuntu 18.04.
 #   - For Ubuntu 18.04 machines, Ansible needs to be told to use Python
 #     3 (by setting "ansible_python_interpreter").
-#   - Things to do on each machine after running this playbook:
-#     - In each virtual site directory, ensure there are symlinks to
-#       valid "fullchain.pem" and "privkey.pem" files. For more
-#       information, see the accompanying
-#       "templates/apache2/virtualhost.conf.j2" file.
 #   - This playbook works with the Mitogen plugin. For more information,
 #     see <https://mitogen.readthedocs.io/en/stable/ansible.html>.
 #
@@ -62,17 +57,6 @@
     - name: Ensure required packages are installed
       apt:
         name:
-          - apache2
-          # Kirby uses the ImageMagick command-line tools instead of the
-          # native PHP extension Imagick.
-          - imagemagick
-          - goaccess
-            # "php-fpm" is required for HTTP/2 support.
-          - php7.2-fpm
-            # Kirby 3 requires the following three PHP extensions.
-          - php-curl
-          - php-gd
-          - php-mbstring
           # Ansible requires Passlib for certain functions.
           - python3-passlib
           # As of Debian 9 (and Ubuntu 16.04), everything required for
@@ -80,76 +64,10 @@
           # - unattended-upgrades
         state: present
 
-    - name: Check if Composer is installed
-      stat:
-        path: /usr/local/bin/composer
-      register: composer_bin
-
-    - name: Get Composer installer signature
-      uri:
-        url: https://composer.github.io/installer.sig
-        return_content: true
-      register: composer_installer_signature
-      when: not composer_bin.stat.exists
-
-    - name: Download Composer installer
-      get_url:
-        url: https://getcomposer.org/installer
-        dest: /tmp/composer-installer.php
-        mode: 0755
-        checksum: "sha384:{{ composer_installer_signature.content }}"
-      when: not composer_bin.stat.exists
-
-    - name: Run Composer installer
-      command: php composer-installer.php
-      args:
-        chdir: /tmp
-      when: not composer_bin.stat.exists
-
-    - name: Ensure Composer is in the correct location
-      copy:
-        dest: /usr/local/bin/composer
-        group: root
-        mode: "0755"
-        owner: root
-        remote_src: yes
-        src: /tmp/composer.phar
-      when: not composer_bin.stat.exists
-
-    - name: Ensure Composer is up-to-date
-      command: /usr/local/bin/composer self-update
-      register: composer_update
-      changed_when: "'Updating to version' in composer_update.stdout"
-
-    - name: Ensure Composer plays nicely with GitHub
-      command: "composer config -g github-oauth.github.com {{ composer_github_token }}"
-      changed_when: false
-
-    - name: Ensure required Apache modules are enabled
-      apache2_module:
-        state: present
-        name: "{{ item }}"
-      with_items:
-        - cgid
-        - expires
-        - headers
-        - http2
-        - macro
-        - mpm_event
-        - proxy_fcgi
-        - rewrite
-        - setenvif
-        - ssl
-      notify: Restart Apache gracefully
-
-    - name: Ensure unrequired Apache mods are disabled
-      apache2_module:
-        state: absent
-        name: "{{ item }}"
-      with_items:
-        - mpm_prefork
-        - status
-      notify: Restart Apache gracefully
+    # - name: Ensure Composer is up-to-date
+    # command: /usr/local/bin/composer self-update
+    # register: composer_update
+    # changed_when: "'Updating to version' in composer_update.stdout"
 
     - name: Ensure custom configuration files exists
       template:
@@ -160,28 +78,9 @@
         mode: "{{ item.mode | default('0644') }}"
       notify: "{{ item.notify | default([]) }}"
       with_items:
-        - src: apache2/apache2.conf.j2
-          # The weird name is so this configuration file is loaded last.
-          dest: /etc/apache2/conf-available/zzz.conf
-          notify: Restart Apache gracefully
         - src: bin/wwwstuff.sh.j2
           dest: /usr/local/bin/wwwstuff
           mode: "0755"
-
-    - name: Ensure the zzz.conf configuration file is active
-      command: a2enconf zzz
-      args:
-        creates: /etc/apache2/conf-enabled/zzz.conf
-      notify:
-        - Restart Apache gracefully
-
-    - name: Ensure the php7.2-fpm configuration file is active
-      command: a2enconf php7.2-fpm
-      args:
-        creates: /etc/apache2/conf-enabled/php7.2-fpm.conf
-      notify:
-        - Restart Apache gracefully
-        - Reload php-fpm
 
     - name: Ensure ufw is configured
       ufw:
@@ -195,112 +94,7 @@
         - profile: OpenSSH
           rule: limit
 
-    - name: Ensure Apache virtual host folders are present
-      file:
-        group: "{{ item[1].group }}"
-        mode: "{{ item[1].mode }}"
-        owner: "{{ item[1].owner }}"
-        path: "/var/www/{{ item[0].key }}/{{ item[1].directory }}"
-        state: directory
-      with_nested:
-        # TODO: Find a way to extract just the keys.
-        - "{{ lookup('dict', sites) }}"
-        - - { directory: "", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "www-data" }
-          - { directory: "releases", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "www-data" }
-          - { directory: "shared", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "www-data" }
-          - { directory: "shared/private", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "root" }
-          - { directory: "shared/private/ssl", mode: "0750", owner: "{{ lookup('env', 'USER') }}", group: "root" }
-          - { directory: "shared/protected", mode: "2750", owner: "{{ lookup('env', 'USER') }}", group: "www-data" }
-
-    - name: Ensure Apache virtual host Kirby-related folders are present
-      file:
-        group: "www-data"
-        mode: "2750"
-        owner: "www-data"
-        path: "/var/www/{{ item[0].key }}/{{ item[1] }}"
-        state: directory
-      with_nested:
-        # TODO: Find a way to extract just the keys.
-        - "{{ lookup('dict', sites) }}"
-        - [ "shared/protected/accounts", "shared/protected/content", "shared/protected/sessions" ]
-      when: item[0].value.kirby_key is defined
-
-    - name: 'Ensure ".env" files exist'
-      template:
-        src: dotenv/dotenv.j2
-        group: "www-data"
-        mode: "0640"
-        owner: "{{ lookup('env', 'USER') }}"
-        dest: "/var/www/{{ item.key }}/shared/protected/.env"
-      with_dict: "{{ sites }}"
-
-    - name: Get Let's Encrypt status
-      command: certbot certificates
-      become: yes
-      register: certbot_output
-      changed_when: false
-
-    - name: Get available Let's Encrypt certificates
-      set_fact:
-        lets_encrypt_certificates: "{{ lets_encrypt_certificates | default([]) | union(item | regex_search(': ([^\\s]*)', '\\1')) }}"
-      when: item is match('.*Certificate Name:.*')
-      with_items:
-        - "{{ certbot_output.stdout_lines }}"
-
-    - name: Ensure site-specific Apache configuration files exist
-      template:
-        src: apache2/virtualhost.conf.j2
-        dest: "/etc/apache2/sites-available/{{ item.key }}.conf"
-        owner: root
-        group: root
-        mode: 0644
-      with_dict: "{{ sites }}"
-
-    - name: Ensure password-protected sites are set up
-      htpasswd:
-        group: "www-data"
-        mode: "0640"
-        owner: "root"
-        path: "/var/www/{{ item.key }}/shared/protected/.htpasswd"
-        name: "{{ item.value.auth.username }}"
-        password: "{{ item.value.auth.password }}"
-      when: item.value.auth.password is defined and item.value.auth.username is defined
-      with_dict: "{{ sites }}"
-
-    - name: Ensure site-specific cron helper scripts exist
-      template:
-        src: cron/www-cron.sh.j2
-        dest: "/etc/cron.{{ item }}/www-cron"
-        owner: root
-        group: root
-        mode: 0755
-      with_items:
-        - hourly
-        - daily
-        - weekly
-        - monthly
-
-    - name: Ensure PHP's maximum upload file size is increased
-      lineinfile:
-        dest: /etc/php/7.2/fpm/php.ini
-        regexp: "^{{ item }}"
-        line: "{{ item }} = 20M"
-        state: present
-      with_items:
-        - post_max_size
-        - upload_max_filesize
-      notify: Reload php-fpm
-
   handlers:
-    # The "service" module does not support graceful restarts.
-    - name: Restart Apache gracefully
-      command: service apache2 graceful
-      args:
-        warn: false
-
-    - name: Reload php-fpm
-      service: name=php7.2-fpm state=reloaded
-
     - name: Restart sshd
       service: name=ssh state=restarted
 
@@ -314,8 +108,10 @@
     - letsencrypt
     - livepatch
     - monitoring
+    - webserver
 
 - hosts: local
   become: yes
   roles:
     - development
+    - webserver

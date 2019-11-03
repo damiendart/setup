@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+{% if item.value.env_vars is defined %}
+  {% for i in item.value.env_vars | dict2items %}
+    {{ i.key }}={{ i.value | string | quote }}
+  {% endfor %}
+{% endif %}

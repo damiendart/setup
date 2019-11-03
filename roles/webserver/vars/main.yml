@@ -1,0 +1,22 @@
+---
+virtual_host_base_folder_structure:
+  - directory: ''
+    mode: '0750'
+    owner: '{{ administrator_username }}'
+    group: www-data
+  - directory: 'releases'
+    mode: '0750'
+    owner: '{{ administrator_username }}'
+    group: www-data
+  - directory: 'shared'
+    mode: '0750'
+    owner: '{{ administrator_username }}'
+    group: www-data
+  - directory: 'shared/private'
+    mode: '0750'
+    owner: '{{ administrator_username }}'
+    group: root
+  - directory: 'shared/protected'
+    mode: '2750'
+    owner: '{{ administrator_username }}'
+    group: www-data

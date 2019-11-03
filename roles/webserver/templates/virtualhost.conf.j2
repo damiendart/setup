@@ -11,36 +11,24 @@ Define SHARED_ROOT /var/www/{{ item.key }}/shared
 Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
 
 <VirtualHost *:80>
-  ServerAdmin {{ email_address }}
-  {% if development is defined %}
-    ServerName {{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io
-  {% else %}
-    ServerName {{ item.key }}
-    {% if item.value.aliases is defined %}
-      ServerAlias {{ item.value.aliases | join(" ") }}
-    {% endif %}
+  ServerAdmin {{ administrator_email_address }}
+  ServerName {{ item.key }}
+  {% if item.value.aliases is defined %}
+    ServerAlias {{ item.value.aliases | join(" ") }}
   {% endif %}
 
   ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
   CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
-  {% if development is defined %}
-    Redirect permanent "/" "https://{{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io/"
-  {% else %}
-    Redirect permanent "/" "https://{{ item.key }}/"
-  {% endif %}
+  Redirect permanent "/" "https://{{ item.key }}/"
 </VirtualHost>
 
 <IfModule mod_ssl.c>
   <VirtualHost *:443>
-    ServerAdmin {{ email_address }}
-    {% if development is defined %}
-      ServerName {{ item.key }}.{{ ansible_default_ipv4.address }}.xip.io
-    {% else %}
-      ServerName {{ item.key }}
-      {% if item.value.aliases is defined %}
-        ServerAlias {{ item.value.aliases | join(" ") }}
-      {% endif %}
+    ServerAdmin {{ administrator_email_address }}
+    ServerName {{ item.key }}
+    {% if item.value.aliases is defined %}
+      ServerAlias {{ item.value.aliases | join(" ") }}
     {% endif %}
 
     ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
@@ -51,7 +39,7 @@ Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
     SetEnv SHARED_ROOT ${SHARED_ROOT}
 
     Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
-    {% if lets_encrypt_certificates is defined and item.key in lets_encrypt_certificates %}
+    {% if 'letsencrypt' in ansible_play_role_names %}
       SSLCertificateFile /etc/letsencrypt/live/{{ item.key }}/fullchain.pem
       SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.key }}/privkey.pem
     {% else %}
@@ -59,11 +47,9 @@ Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
       SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
     {% endif %}
 
-    {% if development is not defined %}
-      <If "%{HTTP_HOST} != '{{ item.key }}'">
-        Redirect permanent "/" "https://{{ item.key }}/"
-      </If>
-    {% endif %}
+    <If "%{HTTP_HOST} != '{{ item.key }}'">
+      Redirect permanent "/" "https://{{ item.key }}/"
+    </If>
 
     <IfModule mod_headers.c>
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"

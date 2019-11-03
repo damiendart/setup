@@ -1,0 +1,15 @@
+---
+# admin_email_address: example@example.com
+# admin_username: example
+# composer_github_token: 1234567890
+# server_name: www.example.com
+# sites:
+#  www.example.com:
+#    aliases:
+#      - this.is.optional
+#    auth:
+#      password: this_is_optional
+#      username: this_is_optional
+#    env_vars:
+#      FOO: BAR
+webserver_static_caching: true
