@@ -163,6 +163,13 @@
         name: php7.2-fpm
         state: reloaded
 
+    - name: Ensure only current and previous project release folders exist
+      shell: 'set -eo pipefail; ls -1tr /var/www/{{ site }}/releases | head -n -2 | xargs rm -rf'
+      args:
+        chdir: '/var/www/{{ site }}/releases'
+        executable: /bin/bash
+      changed_when: true
+
 - hosts: localhost
   become: no
   tasks:
