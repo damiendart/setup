@@ -181,6 +181,14 @@
   become: yes
   become_user: "{{ administrator_username }}"
 
+- name: Ensure custom GoAccess wrapper script exists
+  template:
+    src: webstats.sh.j2
+    dest: /usr/local/bin/webstats
+    owner: root
+    group: root
+    mode: '0700'
+
 # We force any notified handlers to run in case there are any changes
 # that need to be applied before other roles that have this role as a
 # dependency are executed.

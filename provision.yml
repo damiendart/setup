@@ -69,19 +69,6 @@
     # register: composer_update
     # changed_when: "'Updating to version' in composer_update.stdout"
 
-    - name: Ensure custom configuration files exists
-      template:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        owner: root
-        group: root
-        mode: "{{ item.mode | default('0644') }}"
-      notify: "{{ item.notify | default([]) }}"
-      with_items:
-        - src: bin/wwwstuff.sh.j2
-          dest: /usr/local/bin/wwwstuff
-          mode: "0755"
-
     - name: Ensure ufw is configured
       ufw:
         name: "{{ item.profile }}"
