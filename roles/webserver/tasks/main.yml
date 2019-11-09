@@ -137,17 +137,6 @@
     - [ "shared/protected/accounts", "shared/protected/content", "shared/protected/sessions" ]
   when: item[0].value.kirby_key is defined
 
-- name: 'Ensure Apache virtual host ".env" files exist'
-  template:
-    src: dotenv.j2
-    group: "www-data"
-    mode: "0640"
-    owner: "{{ administrator_username }}"
-    dest: "/var/www/{{ item.key }}/shared/protected/.env"
-  with_dict: "{{ sites }}"
-  loop_control:
-    label: '{{ item.key }}'
-
 - name: Get Composer status
   stat:
     path: /usr/local/bin/composer

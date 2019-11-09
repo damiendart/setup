@@ -1,0 +1,172 @@
+---
+- hosts: localhost
+  gather_facts: no
+  become: no
+  tasks:
+    - name: Ensure project has been checked out with Git
+      git:
+        repo: '{{ repo }}'
+        dest: ./build
+        version: '{{ version | default("HEAD") }}'
+        depth: 1
+      register: git_repo
+
+    - name: Ensure project release information file exists
+      copy:
+        content: |
+          ---
+          release_hash: {{ git_repo.after }}
+          release_timestamp: {{ lookup("pipe", "date +%Y%m%d%H%M%S") }}
+        dest: ./build/release.yml
+
+    - name: 'Ensure ".rsync-filter" exists in project folder'
+      copy:
+        content: |
+          - /protected/cache/
+          - /protected/site/plugins/kirby-twig/
+          - /protected/vendor/
+          - /public/media**
+          + /public**
+          + /protected**
+          + /private**
+          - *
+        dest: ./build/.rsync-filter
+
+    - name: Ensure project continuous integration tasks have been completed
+      command: '{{ task_bin | default("task") }} ci'
+      args:
+        chdir: ./build
+      changed_when: true
+
+- hosts: all
+  gather_facts: no
+  become: yes
+  vars:
+    # Accepted strings: "standard" or "kirby3".
+    project_type: standard
+
+  tasks:
+    - name: Get applicable hosts for release
+      meta: end_host
+      when: sites[site] is not defined
+
+    - name: Gather Facts
+      setup:
+
+    - name: Include variables from project release information file
+      include_vars:
+        dir: ./build
+        files_matching: release.yml
+
+    - name: Ensure project release folder exists
+      file:
+        path: '/var/www/{{ site }}/releases/{{ release_timestamp }}'
+        state: directory
+        owner: '{{ administrator_username }}'
+        group: www-data
+        mode: '0750'
+
+    - name: Ensure Composer-related files from project release exist
+      copy:
+        src: './build/{{ item }}'
+        dest: '/var/www/{{ site }}/releases/{{ release_timestamp }}/{{ item }}'
+        owner: '{{ administrator_username }}'
+        group: root
+        mode: '0640'
+      when: project_type == 'kirby3'
+      loop:
+        - composer.json
+        - composer.lock
+
+    - name: Ensure remaining files from project release exist
+      synchronize:
+        src: ./build/
+        dest: '/var/www/{{ site }}/releases/{{ release_timestamp }}'
+        archive: yes
+        compress: yes
+        owner: no
+        group: no
+      become: no
+
+    - name: Ensure Composer dependencies exist
+      composer:
+        command: install
+        working_dir: '/var/www/{{ site }}/releases/{{ release_timestamp }}'
+        classmap_authoritative: yes
+      become: no
+      when: project_type == 'kirby3'
+      changed_when: true
+
+    - name: Ensure owners and permissions for files in project release folder are correct
+      command: '{{ item }}'
+      args:
+        chdir: '/var/www/{{ site }}/releases/{{ release_timestamp }}'
+      changed_when: true
+      loop:
+        - "find . -wholename './private*' -exec chown '{{ administrator_username }}:root' {} \\;"
+        - "find . -wholename './protected*' -exec chown '{{ administrator_username }}:www-data' {} \\;"
+        - "find . -wholename './public*' -exec chown '{{ administrator_username }}:www-data' {} \\;"
+        - 'find . -type d -exec chmod 0750 {} \;'
+        - 'find . -type f -exec chmod 0640 {} \;'
+        - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
+        - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
+
+    - name: Ensure Kirby-3-specific writable folders exist in project release folder
+      file:
+        path: '/var/www/{{ site }}/releases/{{ release_timestamp }}/{{ item }}'
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '2750'
+      when: project_type == 'kirby3'
+      loop:
+        - protected/cache
+        - public/media
+
+    - name: Ensure project release Apache configuration file exists
+      copy:
+        content: |
+          Define DEPLOYED_RELEASE {{ release_timestamp | quote }}
+          Define DEPLOYED_RELEASE_GIT_HASH {{ release_hash | quote }}
+          {% if sites[site].env_vars is defined %}
+            {% for i in sites[site].env_vars | dict2items %}
+              Define {{ i.key }} {{ i.value | string | quote }}
+            {% endfor %}
+          {% endif %}
+        dest: '/var/www/{{ site }}/current_release.apache2.conf'
+        owner: '{{ administrator_username }}'
+        group: root
+        mode: '0640'
+
+    - name: Ensure project release environment variables file exists
+      copy:
+        content: |
+          DEPLOYED_RELEASE={{ release_timestamp | quote }}
+          DEPLOYED_RELEASE_GIT_HASH={{ release_hash | quote }}
+          {% if sites[site].env_vars is defined %}
+            {% for i in sites[site].env_vars | dict2items %}
+              {{ i.key }}={{ i.value | string | quote }}
+            {% endfor %}
+          {% endif %}
+        dest: '/var/www/{{ site }}/current_release.sh'
+        owner: '{{ administrator_username }}'
+        group: root
+        mode: '0640'
+
+    - name: Reload Apache
+      service:
+        name: apache2
+        state: reloaded
+
+    - name: Reload php-fpm
+      service:
+        name: php7.2-fpm
+        state: reloaded
+
+- hosts: localhost
+  become: no
+  tasks:
+    - name: Ensure previously checked-out project folder no longer exists
+      file:
+        path: ./build
+        state: absent
