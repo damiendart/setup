@@ -26,6 +26,7 @@
           - /protected/site/plugins/kirby-twig/
           - /protected/vendor/
           - /public/media**
+          + /composer.*
           + /public**
           + /protected**
           + /private**
@@ -42,6 +43,8 @@
   gather_facts: no
   become: yes
   vars:
+    project_base_directory: '/var/www/{{ site }}'
+    project_release_base_directory: '{{ project_base_directory }}/releases/{{ release_timestamp }}'
     # Accepted strings: "standard" or "kirby3".
     project_type: standard
 
@@ -60,28 +63,16 @@
 
     - name: Ensure project release folder exists
       file:
-        path: '/var/www/{{ site }}/releases/{{ release_timestamp }}'
+        path: '{{ project_release_base_directory }}'
         state: directory
         owner: '{{ administrator_username }}'
         group: www-data
         mode: '0750'
 
-    - name: Ensure Composer-related files from project release exist
-      copy:
-        src: './build/{{ item }}'
-        dest: '/var/www/{{ site }}/releases/{{ release_timestamp }}/{{ item }}'
-        owner: '{{ administrator_username }}'
-        group: root
-        mode: '0640'
-      when: project_type == 'kirby3'
-      loop:
-        - composer.json
-        - composer.lock
-
-    - name: Ensure remaining files from project release exist
+    - name: Ensure files in project release folder exist
       synchronize:
         src: ./build/
-        dest: '/var/www/{{ site }}/releases/{{ release_timestamp }}'
+        dest: '{{ project_release_base_directory }}'
         archive: yes
         compress: yes
         owner: no
@@ -91,7 +82,7 @@
     - name: Ensure Composer dependencies exist
       composer:
         command: install
-        working_dir: '/var/www/{{ site }}/releases/{{ release_timestamp }}'
+        working_dir: '{{ project_release_base_directory }}'
         classmap_authoritative: yes
       become: no
       when: project_type == 'kirby3'
@@ -100,9 +91,10 @@
     - name: Ensure owners and permissions for files in project release folder are correct
       command: '{{ item }}'
       args:
-        chdir: '/var/www/{{ site }}/releases/{{ release_timestamp }}'
+        chdir: '{{ project_release_base_directory }}'
       changed_when: true
       loop:
+        - "find . -wholename './composer.*' -exec chown '{{ administrator_username }}:root' {} \\;"
         - "find . -wholename './private*' -exec chown '{{ administrator_username }}:root' {} \\;"
         - "find . -wholename './protected*' -exec chown '{{ administrator_username }}:www-data' {} \\;"
         - "find . -wholename './public*' -exec chown '{{ administrator_username }}:www-data' {} \\;"
@@ -113,7 +105,7 @@
 
     - name: Ensure Kirby-3-specific writable folders exist in project release folder
       file:
-        path: '/var/www/{{ site }}/releases/{{ release_timestamp }}/{{ item }}'
+        path: '{{ project_release_base_directory }}/{{ item }}'
         state: directory
         owner: www-data
         group: www-data
@@ -133,7 +125,7 @@
               Define {{ i.key }} {{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
-        dest: '/var/www/{{ site }}/current_release.apache2.conf'
+        dest: '{{ project_base_directory }}/current_release.apache2.conf'
         owner: '{{ administrator_username }}'
         group: root
         mode: '0640'
@@ -148,7 +140,7 @@
               {{ i.key }}={{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
-        dest: '/var/www/{{ site }}/current_release.sh'
+        dest: '{{ project_base_directory }}/current_release.sh'
         owner: '{{ administrator_username }}'
         group: root
         mode: '0640'
@@ -166,7 +158,7 @@
     - name: Ensure only current and previous project release folders exist
       shell: 'set -eo pipefail; ls -1tr /var/www/{{ site }}/releases | head -n -2 | xargs rm -rf'
       args:
-        chdir: '/var/www/{{ site }}/releases'
+        chdir: '{{ project_base_directory }}/releases'
         executable: /bin/bash
       changed_when: true
 
