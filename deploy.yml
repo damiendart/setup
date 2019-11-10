@@ -119,10 +119,13 @@
       copy:
         content: |
           Define DEPLOYED_RELEASE {{ release_timestamp | quote }}
-          Define DEPLOYED_RELEASE_GIT_HASH {{ release_hash | quote }}
+
+          SetEnv DEPLOYED_RELEASE {{ release_timestamp | quote }}
+          SetEnv DEPLOYED_RELEASE_GIT_HASH {{ release_hash | quote }}
+
           {% if sites[site].env_vars is defined %}
             {% for i in sites[site].env_vars | dict2items %}
-              Define {{ i.key }} {{ i.value | string | quote }}
+              SetEnv {{ i.key }} {{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
         dest: '{{ project_base_directory }}/current_release.apache2.conf'
