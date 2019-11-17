@@ -8,8 +8,15 @@
 
 export EDITOR="vim"
 export GEM_HOME="$HOME/.gem"
+export HISTCONTROL=ignoreboth
+export HISTFILESIZE=100000
+export HISTSIZE="$HISTFILESIZE"
+export HISTTIMEFORMAT='%s '
 export NPM_CONFIG_PREFIX="$HOME/.npm"
 export PATH="$PATH:$GEM_HOME/bin:$NPM_CONFIG_PREFIX/bin:$HOME/.local/bin"
+export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+
+shopt -s cmdhist
 
 git config --global core.excludesfile "$HOME/.gitignore"
 cat > "$HOME/.gitignore" <<GITIGNORE
