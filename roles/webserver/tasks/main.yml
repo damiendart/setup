@@ -91,7 +91,7 @@
 - name: Ensure Apache virtual hosts configuration files exist
   template:
     src: virtualhost.conf.j2
-    dest: '/etc/apache2/sites-available/{{ item.key }}.conf'
+    dest: '/etc/apache2/sites-available/{{ "00-" if item.key == server_name else "" }}{{ item.key }}.conf'
     owner: root
     group: root
     mode: '0600'
@@ -141,9 +141,9 @@
   notify: Reload Apache
 
 - name: Ensure Apache virtual hosts are active
-  command: 'a2ensite {{ item.key }}.conf'
+  command: 'a2ensite {{ "00-" if item.key == server_name else "" }}{{ item.key }}.conf'
   args:
-    creates: '/etc/apache2/sites-enabled/{{ item.key }}.conf'
+    creates: '/etc/apache2/sites-enabled/{{ "00-" if item.key == server_name else "" }}{{ item.key }}.conf'
   loop: '{{ sites | dict2items }}'
   loop_control:
     label: '{{ item.key }}'
