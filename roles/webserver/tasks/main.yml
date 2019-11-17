@@ -98,6 +98,7 @@
   loop: '{{ sites | dict2items }}'
   loop_control:
     label: '{{ item.key }}'
+  notify: Reload Apache
 
 - name: 'Ensure ".htpasswd" files exist for password-protected Apache virtual hosts'
   htpasswd:
@@ -111,6 +112,7 @@
   loop: "{{ sites | dict2items }}"
   loop_control:
     label: '{{ item.key }}'
+  notify: Reload Apache
 
 - name: Ensure Apache virtual hosts scheduled tasks scripts exist
   template:
@@ -136,6 +138,16 @@
     - "{{ lookup('dict', sites) }}"
     - [ "shared/protected/accounts", "shared/protected/content", "shared/protected/sessions" ]
   when: item[0].value.kirby_key is defined
+  notify: Reload Apache
+
+- name: Ensure Apache virtual hosts are active
+  command: 'a2ensite {{ item.key }}.conf'
+  args:
+    creates: '/etc/apache2/sites-enabled/{{ item.key }}.conf'
+  loop: '{{ sites | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+  notify: Reload Apache
 
 - name: Get Composer status
   stat:

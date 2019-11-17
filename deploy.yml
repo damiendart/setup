@@ -148,11 +148,6 @@
         group: root
         mode: '0640'
 
-    - name: Ensure relevant Apache virtual host is active
-      command: 'a2ensite {{ site }}.conf'
-      args:
-        creates: '/etc/apache2/sites-enabled/{{ site }}.conf'
-
     - name: Reload Apache
       service:
         name: apache2
