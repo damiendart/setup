@@ -8,7 +8,6 @@
         repo: '{{ repo }}'
         dest: ./build
         version: '{{ version | default("HEAD") }}'
-        depth: 1
       register: git_repo
 
     - name: Ensure project release information file exists
