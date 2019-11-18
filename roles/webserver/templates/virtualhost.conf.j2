@@ -48,14 +48,15 @@
 
     {% if item.value.enabled | default(true) %}
       Include /var/www/{{ item.key }}/current_release.apache2.conf
-      # Allow individual site customisations at the virtual host level.
-      IncludeOptional ${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]
 
       Define PROJECT_ROOT /var/www/{{ item.key }}
       Define SHARED_ROOT /var/www/{{ item.key }}/shared
       Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
 
       DocumentRoot ${RELEASE_ROOT}/public
+
+      # Allow individual site customisations at the virtual host level.
+      IncludeOptional ${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]
 
       SetEnv SHARED_ROOT ${SHARED_ROOT}
 
