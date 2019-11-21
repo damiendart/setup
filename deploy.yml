@@ -6,7 +6,7 @@
     - name: Ensure project has been checked out with Git
       git:
         repo: '{{ repo }}'
-        dest: ./build
+        dest: ./build/git
         version: '{{ version | default("HEAD") }}'
       register: git_repo
 
@@ -18,7 +18,13 @@
           release_timestamp: {{ lookup("pipe", "date +%Y%m%d%H%M%S") }}
         dest: ./build/release.yml
 
-    - name: 'Ensure ".rsync-filter" exists in project folder'
+    - name: Ensure project continuous integration tasks have been completed
+      command: '{{ task_bin | default("task") }} ci'
+      args:
+        chdir: ./build/git
+      changed_when: true
+
+    - name: 'Ensure ".rsync-filter" exists in project Git folder'
       copy:
         content: |
           - /protected/cache/
@@ -30,13 +36,19 @@
           + /protected**
           + /private**
           - *
-        dest: ./build/.rsync-filter
+        dest: ./build/git/.rsync-filter
 
-    - name: Ensure project continuous integration tasks have been completed
-      command: '{{ task_bin | default("task") }} ci'
-      args:
-        chdir: ./build
-      changed_when: true
+    - name: Ensure project release folder exists
+      synchronize:
+        src: ./build/git/
+        dest: ./build/release/
+        owner: no
+        group: no
+
+    - name: Ensure project release archive exists
+      archive:
+        path: ./build/release/*
+        dest: ./build/release.tgz
 
 - hosts: all
   gather_facts: no
@@ -68,14 +80,10 @@
         group: www-data
         mode: '0750'
 
-    - name: Ensure files in project release folder exist
-      synchronize:
-        src: ./build/
+    - name: Ensure project release archive has been extracted
+      unarchive:
+        src: ./build/release.tgz
         dest: '{{ project_release_base_directory }}'
-        archive: yes
-        compress: yes
-        owner: no
-        group: no
       become: no
 
     - name: Ensure Composer dependencies exist
@@ -167,7 +175,7 @@
 - hosts: localhost
   become: no
   tasks:
-    - name: Ensure previously checked-out project folder no longer exists
+    - name: Ensure temporary build folder no longer exists
       file:
         path: ./build
         state: absent
