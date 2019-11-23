@@ -53,6 +53,10 @@
       Define SHARED_ROOT /var/www/{{ item.key }}/shared
       Define RELEASE_ROOT /var/www/{{ item.key }}/releases/${DEPLOYED_RELEASE}
 
+      <If "%{HTTP_USER_AGENT} == 'ansible-httpget'">
+        header set X-Release "${DEPLOYED_RELEASE}"
+      </If>
+
       DocumentRoot ${RELEASE_ROOT}/public
 
       # Allow individual site customisations at the virtual host level.

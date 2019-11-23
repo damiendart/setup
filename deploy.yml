@@ -172,6 +172,14 @@
         executable: /bin/bash
       changed_when: true
 
+    - name: Ensure site and project release are live
+      uri:
+        url: 'https://{{ site }}/'
+        url_password: '{{ sites[site].auth.password }}'
+        url_username: '{{ sites[site].auth.username }}'
+      register: response
+      failed_when: release_timestamp | string not in response.x_release
+
 - hosts: localhost
   become: no
   tasks:
