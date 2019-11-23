@@ -175,8 +175,8 @@
     - name: Ensure site and project release are live
       uri:
         url: 'https://{{ site }}/'
-        url_password: '{{ sites[site].auth.password }}'
-        url_username: '{{ sites[site].auth.username }}'
+        url_password: '{{ sites[site].auth.password | default("") }}'
+        url_username: '{{ sites[site].auth.username | default("") }}'
       register: response
       failed_when: release_timestamp | string not in response.x_release
 
