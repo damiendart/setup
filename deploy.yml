@@ -179,6 +179,8 @@
         url_username: '{{ sites[site].auth.username | default("") }}'
       register: response
       failed_when: release_timestamp | string not in response.x_release
+      tags:
+        - healthcheck
 
 - hosts: localhost
   become: no
