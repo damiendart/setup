@@ -56,7 +56,7 @@
   vars:
     project_base_directory: '/var/www/{{ site }}'
     project_release_base_directory: '{{ project_base_directory }}/releases/{{ release_timestamp }}'
-    # Accepted strings: "standard" or "kirby3".
+    # Accepted strings: "standard", "php", "kirby3".
     project_type: standard
 
   tasks:
@@ -92,7 +92,7 @@
         working_dir: '{{ project_release_base_directory }}'
         classmap_authoritative: yes
       become: no
-      when: project_type == 'kirby3'
+      when: project_type == 'kirby3' or project_type == 'php'
       changed_when: true
 
     - name: Ensure owners and permissions for files in project release folder are correct
