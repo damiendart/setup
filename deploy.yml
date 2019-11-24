@@ -143,11 +143,12 @@
     - name: Ensure project release environment variables file exists
       copy:
         content: |
-          DEPLOYED_RELEASE={{ release_timestamp | quote }}
-          DEPLOYED_RELEASE_GIT_HASH={{ release_hash | quote }}
+          export DEPLOYED_RELEASE={{ release_timestamp | quote }}
+          export DEPLOYED_RELEASE_GIT_HASH={{ release_hash | quote }}
+          export SHARED_ROOT={{ project_base_directory ~ '/shared' | quote }}
           {% if sites[site].env_vars is defined %}
             {% for i in sites[site].env_vars | dict2items %}
-              {{ i.key }}={{ i.value | string | quote }}
+              export {{ i.key }}={{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
         dest: '{{ project_base_directory }}/current_release.sh'
