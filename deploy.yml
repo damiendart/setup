@@ -156,40 +156,43 @@
         group: root
         mode: '0640'
 
-    - name: Ensure Sentry is aware of project release
-      uri:
-        url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/'
-        method: POST
-        body_format: json
-        headers:
-          Authorization: 'Bearer {{ sentry_auth_token }}'
-        body: |
-          {
-            "projects": ["{{ sites[site].sentry_project }}"],
-            "refs": [
-              {
-                "commit": "{{ release_hash }}",
-                "repository": "{{ sites[site].github_project }}"
-              }
-            ],
-            "version": "{{ release_timestamp }}"
-          }
-        status_code: 201
-      when: sites[site].sentry_project is defined
+    - name: Ensure Sentry is aware of project release and deployment
+      block:
+      - name: Ensure Sentry is aware of project release and deployment
+        uri:
+          url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/'
+          method: POST
+          body_format: json
+          headers:
+            Authorization: 'Bearer {{ sentry_auth_token }}'
+          body: |
+            {
+              "projects": ["{{ sites[site].sentry_project }}"],
+              "refs": [
+                {
+                  "commit": "{{ release_hash }}",
+                  "repository": "{{ sites[site].github_project }}"
+                }
+              ],
+              "version": "{{ release_timestamp }}"
+            }
+          status_code: 201
 
-    - name: Ensure Sentry is aware of project release deployment
-      uri:
-        url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ release_timestamp }}/deploys/'
-        method: POST
-        body_format: json
-        headers:
-          Authorization: 'Bearer {{ sentry_auth_token }}'
-        body: |
-          {
-            "environment": "{{ sites[site].env_vars.APP_ENV  }}",
-          }
-        status_code: 201
+      - name: Ensure Sentry is aware of project release deployment
+        uri:
+          url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ release_timestamp }}/deploys/'
+          method: POST
+          body_format: json
+          headers:
+            Authorization: 'Bearer {{ sentry_auth_token }}'
+          body: |
+            {
+              "environment": "{{ sites[site].env_vars.APP_ENV  }}",
+            }
+          status_code: 201
       when: sites[site].sentry_project is defined
+      run_once: true
+      delegate_to: localhost
 
     - name: Reload Apache
       service:
