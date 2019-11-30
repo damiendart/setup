@@ -42,7 +42,7 @@
 
 - name: Ensure fzf executable is installed
   unarchive:
-    src: https://github.com/junegunn/fzf-bin/releases/download/0.19.0/fzf-0.19.0-linux_amd64.tgz
+    src: "https://github.com/junegunn/fzf-bin/releases/download/{{ fzf_version }}/fzf-{{ fzf_version }}-linux_amd64.tgz"
     dest: /usr/local/bin
     owner: root
     group: root
@@ -58,9 +58,9 @@
     mode: "0755"
   with_items:
     - dest: /usr/local/etc/fzf-completion.bash
-      url: https://raw.githubusercontent.com/junegunn/fzf/0.19.0/shell/completion.bash
+      url: "https://raw.githubusercontent.com/junegunn/fzf/{{ fzf_version }}/shell/completion.bash"
     - dest: /usr/local/etc/fzf-key-bindings.bash
-      url: https://raw.githubusercontent.com/junegunn/fzf/0.19.0/shell/key-bindings.bash
+      url: "https://raw.githubusercontent.com/junegunn/fzf/{{ fzf_version }}/shell/key-bindings.bash"
 
 - name: 'Ensure custom ".bash_profile" exists in administrator home directory'
   template:
