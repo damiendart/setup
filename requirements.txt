@@ -1,5 +1,6 @@
 ansible==2.9.1
 ansible-lint==4.1.0
 flake8==3.7.8
+mitogen==0.2.9
 testinfra==3.2.0
 yamllint==1.18.0
