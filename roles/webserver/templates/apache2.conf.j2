@@ -17,6 +17,10 @@ Protocols h2 h2c http/1.1
 
 ServerName {{ server_name }}
 
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-XSS-Protection "1; mode=block"
+
 <IfModule mod_expires.c>
   ExpiresActive on
   ExpiresByType application/xhtml+xml "access plus 0 seconds"
