@@ -14,84 +14,11 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
-
-- hosts: all
-  become: yes
-  pre_tasks:
-    - name: Ensure timezone is set correctly
-      timezone:
-          name: Europe/London
-
-    - name: Ensure a non-root user exists
-      user:
-        append: yes
-        name: "{{ lookup('env', 'USER') }}"
-        # The "password_hash" filter doesn't require passlib.
-        password: "{{ lookup('password', 'inventory/credentials-' + inventory_hostname + '.txt length=22') | password_hash('sha512') }}"
-        update_password: on_create
-        groups:
-          - sudo
-
-    - name: Ensure SSH keys for non-root user exist
-      authorized_key:
-        user: "{{ lookup('env', 'USER') }}"
-        key: "https://github.com/{{ github_username }}.keys"
-
-    - name: Ensure SSH doesn't allow passwords or root access
-      lineinfile:
-        dest: /etc/ssh/sshd_config
-        regexp: "^{{ item }}"
-        line: "{{ item }} no"
-        state: present
-      with_items:
-        - PasswordAuthentication
-        - PermitRootLogin
-      notify: Restart sshd
-
-    - name: Ensure currently installed packages have been upgraded
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-        upgrade: yes
-
-    - name: Ensure required packages are installed
-      apt:
-        name:
-          # Ansible requires Passlib for certain functions.
-          - python3-passlib
-          # As of Debian 9 (and Ubuntu 16.04), everything required for
-          # unattended upgrades is installed by default.
-          # - unattended-upgrades
-        state: present
-
-    # - name: Ensure Composer is up-to-date
-    # command: /usr/local/bin/composer self-update
-    # register: composer_update
-    # changed_when: "'Updating to version' in composer_update.stdout"
-
-    - name: Ensure ufw is configured
-      ufw:
-        name: "{{ item.profile }}"
-        rule: "{{ item.rule }}"
-        state: enabled
-      notify: Restart ufw
-      with_items:
-        - profile: Apache Full
-          rule: allow
-        - profile: OpenSSH
-          rule: limit
-
-  handlers:
-    - name: Restart sshd
-      service: name=ssh state=restarted
-
-    - name: Restart ufw
-      service: name=ufw state=restarted
-
 - hosts: production
   become: yes
   roles:
     - backup
+    - base
     - letsencrypt
     - livepatch
     - monitoring
@@ -100,5 +27,6 @@
 - hosts: local
   become: yes
   roles:
+    - base
     - development
     - webserver

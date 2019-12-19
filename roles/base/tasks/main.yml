@@ -1,0 +1,50 @@
+---
+- name: Ensure timezone is set correctly
+  timezone:
+    name: Europe/London
+
+- name: Ensure administrator user account exists
+  user:
+    append: yes
+    name: "{{ administrator_username }}"
+    password: "{{ administrator_password }}"
+    update_password: on_create
+    groups:
+      - sudo
+
+- name: Ensure administrator user account SSH keys exist
+  authorized_key:
+    user: "{{ lookup('env', 'USER') }}"
+    key: "https://github.com/{{ administrator_github_username }}.keys"
+
+- name: Ensure SSH doesn't allow passwords or root access
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^{{ item }}"
+    line: "{{ item }} no"
+    state: present
+  with_items:
+    - PasswordAuthentication
+    - PermitRootLogin
+  notify: Restart sshd
+
+- name: Ensure base packages are installed
+  apt:
+    force_apt_get: yes
+    name:
+      - git
+      # Ansible requires Passlib for certain functions.
+      - python3-passlib
+    state: present
+
+- name: Ensure ufw is configured
+  ufw:
+    name: "{{ item.profile }}"
+    rule: "{{ item.rule }}"
+    state: enabled
+  notify: Restart ufw
+  with_items:
+    - profile: Apache Full
+      rule: allow
+    - profile: OpenSSH
+      rule: limit
