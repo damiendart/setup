@@ -16,5 +16,6 @@ if [[ -z "${LOG_FILES// }" ]]; then
   printf "No access log files found.\n" >&2
   exit 2
 else
-  zcat -f "$LOG_FILES" | goaccess --log-format=COMBINED -
+  # shellcheck disable=SC2086
+  zcat -f ${LOG_FILES//$'\n'/ } | goaccess --log-format=COMBINED -
 fi
