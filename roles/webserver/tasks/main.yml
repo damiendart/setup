@@ -201,6 +201,14 @@
     group: root
     mode: '0700'
 
+- name: 'Ensure "webstats" Bash completion script exists'
+  template:
+    src: webstats_bash_completion.sh.j2
+    dest: /etc/bash_completion.d/webstats
+    owner: root
+    group: root
+    mode: '0644'
+
 # We force any notified handlers to run in case there are any changes
 # that need to be applied before other roles that have this role as a
 # dependency are executed.
