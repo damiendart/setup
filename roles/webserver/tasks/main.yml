@@ -173,49 +173,22 @@
   notify:
     - Reload Apache
 
-- name: Get Composer status
-  stat:
-    path: /usr/local/bin/composer
-  register: composer_bin
-
-- name: Ensure Composer is installed
-  block:
-    - name: Get Composer installer signature
-      uri:
-        url: https://composer.github.io/installer.sig
-        return_content: true
-      register: composer_installer_signature
-
-    - name: Ensure Composer installer script exists
-      get_url:
-        url: https://getcomposer.org/installer
-        dest: /tmp/composer-installer.php
-        mode: 0755
-        checksum: "sha384:{{ composer_installer_signature.content }}"
-
-    - name: Ensure Composer is installed
-      command: php composer-installer.php --install-dir=/usr/local/bin --filename=composer
-      args:
-        chdir: /tmp
-
-    - name: Ensure Composer installer script no longer exists
-      file:
-        path: /tmp/composer-installer.php
-        state: absent
-  when: not composer_bin.stat.exists
-
-- name: Ensure the Composer executable has the correct owners and permissions
-  file:
+- name: Ensure Composer exists
+  get_url:
+    url: "https://getcomposer.org/download/{{ composer_version }}/composer.phar"
+    dest: /usr/local/bin/composer
+    mode: 0755
     group: root
-    mode: "0755"
     owner: root
-    path: /usr/local/bin/composer
+    checksum: "sha256:{{ composer_sha256_hash }}"
 
-- name: Ensure Composer plays nicely with GitHub
-  command: "composer config -g github-oauth.github.com {{ composer_github_token }}"
-  changed_when: false
-  become: yes
-  become_user: "{{ administrator_username }}"
+- name: 'Ensure Composer "auth.json" exists'
+  template:
+    src: composer_auth.json.j2
+    dest: "/home/{{ administrator_username }}/.config/composer/auth.json"
+    owner: "{{ administrator_username }}"
+    group: "{{ administrator_username }}"
+    mode: '0600'
 
 - name: Ensure custom GoAccess wrapper script exists
   template:
