@@ -35,14 +35,28 @@
 
 - name: Ensure legacy and unnecessary Apache modules are disabled
   apache2_module:
+    force: yes
     name: "{{ item }}"
     state: absent
   loop:
+    - autoindex
     - dav
     - include
     - mpm_prefork
     - status
   notify: Reload Apache
+
+- name: Ensure legacy or unnecessary Apache configuration files are disabled
+  command: "a2disconf {{ item }}"
+  args:
+    removes: "/etc/apache2/conf-enabled/{{ item }}.conf"
+  loop:
+    - charset
+    - localized-error-pages
+    - other-vhosts-access-log
+    - serve-cgi-bin
+  notify:
+    - Reload Apache
 
 - name: Ensure custom Apache configuration file exists
   template:
@@ -148,6 +162,16 @@
   loop_control:
     label: '{{ item.key }}'
   notify: Reload Apache
+
+- name: Ensure unnecessary Apache virtual hosts are inactive
+  command: "a2dissite {{ item }}.conf"
+  args:
+    removes: "/etc/apache2/sites-enabled/{{ item }}.conf"
+  loop:
+    - 000-default
+    - default-ssl
+  notify:
+    - Reload Apache
 
 - name: Get Composer status
   stat:
