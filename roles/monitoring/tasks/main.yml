@@ -68,6 +68,15 @@
     validate: monit -c %s -t
   notify: Restart Monit
 
+- name: Ensure custom Tarsnap logrotate configuration file exists (if required)
+  template:
+    src: tarsnap-cron-logrotate.j2
+    dest: /etc/logrotate.d/tarsnap-cron
+    owner: root
+    group: root
+    mode: '0600'
+  when: '"backup" in ansible_play_role_names'
+
 - name: Ensure monitoring-related services are operational and set to run on boot
   service:
     name: "{{ item }}"

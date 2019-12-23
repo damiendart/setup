@@ -9,5 +9,6 @@
 
 FOLDERS_TO_BACKUP='{{ folders_to_backup | join(' ') }}'
 
-/usr/bin/tarsnap -c --quiet --no-print-stats --keyfile /root/tarsnap.key \
-    -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" $FOLDERS_TO_BACKUP
+/usr/bin/tarsnap -c --keyfile /root/tarsnap.key \
+    -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" \
+    $FOLDERS_TO_BACKUP >/var/log/tarsnap.log 2>&1
