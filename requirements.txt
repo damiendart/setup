@@ -1,3 +1,7 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
 ansible==2.9.1
 ansible-lint==4.1.0
 flake8==3.7.8
