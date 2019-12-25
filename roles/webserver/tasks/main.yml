@@ -187,8 +187,17 @@
     checksum: "sha256:{{ composer_sha256_hash }}"
 
 - name: 'Ensure Composer "auth.json" exists'
-  template:
-    src: composer_auth.json.j2
+  copy:
+    content: |
+      {
+          "bitbucket-oauth": {},
+          "github-oauth": {
+              "github.com": "{{ composer_github_token }}"
+          },
+          "gitlab-oauth": {},
+          "gitlab-token": {},
+          "http-basic": {}
+      }
     dest: "/home/{{ administrator_username }}/.config/composer/auth.json"
     owner: "{{ administrator_username }}"
     group: "{{ administrator_username }}"
