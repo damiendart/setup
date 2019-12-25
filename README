@@ -1,6 +1,16 @@
-Damien's Ansible Stuff
-======================
+setup
+=====
 
-A bunch of Ansible stuff I use to setup various things.
+A mess of Ansible stuff that I use to provision and maintain my personal
+development environment and a couple of servers that I host a few small
+websites on.
+
+  - I currently use Ubuntu 18.04, so the included Ansible playbooks and
+    roles have only been tested there.
+  - All Ansible hosts must have Python 3 installed beforehand.
+  - Mitogen has been included as a dependency, but you'll need to
+    [manually set it up][1] for it to take effect.
+
+[1]: <https://mitogen.networkgenomics.com/ansible_detailed.html#installation>
 
 -- Damien
