@@ -3,6 +3,11 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+- name: 'Ensure "deb.sury.org" PHP repository is present in APT source lists'
+  apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+
 - name: Ensure webserver-related packages are installed
   apt:
     force_apt_get: yes
@@ -12,12 +17,12 @@
       # native Imagick PHP extension.
       - imagemagick
       - goaccess
-      # "php-fpm" is required for HTTP/2 support.
-      - php7.2-fpm
+      # PHP-FPM is required for HTTP/2 support.
+      - "php{{ php_version }}-fpm"
       # Kirby 3 requires the following PHP extensions.
-      - php-curl
-      - php-gd
-      - php-mbstring
+      - "php{{ php_version }}-curl"
+      - "php{{ php_version }}-gd"
+      - "php{{ php_version }}-mbstring"
     state: present
 
 - name: Ensure required Apache modules are enabled
@@ -78,24 +83,24 @@
   notify:
     - Reload Apache
 
-- name: 'Ensure the "php7.2-fpm.conf" Apache configuration file is active'
-  command: a2enconf php7.2-fpm
+- name: Ensure the PHP-FPM Apache configuration file is active
+  command: "a2enconf php{{ php_version }}-fpm"
   args:
-    creates: /etc/apache2/conf-enabled/php7.2-fpm.conf
+    creates: "/etc/apache2/conf-enabled/php{{ php_version }}-fpm.conf"
   notify:
     - Reload Apache
-    - Reload php-fpm
+    - Reload PHP-FPM
 
 - name: Ensure PHP allows uploads of sizes up to 20MB
   lineinfile:
-    dest: /etc/php/7.2/fpm/php.ini
+    dest: "/etc/php/{{ php_version }}/fpm/php.ini"
     regexp: '^{{ item }}'
     line: '{{ item }} = 20M'
     state: present
   loop:
     - post_max_size
     - upload_max_filesize
-  notify: Reload php-fpm
+  notify: Reload PHP-FPM
 
 - name: Ensure Apache virtual hosts base folder structures exist
   file:
