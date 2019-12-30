@@ -3,10 +3,13 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure "deb.sury.org" PHP repository is present in APT source lists'
+- name: 'Ensure "deb.sury.org" repositories are present in APT source lists'
   apt_repository:
-    repo: ppa:ondrej/php
+    repo: "ppa:ondrej/{{ item }}"
     state: present
+  loop:
+    - apache2
+    - php
 
 - name: Ensure webserver-related packages are installed
   apt:
