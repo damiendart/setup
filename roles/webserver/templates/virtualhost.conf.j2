@@ -29,14 +29,16 @@
     ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
     CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
-    Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
-    {% if 'letsencrypt' in ansible_play_role_names and item.value.enabled | default(true) %}
+    <IfFile "/etc/letsencrypt/live/{{ item.key }}/fullchain.pem">
+      Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
       SSLCertificateFile /etc/letsencrypt/live/{{ item.key }}/fullchain.pem
       SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.key }}/privkey.pem
-    {% else %}
+    </IfFile>
+
+    <IfFile ! "/etc/letsencrypt/live/{{ item.key }}/fullchain.pem">
       SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
       SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-    {% endif %}
+    </IfFile>
 
     <If "%{HTTP_HOST} != '{{ item.key }}'">
       Redirect permanent "/" "https://{{ item.key }}/"
@@ -46,7 +48,7 @@
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
     </IfModule>
 
-    {% if item.value.enabled | default(true) %}
+    <IfFile "/var/www/{{ item.key }}/current_release.apache2.conf">
       Include /var/www/{{ item.key }}/current_release.apache2.conf
 
       Define PROJECT_ROOT /var/www/{{ item.key }}
@@ -98,7 +100,9 @@
 
         IncludeOptional ${RELEASE_ROOT}/private/apache2/directory.apache.con[f]
       </Directory>
-    {% else %}
+    </IfFile>
+
+    <IfFile ! "/var/www/{{ item.key }}/current_release.apache2.conf">
       <IfModule mod_rewrite.c>
         RewriteEngine on
 
@@ -106,6 +110,6 @@
         RewriteCond /var/www/html/%{REQUEST_URI} !-f
         RewriteRule ^ - [R=503,L]
       </IfModule>
-    {% endif %}
+    </IfFile>
   </VirtualHost>
 </IfModule>
