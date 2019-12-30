@@ -37,6 +37,7 @@
     force_apt_get: yes
     name:
       - git
+      - msmtp-mta
       # Ansible requires Passlib for certain functions.
       - python3-passlib
     state: present
@@ -52,3 +53,13 @@
       rule: allow
     - profile: OpenSSH
       rule: limit
+
+- name: Ensure custom msmtp configuration file exist
+  template:
+    src: msmtprc.j2
+    dest: /etc/msmtprc
+    owner: root
+    group: root
+    # The msmtp configuration file has relaxed permissions as there
+    # remain a few places where non-root users require msmtp.
+    mode: '0644'
