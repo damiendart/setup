@@ -42,7 +42,9 @@
     dest: /etc/msmtprc
     owner: root
     group: root
-    mode: '0600'
+    # The msmtp configuration file has relaxed permissions as there
+    # remain a few places where non-root users require msmtp.
+    mode: '0644'
 
 - name: Ensure custom Fail2ban configuration file exist
   template:
