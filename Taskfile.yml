@@ -25,6 +25,7 @@ tasks:
 
   lint:ansible:
     cmds:
+      - ansible-lint -p --nocolor apt-update.yml
       - ansible-lint -p --nocolor deploy.yml
       - ansible-lint -p --nocolor provision.yml
     desc: Lint Ansible-related files with Ansible Lint
