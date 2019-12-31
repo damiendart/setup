@@ -28,6 +28,26 @@
       - "php{{ php_version }}-mbstring"
     state: present
 
+# "deb.sury.org"'s Apache package does not provide an UFW profile.
+- name: Ensure Apache UFW profile exists
+  copy:
+    content: |
+      [Apache Full]
+      title=Web Server (HTTP,HTTPS)
+      description=The Apache web server.
+      ports=80,443/tcp
+    dest: /etc/ufw/applications.d/apache2-utils.ufw.profile
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart UFW
+
+- name: Ensure UFW Apache profile is active
+  ufw:
+    name: Apache Full
+    rule: allow
+  notify: Restart UFW
+
 - name: Ensure required Apache modules are enabled
   apache2_module:
     name: "{{ item }}"

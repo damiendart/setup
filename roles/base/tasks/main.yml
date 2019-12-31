@@ -27,17 +27,11 @@
       - openssh-server
     state: present
 
-- name: Ensure ufw is configured
+- name: Ensure OpenSSH Server UFW profile is active
   ufw:
-    name: "{{ item.profile }}"
-    rule: "{{ item.rule }}"
-    state: enabled
-  notify: Restart ufw
-  with_items:
-    - profile: Apache Full
-      rule: allow
-    - profile: OpenSSH
-      rule: limit
+    name: OpenSSH
+    rule: limit
+  notify: Restart UFW
 
 - name: Ensure OpenSSH Server doesn't allow passwords or root access
   lineinfile:
