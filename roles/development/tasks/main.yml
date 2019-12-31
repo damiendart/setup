@@ -19,13 +19,11 @@
     name:
       - build-essential
       - nodejs
-      - python-pip
       - python3-pip
-      - ruby
-      - ruby-dev
       - shellcheck
       - tig
       - tree
+      - vim
     state: present
 
 - name: Ensure the Task snap is installed
