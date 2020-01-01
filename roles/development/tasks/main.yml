@@ -71,3 +71,24 @@
     owner: "{{ administrator_username }}"
     group: "{{ administrator_username }}"
     mode: '0600'
+
+- name: Ensure fonts directory exists in administrator home directory
+  file:
+    path: /home/{{ administrator_username }}/.fonts/iosevka
+    state: directory
+    owner: "{{ administrator_username }}"
+    group: "{{ administrator_username }}"
+    mode: '0700'
+  tags:
+    - gui
+
+- name: Ensure Iosevka TrueType font files are present in admin home directory
+  unarchive:
+    src: "https://github.com/be5invis/Iosevka/releases/download/{{ development__iosevka_version }}/{{ development__iosevka_archive_filename }}"
+    dest: "/home/{{ administrator_username }}/.fonts/iosevka"
+    remote_src: yes
+    owner: "{{ administrator_username }}"
+    group: "{{ administrator_username }}"
+    exclude: "{{ development__iosevka_archive_excludes }}"
+  tags:
+    - gui
