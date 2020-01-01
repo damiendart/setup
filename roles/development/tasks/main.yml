@@ -64,10 +64,10 @@
     - dest: /usr/local/etc/fzf-key-bindings.bash
       url: "https://raw.githubusercontent.com/junegunn/fzf/{{ fzf_version }}/shell/key-bindings.bash"
 
-- name: 'Ensure custom ".bash_profile" exists in administrator home directory'
+- name: 'Ensure custom ".bash_aliases" exists in administrator home directory'
   template:
-    src: bash_profile.sh.j2
-    dest: "/home/{{ administrator_username }}/.bash_profile"
+    src: bash_aliases.sh.j2
+    dest: "/home/{{ administrator_username }}/.bash_aliases"
     owner: "{{ administrator_username }}"
     group: "{{ administrator_username }}"
     mode: '0600'
