@@ -214,7 +214,15 @@
     owner: root
     checksum: "sha256:{{ composer_sha256_hash }}"
 
-- name: 'Ensure Composer "auth.json" exists'
+- name: Ensure Composer configuration folder for administrator exists
+  file:
+    path: /home/{{ administrator_username }}/.config/composer
+    state: directory
+    owner: "{{ administrator_username }}"
+    group: "{{ administrator_username }}"
+    mode: '0755'
+
+- name: 'Ensure Composer "auth.json" for administrator exists'
   copy:
     content: |
       {
@@ -229,7 +237,7 @@
     dest: "/home/{{ administrator_username }}/.config/composer/auth.json"
     owner: "{{ administrator_username }}"
     group: "{{ administrator_username }}"
-    mode: '0600'
+    mode: '0644'
 
 - name: Ensure custom GoAccess wrapper script exists
   template:
