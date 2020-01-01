@@ -255,6 +255,24 @@
     group: root
     mode: '0644'
 
+- name: Run Xdebug-related tasks
+  block:
+  - name: Ensure Xdebug is installed
+    apt:
+      force_apt_get: yes
+      name: php-xdebug
+      state: present
+
+  - name: Ensure Xdebug's remote debugger is enabled
+    copy:
+      content: xdebug.remote_enable=1
+      dest: "/etc/php/{{ php_version }}/fpm/conf.d/20-xdebug-remote-enable.ini"
+      owner: root
+      group: root
+      mode: '0644'
+    notify: Reload PHP-FPM
+  when: webserver__install_xdebug
+
 # We force any notified handlers to run in case there are any changes
 # that need to be applied before other roles that have this role as a
 # dependency are executed.

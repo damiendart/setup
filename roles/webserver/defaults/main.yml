@@ -16,6 +16,7 @@
 #      username: this_is_optional
 #    env_vars:
 #      FOO: BAR
+webserver__install_xdebug: false
 webserver_static_caching: true
 composer_version: 1.9.1
 composer_sha256_hash: 1f210b9037fcf82670d75892dfc44400f13fe9ada7af9e787f93e50e3b764111
