@@ -215,11 +215,12 @@
         executable: /bin/bash
       changed_when: true
 
-    - name: Ensure site and project release are live
+    - name: Ensure site is live with project release
       uri:
         url: 'https://{{ site }}/'
         url_password: '{{ sites[site].auth.password | default("") }}'
         url_username: '{{ sites[site].auth.username | default("") }}'
+        validate_certs: no
       register: response
       failed_when: release_timestamp | string not in response.x_release
       tags:
