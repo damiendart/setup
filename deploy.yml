@@ -203,9 +203,9 @@
         name: apache2
         state: reloaded
 
-    - name: Reload php-fpm
+    - name: Reload PHP-FPM
       service:
-        name: php7.2-fpm
+        name: php7.4-fpm
         state: reloaded
 
     - name: Ensure only current and previous project release folders exist
