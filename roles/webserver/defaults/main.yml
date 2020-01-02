@@ -16,6 +16,7 @@
 #      username: this_is_optional
 #    env_vars:
 #      FOO: BAR
+webserver__add_vhosts_to_etc_hosts: false
 webserver__install_xdebug: false
 webserver_static_caching: true
 composer_version: 1.9.1

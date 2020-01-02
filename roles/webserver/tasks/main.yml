@@ -273,6 +273,17 @@
     notify: Reload PHP-FPM
   when: webserver__install_xdebug
 
+- name: 'Ensure "/etc/hosts" contains entries for virtual hosts'
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "127.0.0.1 {{ item.key }}$"
+    line: "127.0.0.1 {{ item.key }}"
+    state: present
+  loop: "{{ sites | dict2items }}"
+  loop_control:
+    label: '{{ item.key }}'
+  when: webserver__add_vhosts_to_etc_hosts
+
 # We force any notified handlers to run in case there are any changes
 # that need to be applied before other roles that have this role as a
 # dependency are executed.
