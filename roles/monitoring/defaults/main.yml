@@ -5,3 +5,4 @@
 # monitoring_email_password: ""
 # monitoring_email_username: ""
 # monitoring_pushover_api_token: ""
+monitoring__monit_apache: false

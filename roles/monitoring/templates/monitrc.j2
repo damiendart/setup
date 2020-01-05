@@ -17,6 +17,29 @@ set mailserver {{ monitoring_email_hostname }} port 587
   username "{{ monitoring_email_username }}" password "{{ monitoring_email_password }}"
   using TLSV1 with timeout 30 seconds
 
+{% if monitoring__monit_apache %}
+  check process apache with pidfile /var/run/apache2/apache2.pid
+    group www
+    group apache
+    start program = "/etc/init.d/apache2 start"
+    stop program  = "/etc/init.d/apache2 stop"
+    # if children > 250 then restart
+    if loadavg(5min) greater than 10 for 8 cycles then alert
+    if failed host localhost port 80 for 2 cycles then restart
+    if 3 restarts within 20 cycles then alert
+    if 4 restarts within 20 cycles then timeout
+    depend apache_bin
+    depend apache_rc
+
+  check file apache_bin with path /usr/sbin/apache2
+    group apache
+    include /etc/monit/templates/rootbin
+
+  check file apache_rc with path /etc/init.d/apache2
+    group apache
+    include /etc/monit/templates/rootbin
+{% endif %}
+
 # One day I will do this properly and use the "conf-enabled" thing.
 # include /etc/monit/conf-available/apache2
 include /etc/monit/conf-available/cron
