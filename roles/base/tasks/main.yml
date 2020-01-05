@@ -11,7 +11,7 @@
   user:
     append: yes
     name: "{{ administrator_username }}"
-    password: "{{ administrator_password }}"
+    password: "{{ administrator_password | password_hash('sha512') }}"
     update_password: on_create
     groups:
       - sudo
