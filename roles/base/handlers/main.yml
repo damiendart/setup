@@ -6,9 +6,11 @@
 - name: Restart OpenSSH Server
   service:
     name: ssh
+    enabled: yes
     state: restarted
 
 - name: Restart UFW
   service:
     name: ufw
+    enabled: yes
     state: restarted

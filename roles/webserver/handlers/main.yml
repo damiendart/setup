@@ -6,9 +6,11 @@
 - name: Reload Apache
   service:
     name: apache2
+    enabled: yes
     state: reloaded
 
 - name: Reload PHP-FPM
   service:
     name: "php{{ php_version }}-fpm"
+    enabled: yes
     state: reloaded
