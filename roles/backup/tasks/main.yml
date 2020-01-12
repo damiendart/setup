@@ -5,37 +5,37 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: Ensure the Tarsnap package signing key is present for APT
+- name: 'Ensure the Tarsnap package signing key is present for APT'
   apt_key:
-    url: https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc
-    state: present
+    state: 'present'
+    url: 'https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc'
 
-- name: Ensure the Tarsnap repository is present in APT sources list
+- name: 'Ensure the Tarsnap repository is present in APT sources list'
   apt_repository:
-    repo: "deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./"
-    state: present
+    repo: 'deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./'
+    state: 'present'
 
-- name: Ensure the Tarsnap package is installed
+- name: 'Ensure the Tarsnap package is installed'
   apt:
-    force_apt_get: yes
-    name: tarsnap
+    force_apt_get: true
+    name: 'tarsnap'
 
 # We use a key with reduced permissions to prevent any intruders from
 # deleting any existing archives, however they would still be able to
 # stop any future backups or add new archives with faulty data. A
 # write-only key can be created with "tarsnap-keymgmt".
-- name: Ensure a write-only Tarsnap key is present
+- name: 'Ensure a write-only Tarsnap key is present'
   copy:
-    content: "{{ tarsnap__write_only_key }}"
-    dest: /root/tarsnap.key
-    group: root
-    mode: "0600"
-    owner: root
+    content: '{{ tarsnap__write_only_key }}'
+    dest: '/root/tarsnap.key'
+    group: 'root'
+    mode: 0600
+    owner: 'root'
 
-- name: Ensure the daily Tarsnap cron task is installed
+- name: 'Ensure the daily Tarsnap cron task is installed'
   template:
-    dest: /etc/cron.daily/tarsnap
-    group: root
-    mode: "0755"
-    src: tarsnap-cron.sh.j2
-    owner: root
+    dest: '/etc/cron.daily/tarsnap'
+    group: 'root'
+    mode: 0755
+    src: 'tarsnap-cron.sh.j2'
+    owner: 'root'
