@@ -19,6 +19,7 @@
   apt:
     force_apt_get: true
     name: 'tarsnap'
+    state: 'present'
 
 # We use a key with reduced permissions to prevent any intruders from
 # deleting any existing archives, however they would still be able to
