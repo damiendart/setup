@@ -26,7 +26,7 @@
 # write-only key can be created with "tarsnap-keymgmt".
 - name: Ensure a write-only Tarsnap key is present
   copy:
-    content: "{{ tarsnap_write_only_key }}"
+    content: "{{ tarsnap__write_only_key }}"
     dest: /root/tarsnap.key
     group: root
     mode: "0600"
