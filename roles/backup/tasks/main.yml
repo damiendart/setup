@@ -15,7 +15,7 @@
     repo: 'deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./'
     state: 'present'
 
-- name: 'Ensure the Tarsnap package is installed'
+- name: 'Ensure Tarsnap is installed'
   apt:
     force_apt_get: true
     name: 'tarsnap'
@@ -33,7 +33,7 @@
     mode: 0600
     owner: 'root'
 
-- name: 'Ensure the daily Tarsnap cron task is installed'
+- name: 'Ensure Tarsnap is set up to run daily'
   template:
     dest: '/etc/cron.daily/tarsnap'
     group: 'root'
