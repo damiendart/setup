@@ -1,19 +1,24 @@
+# This role installs and configures Canonical Livepatch.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: Ensure the Canonical Livepatch snap is installed
+- name: 'Ensure Canonical Livepatch is installed'
   snap:
-    name: canonical-livepatch
-    state: present
+    name: 'canonical-livepatch'
+    state: 'present'
 
-- name: Get current Canonical Livepatch status
-  command: canonical-livepatch status --verbose
+- name: 'Check Canonical Livepatch status'
+  command: 'canonical-livepatch status --verbose'
   changed_when: false
-  register: livepatch_status
-  ignore_errors: yes
+  ignore_errors: 'yes'
+  register: __livepatch_status
 
-- name: Ensure Canonical Livepatch is enabled
-  command: "canonical-livepatch enable {{ livepatch_key }}"
-  when: livepatch_status is defined and livepatch_status.rc is defined and livepatch_status.rc != 0
+- name: 'Enable Canonical Livepatch'
+  command: 'canonical-livepatch enable {{ livepatch__key }}'
+  when: >
+    __livepatch_status is defined
+    and __livepatch_status.stdout is defined
+    and 'Machine is not enabled.' in __livepatch_status.stdout
