@@ -46,8 +46,10 @@
 
 - name: Ensure administrator user account SSH keys exist
   authorized_key:
-    user: "{{ lookup('env', 'USER') }}"
-    key: "https://github.com/{{ administrator_github_username }}.keys"
+    exclusive: true
+    user: "{{ administrator_username }}"
+    key: "{{ base__authorised_keys }}"
+    state: present
 
 - name: Ensure custom msmtp configuration file exist
   template:
