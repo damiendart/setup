@@ -35,6 +35,7 @@
       # Ansible requires Passlib for certain functions.
       - 'python3-passlib'
       - 'openssh-server'
+      - 'ufw'
     state: 'present'
 
 - name: 'Ensure the OpenSSH Server UFW profile is active'
@@ -58,8 +59,8 @@
   template:
     dest: '/etc/msmtprc'
     group: 'root'
-    # The msmtp configuration file has relaxed permissions as there
-    # remain a few places where non-root users require msmtp.
+    # The msmtp configuration file has relaxed permissions as a few
+    # places remain where non-root users require msmtp.
     mode: 0644
     owner: 'root'
     src: 'msmtprc.j2'
