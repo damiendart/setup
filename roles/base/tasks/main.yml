@@ -1,62 +1,65 @@
+# This role installs and configures the base environment.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: Ensure timezone is set correctly
+- name: 'Ensure the timezone is set correctly'
   timezone:
-    name: Europe/London
+    name: 'Europe/London'
 
-- name: Ensure administrator user account exists
+- name: 'Ensure an non-root administrator user account exists'
   user:
-    append: yes
-    name: "{{ administrator_username }}"
-    password: "{{ administrator_password | password_hash('sha512') }}"
-    update_password: on_create
+    append: true
     groups:
-      - sudo
+      - 'sudo'
+    name: '{{ base__administrator_username }}'
+    password: '{{ base__administrator_password | password_hash("sha512") }}'
+    state: 'present'
+    update_password: 'on_create'
 
-- name: Ensure base packages are installed
-  apt:
-    force_apt_get: yes
-    name:
-      - git
-      - msmtp-mta
-      # Ansible requires Passlib for certain functions.
-      - python3-passlib
-      - openssh-server
-    state: present
-
-- name: Ensure OpenSSH Server UFW profile is active
-  ufw:
-    name: OpenSSH
-    rule: limit
-  notify: Restart UFW
-
-- name: Ensure OpenSSH Server doesn't allow passwords or root access
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^{{ item }}"
-    line: "{{ item }} no"
-    state: present
-  with_items:
-    - PasswordAuthentication
-    - PermitRootLogin
-  notify: Restart OpenSSH Server
-
-- name: Ensure administrator user account SSH keys exist
+- name: 'Ensure non-root administrator user has authorised SSH keys'
   authorized_key:
     exclusive: true
-    user: "{{ administrator_username }}"
-    key: "{{ base__authorised_keys }}"
-    state: present
+    user: '{{ base__administrator_username }}'
+    key: '{{ base__authorised_keys }}'
+    state: 'present'
 
-- name: Ensure custom msmtp configuration file exist
+- name: 'Ensure base software is installed'
+  apt:
+    force_apt_get: true
+    name:
+      - 'git'
+      - 'msmtp-mta'
+      # Ansible requires Passlib for certain functions.
+      - 'python3-passlib'
+      - 'openssh-server'
+    state: 'present'
+
+- name: 'Ensure the OpenSSH Server UFW profile is active'
+  ufw:
+    name: 'OpenSSH'
+    rule: 'limit'
+  notify: 'Restart UFW'
+
+- name: 'Ensure security-related OpenSSH Server options are configured'
+  lineinfile:
+    dest: '/etc/ssh/sshd_config'
+    line: '{{ item }} no'
+    regexp: '^{{ item }}'
+    state: 'present'
+  loop:
+    - 'PasswordAuthentication'
+    - 'PermitRootLogin'
+  notify: 'Restart OpenSSH Server'
+
+- name: 'Ensure msmtp is configured'
   template:
-    src: msmtprc.j2
-    dest: /etc/msmtprc
-    owner: root
-    group: root
+    dest: '/etc/msmtprc'
+    group: 'root'
     # The msmtp configuration file has relaxed permissions as there
     # remain a few places where non-root users require msmtp.
-    mode: '0644'
+    mode: 0644
+    owner: 'root'
+    src: 'msmtprc.j2'

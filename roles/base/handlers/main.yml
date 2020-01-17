@@ -3,14 +3,14 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: Restart OpenSSH Server
+- name: 'Restart OpenSSH Server'
   service:
-    name: ssh
-    enabled: yes
-    state: restarted
+    enabled: true
+    name: 'ssh'
+    state: 'restarted'
 
-- name: Restart UFW
+- name: 'Restart UFW'
   service:
-    name: ufw
-    enabled: yes
-    state: restarted
+    enabled: true
+    name: 'ufw'
+    state: 'restarted'
