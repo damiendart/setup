@@ -80,3 +80,12 @@
   loop:
     - fail2ban
     - monit
+
+- name: 'Ensure Fail2ban and Monit are running and start on system boot'
+  service:
+    enabled: true
+    name: '{{ item }}'
+    state: 'started'
+  loop:
+    - 'fail2ban'
+    - 'monit'

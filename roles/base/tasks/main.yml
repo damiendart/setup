@@ -38,6 +38,15 @@
       - 'ufw'
     state: 'present'
 
+- name: 'Ensure OpenSSH Server and UFW are running and start on system boot'
+  service:
+    enabled: true
+    name: '{{ item }}'
+    state: 'started'
+  loop:
+    - 'ssh'
+    - 'ufw'
+
 - name: 'Ensure the OpenSSH Server UFW profile is active'
   ufw:
     name: 'OpenSSH'

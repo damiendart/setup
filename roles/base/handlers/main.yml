@@ -5,12 +5,10 @@
 ---
 - name: 'Restart OpenSSH Server'
   service:
-    enabled: true
     name: 'ssh'
     state: 'restarted'
 
 - name: 'Restart UFW'
   service:
-    enabled: true
     name: 'ufw'
     state: 'restarted'

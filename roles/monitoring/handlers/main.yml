@@ -6,11 +6,9 @@
 - name: Restart Fail2ban
   service:
     name: fail2ban
-    enabled: yes
     state: restarted
 
 - name: Restart Monit
   service:
     name: monit
-    enabled: yes
     state: restarted

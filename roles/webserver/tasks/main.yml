@@ -284,6 +284,15 @@
     label: '{{ item.key }}'
   when: webserver__add_vhosts_to_etc_hosts
 
+- name: 'Ensure Apache and PHP-FPM are running and start on system boot'
+  service:
+    enabled: true
+    name: '{{ item }}'
+    state: 'started'
+  loop:
+    - 'apache2'
+    - 'php{{ php_version }}-fpm'
+
 # We force any notified handlers to run in case there are any changes
 # that need to be applied before other roles that have this role as a
 # dependency are executed.
