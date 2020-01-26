@@ -12,3 +12,4 @@ development__iosevka_archive_excludes:
   - woff/*
   - woff2/*
 development__iosevka_version: v3.0.0-alpha.2
+development__virtualbox_version: '6.1'

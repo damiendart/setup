@@ -1,0 +1,22 @@
+# The following tasks install VirtualBox.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the VirtualBox package signing key is present for APT'
+  apt_key:
+    state: 'present'
+    url: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
+
+- name: 'Ensure the VirtualBox repository is present in APT sources list'
+  apt_repository:
+    repo: 'deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib'
+    state: 'present'
+
+- name: 'Ensure VirtualBox is installed'
+  apt:
+    force_apt_get: true
+    name: 'virtualbox-{{ development__virtualbox_version }}'
+    state: 'present'
