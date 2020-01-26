@@ -1,30 +1,38 @@
+# This role installs and configures Certbot.
+#
+# The following tasks effectively accomplishes the same thing as the
+# "acme_certficate" Ansible module. However, using Certbot to manage
+# certificates is a lot easier and Certbot also allows us to
+# automatically renew certificates without any intervention.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: Ensure the Certbot PPA is present in APT source list
+- name: 'Ensure the Certbot PPA is present in APT sources list'
   apt_repository:
     repo: 'ppa:certbot/certbot'
-    state: present
+    state: 'present'
 
-- name: Ensure Certbot is installed
+- name: 'Ensure Certbot is installed'
   apt:
-    force_apt_get: yes
-    name: python-certbot-apache
+    force_apt_get: true
+    name: 'python-certbot-apache'
+    state: 'present'
 
-- name: Ensure the customised Certbot cron task is present
-  replace:
-    path: /etc/cron.d/certbot
-    regexp: 'certbot -q renew$'
-    replace: "certbot -q renew --webroot --webroot-path /var/www/html --renew-hook 'service apache2 graceful'"
-
-- name: Ensure Certbot-issued certificates include the correct domain names
-  script: "certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(' ') }}"
+- name: "Ensure valid Let's Encrypt certificates for sites exist"
+  script: 'certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(" ") }}'
   args:
-    executable: /usr/bin/python3
+    executable: '/usr/bin/python3'
   register: certbot_update
   changed_when: certbot_update.stdout is search('Certificate')
-  loop: "{{ sites | dict2items }}"
+  loop: '{{ letsencrypt__sites | dict2items }}'
   loop_control:
-    label: "{{ item.key }}"
+    label: '{{ item.key }}'
+
+- name: 'Ensure the Certbot scheduled task plays nicely with Apache'
+  replace:
+    path: '/etc/cron.d/certbot'
+    regexp: 'certbot -q renew$'
+    replace: "certbot -q renew --webroot --webroot-path /var/www/html --renew-hook 'service apache2 graceful'"
