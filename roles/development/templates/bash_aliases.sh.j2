@@ -30,8 +30,8 @@ cat > "$HOME/.gitignore" <<GITIGNORE
 node_modules
 GITIGNORE
 
-git config --global user.email "{{ administrator_email_address }}"
-git config --global user.name "{{ administrator_full_name }}"
+git config --global user.email "{{ development__user_email }}"
+git config --global user.name "{{ development__user_full_name }}"
 
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
 # shellcheck source=/dev/null

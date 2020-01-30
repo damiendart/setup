@@ -3,7 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-fzf_version: 0.19.0
+development__fzf_version: 0.19.0
 development__iosevka_archive_filename: 01-iosevka-3.0.0-alpha.2.zip
 development__iosevka_archive_excludes:
   - iosevka-regular.charmap

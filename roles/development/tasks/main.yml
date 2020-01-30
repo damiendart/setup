@@ -1,102 +1,102 @@
+# This role installs and configures my development-specific stuff.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: Ensure the NodeSource package signing key is present for APT
+- name: 'Ensure the NodeSource package signing key is present for APT'
   apt_key:
-    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-    state: present
+    state: 'present'
+    url: 'https://deb.nodesource.com/gpgkey/nodesource.gpg.key'
 
-- name: Ensure NodeSource repository is present in APT sources list
+- name: 'Ensure NodeSource repository is present in APT sources list'
   apt_repository:
-    repo: "deb https://deb.nodesource.com/node_10.x {{ ansible_distribution_release }} main"
-    state: present
+    repo: 'deb https://deb.nodesource.com/node_10.x {{ ansible_distribution_release }} main'
+    state: 'present'
 
-- name: Ensure development-related packages are installed
+- name: 'Ensure development-related packages are installed'
   apt:
-    force_apt_get: yes
+    force_apt_get: true
     name:
-      - build-essential
-      - nodejs
-      - python3-pip
-      - shellcheck
-      - tig
-      - tree
-      - vim
-    state: present
+      - 'build-essential'
+      - 'nodejs'
+      - 'python3-pip'
+      - 'shellcheck'
+      - 'tig'
+      - 'tree'
+      - 'vim'
+    state: 'present'
 
-- name: Ensure the Task snap is installed
+- name: 'Ensure Task installed'
   snap:
-    classic: yes
-    name: task
-    state: present
+    classic: true
+    name: 'task'
+    state: 'present'
 
-- name: Ensure development-related Python packages are installed in administrator home directory
+- name: 'Ensure development-related Python packages are installed in administrator home directory'
   pip:
+    executable: '/usr/bin/pip3'
+    extra_args: '--user'
     name:
-      - virtualenv
-      - virtualenvwrapper
-    executable: /usr/bin/pip3
-    extra_args: --user
-  become: yes
-  become_user: "{{ administrator_username }}"
+      - 'virtualenv'
+      - 'virtualenvwrapper'
+  become: true
+  become_user: '{{ development__user_username }}'
 
-- name: Ensure fzf executable is installed
+- name: 'Ensure fzf is installed'
   unarchive:
-    src: "https://github.com/junegunn/fzf-bin/releases/download/{{ fzf_version }}/fzf-{{ fzf_version }}-linux_amd64.tgz"
-    dest: /usr/local/bin
-    owner: root
-    group: root
-    mode: "0755"
-    remote_src: yes
+    dest: '/usr/local/bin'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    remote_src: true
+    src: 'https://github.com/junegunn/fzf-bin/releases/download/{{ development__fzf_version }}/fzf-{{ development__fzf_version }}-linux_amd64.tgz'
 
-- name: Ensure fzf supplimentary files exist
+- name: 'Ensure fzf supplimentary files are installed'
   get_url:
-    url: "{{ item.url }}"
-    dest: "{{ item.dest }}"
-    owner: root
-    group: root
-    mode: "0755"
-  with_items:
-    - dest: /usr/local/etc/fzf-completion.bash
-      url: "https://raw.githubusercontent.com/junegunn/fzf/{{ fzf_version }}/shell/completion.bash"
-    - dest: /usr/local/etc/fzf-key-bindings.bash
-      url: "https://raw.githubusercontent.com/junegunn/fzf/{{ fzf_version }}/shell/key-bindings.bash"
+    dest: '/usr/local/etc/fzf-{{ item }}'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    url: 'https://raw.githubusercontent.com/junegunn/fzf/{{ development__fzf_version }}/shell/{{ item }}'
+  loop:
+    - 'completion.bash'
+    - 'key-bindings.bash'
 
 - name: 'Ensure custom ".bash_aliases" exists in administrator home directory'
   template:
-    src: bash_aliases.sh.j2
-    dest: "/home/{{ administrator_username }}/.bash_aliases"
-    owner: "{{ administrator_username }}"
-    group: "{{ administrator_username }}"
-    mode: '0600'
+    dest: '/home/{{ development__user_username }}/.bash_aliases'
+    group: '{{ development__user_username }}'
+    mode: 0600
+    owner: '{{ development__user_username }}'
+    src: 'bash_aliases.sh.j2'
 
-- name: Run GUI-based development tasks
+- name: 'Run GUI-based development tasks'
   block:
-  - name: Ensure fonts directory exists in administrator home directory
+  - name: 'Ensure fonts directory exists in administrator home directory'
     file:
-      path: /home/{{ administrator_username }}/.fonts/iosevka
-      state: directory
-      owner: "{{ administrator_username }}"
-      group: "{{ administrator_username }}"
-      mode: '0700'
+      group: '{{ development__user_username }}'
+      mode: 0700
+      owner: '{{ development__user_username }}'
+      path: '/home/{{ development__user_username }}/.fonts/iosevka'
+      state: 'directory'
 
-  - name: Ensure Iosevka TrueType font files are present in admin home directory
+  - name: 'Ensure the Iosevka font files is installed'
     unarchive:
-      src: "https://github.com/be5invis/Iosevka/releases/download/{{ development__iosevka_version }}/{{ development__iosevka_archive_filename }}"
-      dest: "/home/{{ administrator_username }}/.fonts/iosevka"
-      remote_src: yes
-      owner: "{{ administrator_username }}"
-      group: "{{ administrator_username }}"
-      exclude: "{{ development__iosevka_archive_excludes }}"
+      dest: '/home/{{ administrator_username }}/.fonts/iosevka'
+      exclude: '{{ development__iosevka_archive_excludes }}'
+      group: '{{ development__user_username }}'
+      owner: '{{ development__user_username }}'
+      remote_src: true
+      src: 'https://github.com/be5invis/Iosevka/releases/download/{{ development__iosevka_version }}/{{ development__iosevka_archive_filename }}'
 
-  - name: Ensure the PhpStorm snap is installed
+  - name: 'Ensure the PhpStorm snap is installed'
     snap:
-      classic: yes
-      name: phpstorm
-      state: present
+      classic: true
+      name: 'phpstorm'
+      state: 'present'
   tags:
-    - gui
+    - 'gui'
 
 - include: 'virtualbox.yml'
