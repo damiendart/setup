@@ -215,16 +215,26 @@
         executable: /bin/bash
       changed_when: true
 
-    - name: Ensure site is live with project release
-      uri:
-        url: 'https://{{ site }}/'
-        url_password: '{{ sites[site].auth.password | default("") }}'
-        url_username: '{{ sites[site].auth.username | default("") }}'
-        validate_certs: no
-      register: response
-      failed_when: release_timestamp | string not in response.x_release
+    - name: 'Perform smoke tests'
       tags:
-        - healthcheck
+        - 'smoketest'
+      block:
+        - name: 'Check release deployments'
+          uri:
+            headers:
+              Host: '{{ site }}'
+            url: 'https://localhost/'
+            url_password: '{{ sites[site].auth.password | default("") }}'
+            url_username: '{{ sites[site].auth.username | default("") }}'
+            validate_certs: false
+          register: __smoketest_response
+          failed_when: >
+            (__smoketest_response.x_release is not defined) or
+            (release_timestamp | string not in __smoketest_response.x_release)
+      rescue:
+        # This pretty-prints any errors from the block above.
+        - debug:
+            var: __smoketest_response
 
 - hosts: localhost
   become: no
