@@ -90,14 +90,21 @@
         dest: '{{ project_release_base_directory }}'
       become: no
 
-    - name: Ensure Composer dependencies exist
-      composer:
-        command: install
-        working_dir: '{{ project_release_base_directory }}'
-        classmap_authoritative: yes
-      become: no
-      when: project_type == 'kirby3' or project_type == 'php'
-      changed_when: true
+    - name: 'Check for and install PHP dependencies'
+      block:
+        - name: 'Get status of "composer.json" in release'
+          stat:
+            path: '{{ project_release_base_directory }}/composer.json'
+          register: __composer_json_status
+
+        - name: 'Install PHP dependencies with Composer'
+          composer:
+            classmap_authoritative: true
+            command: 'install'
+            working_dir: '{{ project_release_base_directory }}'
+          become: false
+          changed_when: true
+          when: __composer_json_status.stat.exists
 
     - name: Ensure owners and permissions for files in project release folder are correct
       command: '{{ item }}'
