@@ -6,11 +6,14 @@
 - hosts: localhost
   gather_facts: no
   become: no
+  vars:
+    __release_timestamp: '{{ lookup("pipe", "date +%Y%m%d%H%M%S") }}'
+
   tasks:
     - name: Ensure project has been checked out with Git
       git:
         repo: '{{ repo }}'
-        dest: ./build/git
+        dest: ./temp
         version: '{{ version | default("HEAD") }}'
       register: git_repo
 
@@ -19,40 +22,17 @@
         content: |
           ---
           release_hash: {{ git_repo.after }}
-          release_timestamp: {{ lookup("pipe", "date +%Y%m%d%H%M%S") }}
-        dest: ./build/release.yml
+          release_timestamp: {{ __release_timestamp }}
+        dest: ./temp/release.yml
 
-    - name: Ensure project continuous integration tasks have been completed
-      command: '{{ task_bin | default("task") }} ci'
+    - name: 'Build project release archive'
+      command: '{{ cli__build_release_command | default("task release") }}'
       args:
-        chdir: ./build/git
+        chdir: './temp'
+        creates: './temp/release.tgz'
       changed_when: true
-
-    - name: 'Ensure ".rsync-filter" exists in project Git folder'
-      copy:
-        content: |
-          - /protected/cache/
-          - /protected/site/plugins/kirby-twig/
-          - /protected/vendor/
-          - /public/media**
-          + /composer.*
-          + /public**
-          + /protected**
-          + /private**
-          - *
-        dest: ./build/git/.rsync-filter
-
-    - name: Ensure project release folder exists
-      synchronize:
-        src: ./build/git/
-        dest: ./build/release/
-        owner: no
-        group: no
-
-    - name: Ensure project release archive exists
-      archive:
-        path: ./build/release/*
-        dest: ./build/release.tgz
+      environment:
+        RELEASE_ID: '{{ __release_timestamp }}'
 
 - hosts: all
   gather_facts: no
@@ -73,7 +53,7 @@
 
     - name: Include variables from project release information file
       include_vars:
-        dir: ./build
+        dir: ./temp
         files_matching: release.yml
 
     - name: Ensure project release folder exists
@@ -86,7 +66,7 @@
 
     - name: Ensure project release archive has been extracted
       unarchive:
-        src: ./build/release.tgz
+        src: ./temp/release.tgz
         dest: '{{ project_release_base_directory }}'
       become: no
 
@@ -248,5 +228,5 @@
   tasks:
     - name: Ensure temporary build folder no longer exists
       file:
-        path: ./build
+        path: ./temp
         state: absent
