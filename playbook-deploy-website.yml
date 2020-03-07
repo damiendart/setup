@@ -3,58 +3,33 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- hosts: localhost
-  gather_facts: no
-  become: no
-  vars:
-    __release_timestamp: '{{ lookup("pipe", "date +%Y%m%d%H%M%S") }}'
-
-  tasks:
-    - name: Ensure project has been checked out with Git
-      git:
-        repo: '{{ repo }}'
-        dest: ./temp
-        version: '{{ version | default("HEAD") }}'
-      register: git_repo
-
-    - name: Ensure project release information file exists
-      copy:
-        content: |
-          ---
-          release_hash: {{ git_repo.after }}
-          release_timestamp: {{ __release_timestamp }}
-        dest: ./temp/release.yml
-
-    - name: 'Build project release archive'
-      command: '{{ cli__build_release_command | default("task release") }}'
-      args:
-        chdir: './temp'
-        creates: './temp/release.tgz'
-      changed_when: true
-      environment:
-        RELEASE_ID: '{{ __release_timestamp }}'
-
 - hosts: all
   gather_facts: no
   become: yes
   vars:
-    project_base_directory: '/var/www/{{ site }}'
-    project_release_base_directory: '{{ project_base_directory }}/releases/{{ release_timestamp }}'
-    # Accepted strings: "standard", "php", "kirby3".
-    project_type: standard
+    project_base_directory: '/var/www/{{ cli__site_domain }}'
+    project_release_base_directory: '{{ project_base_directory }}/releases/{{ __release_metadata.release_id }}'
 
   tasks:
+    - name: 'Check release archive for "public" folder'
+      command:
+        cmd: 'tar -tvf {{ cli__release_artifact_folder }}/release.tgz "./public/"'
+        warn: false
+      changed_when: false
+      delegate_to: 'localhost'
+      run_once: true
+
     - name: Get applicable hosts for release
       meta: end_host
-      when: sites[site] is not defined
+      when: sites[cli__site_domain] is not defined
+
+    - name: 'Load variables from release artifact metadata'
+      include_vars:
+        file: '{{ cli__release_artifact_folder }}/release.yml'
+        name: __release_metadata
 
     - name: Gather Facts
       setup:
-
-    - name: Include variables from project release information file
-      include_vars:
-        dir: ./temp
-        files_matching: release.yml
 
     - name: Ensure project release folder exists
       file:
@@ -66,7 +41,7 @@
 
     - name: Ensure project release archive has been extracted
       unarchive:
-        src: ./temp/release.tgz
+        src: '{{ cli__release_artifact_folder }}/release.tgz'
         dest: '{{ project_release_base_directory }}'
       become: no
 
@@ -101,28 +76,16 @@
         - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
         - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
 
-    - name: Ensure Kirby-3-specific writable folders exist in project release folder
-      file:
-        path: '{{ project_release_base_directory }}/{{ item }}'
-        state: directory
-        owner: www-data
-        group: www-data
-        mode: '2750'
-      when: project_type == 'kirby3'
-      loop:
-        - protected/cache
-        - public/media
-
     - name: Ensure project release Apache configuration file exists
       copy:
         content: |
-          Define DEPLOYED_RELEASE {{ release_timestamp | quote }}
+          Define DEPLOYED_RELEASE {{ __release_metadata.release_id| quote }}
 
-          SetEnv DEPLOYED_RELEASE {{ release_timestamp | quote }}
-          SetEnv DEPLOYED_RELEASE_GIT_HASH {{ release_hash | quote }}
+          SetEnv DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
+          SetEnv DEPLOYED_RELEASE_GIT_HASH {{ __release_metadata.release_git_sha | quote }}
 
-          {% if sites[site].env_vars is defined %}
-            {% for i in sites[site].env_vars | dict2items %}
+          {% if sites[cli__site_domain].env_vars is defined %}
+            {% for i in sites[cli__site_domain].env_vars | dict2items %}
               SetEnv {{ i.key }} {{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
@@ -134,11 +97,11 @@
     - name: Ensure project release environment variables file exists
       copy:
         content: |
-          export DEPLOYED_RELEASE={{ release_timestamp | quote }}
-          export DEPLOYED_RELEASE_GIT_HASH={{ release_hash | quote }}
+          export DEPLOYED_RELEASE={{ __release_metadata.release_id | quote }}
+          export DEPLOYED_RELEASE_GIT_HASH={{ __release_metadata.release_git_sha | quote }}
           export SHARED_ROOT={{ project_base_directory ~ '/shared' | quote }}
-          {% if sites[site].env_vars is defined %}
-            {% for i in sites[site].env_vars | dict2items %}
+          {% if sites[cli__site_domain].env_vars is defined %}
+            {% for i in sites[cli__site_domain].env_vars | dict2items %}
               export {{ i.key }}={{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
@@ -158,30 +121,30 @@
             Authorization: 'Bearer {{ sentry_auth_token }}'
           body: |
             {
-              "projects": ["{{ sites[site].sentry_project }}"],
+              "projects": ["{{ sites[cli__site_domain].sentry_project }}"],
               "refs": [
                 {
-                  "commit": "{{ release_hash }}",
-                  "repository": "{{ sites[site].github_project }}"
+                  "commit": "{{ __release_metadata.release_git_sha }}",
+                  "repository": "{{ sites[cli__site_domain].github_project }}"
                 }
               ],
-              "version": "{{ release_timestamp }}"
+              "version": "{{ __release_metadata.release_id }}"
             }
           status_code: 201
 
       - name: Ensure Sentry is aware of project release deployment
         uri:
-          url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ release_timestamp }}/deploys/'
+          url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ __release_metadata.release_id }}/deploys/'
           method: POST
           body_format: json
           headers:
             Authorization: 'Bearer {{ sentry_auth_token }}'
           body: |
             {
-              "environment": "{{ sites[site].env_vars.APP_ENV  }}",
+              "environment": "{{ sites[cli__site_domain].env_vars.APP_ENV  }}",
             }
           status_code: 201
-      when: sites[site].sentry_project is defined
+      when: sites[cli__site_domain].sentry_project is defined
       run_once: true
       delegate_to: localhost
 
@@ -196,7 +159,7 @@
         state: reloaded
 
     - name: Ensure only current and previous project release folders exist
-      shell: 'set -eo pipefail; ls -1tr /var/www/{{ site }}/releases | head -n -2 | xargs rm -rf'
+      shell: 'set -eo pipefail; ls -1tr {{ project_base_directory }}/releases | head -n -2 | xargs rm -rf'
       args:
         chdir: '{{ project_base_directory }}/releases'
         executable: /bin/bash
@@ -209,24 +172,16 @@
         - name: 'Check release deployments'
           uri:
             headers:
-              Host: '{{ site }}'
+              Host: '{{ cli__site_domain }}'
             url: 'https://localhost/'
-            url_password: '{{ sites[site].auth.password | default("") }}'
-            url_username: '{{ sites[site].auth.username | default("") }}'
+            url_password: '{{ sites[cli__site_domain].auth.password | default("") }}'
+            url_username: '{{ sites[cli__site_domain].auth.username | default("") }}'
             validate_certs: false
           register: __smoketest_response
           failed_when: >
             (__smoketest_response.x_release is not defined) or
-            (release_timestamp | string not in __smoketest_response.x_release)
+            (__release_metadata.release_id | string not in __smoketest_response.x_release)
       rescue:
         # This pretty-prints any errors from the block above.
         - debug:
             var: __smoketest_response
-
-- hosts: localhost
-  become: no
-  tasks:
-    - name: Ensure temporary build folder no longer exists
-      file:
-        path: ./temp
-        state: absent
