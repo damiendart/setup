@@ -1,0 +1,81 @@
+# The following tasks performs basic Apache and PHP-FPM configuration.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure required Apache modules are enabled'
+  apache2_module:
+    name: '{{ item }}'
+    state: 'present'
+  loop:
+    - 'cgid'
+    - 'expires'
+    - 'headers'
+    - 'http2'
+    - 'macro'
+    - 'mpm_event'
+    - 'proxy_fcgi'
+    - 'rewrite'
+    - 'setenvif'
+    - 'ssl'
+  notify: 'Reload Apache'
+
+- name: 'Ensure legacy and unnecessary Apache modules are disabled'
+  apache2_module:
+    force: true
+    name: '{{ item }}'
+    state: 'absent'
+  loop:
+    - 'autoindex'
+    - 'dav'
+    - 'include'
+    - 'mpm_prefork'
+    - 'status'
+  notify: 'Reload Apache'
+
+- name: 'Ensure legacy or unnecessary Apache configuration files are disabled'
+  command: 'a2disconf {{ item }}'
+  args:
+    removes: '/etc/apache2/conf-enabled/{{ item }}.conf'
+  loop:
+    - 'charset'
+    - 'localized-error-pages'
+    - 'other-vhosts-access-log'
+    - 'serve-cgi-bin'
+  notify: 'Reload Apache'
+
+- name: 'Ensure custom Apache configuration file exists'
+  template:
+    dest: '/etc/apache2/conf-available/zzz.conf'
+    group: 'root'
+    mode: 0600
+    owner: 'root'
+    src: 'apache2.conf.j2'
+  notify: 'Reload Apache'
+
+- name: 'Ensure custom Apache configuration file is active'
+  command: 'a2enconf zzz'
+  args:
+    creates: '/etc/apache2/conf-enabled/zzz.conf'
+  notify: 'Reload Apache'
+
+- name: 'Ensure the PHP-FPM Apache configuration file is active'
+  command: 'a2enconf php{{ webserver__php_version }}-fpm'
+  args:
+    creates: '/etc/apache2/conf-enabled/php{{ webserver__php_version }}-fpm.conf'
+  notify:
+    - 'Reload Apache'
+    - 'Reload PHP-FPM'
+
+- name: 'Ensure PHP allows uploads of sizes up to 20MB'
+  lineinfile:
+    dest: '/etc/php/{{ webserver__php_version }}/fpm/php.ini'
+    line: '{{ item }} = 20M'
+    regexp: '^{{ item }}'
+    state: 'present'
+  loop:
+    - 'post_max_size'
+    - 'upload_max_filesize'
+  notify: 'Reload PHP-FPM'

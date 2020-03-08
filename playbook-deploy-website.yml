@@ -21,7 +21,7 @@
 
     - name: Get applicable hosts for release
       meta: end_host
-      when: sites[cli__site_domain] is not defined
+      when: webserver__vhosts[cli__site_domain] is not defined
 
     - name: 'Load variables from release artifact metadata'
       include_vars:
@@ -84,8 +84,8 @@
           SetEnv DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
           SetEnv DEPLOYED_RELEASE_GIT_HASH {{ __release_metadata.release_git_sha | quote }}
 
-          {% if sites[cli__site_domain].env_vars is defined %}
-            {% for i in sites[cli__site_domain].env_vars | dict2items %}
+          {% if webserver__vhosts[cli__site_domain].env_vars is defined %}
+            {% for i in webserver__vhosts[cli__site_domain].env_vars | dict2items %}
               SetEnv {{ i.key }} {{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
@@ -100,8 +100,8 @@
           export DEPLOYED_RELEASE={{ __release_metadata.release_id | quote }}
           export DEPLOYED_RELEASE_GIT_HASH={{ __release_metadata.release_git_sha | quote }}
           export SHARED_ROOT={{ project_base_directory ~ '/shared' | quote }}
-          {% if sites[cli__site_domain].env_vars is defined %}
-            {% for i in sites[cli__site_domain].env_vars | dict2items %}
+          {% if webserver__vhosts[cli__site_domain].env_vars is defined %}
+            {% for i in webserver__vhosts[cli__site_domain].env_vars | dict2items %}
               export {{ i.key }}={{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
@@ -121,11 +121,11 @@
             Authorization: 'Bearer {{ sentry_auth_token }}'
           body: |
             {
-              "projects": ["{{ sites[cli__site_domain].sentry_project }}"],
+              "projects": ["{{ webserver__vhosts[cli__site_domain].sentry_project }}"],
               "refs": [
                 {
                   "commit": "{{ __release_metadata.release_git_sha }}",
-                  "repository": "{{ sites[cli__site_domain].github_project }}"
+                  "repository": "{{ webserver__vhosts[cli__site_domain].github_project }}"
                 }
               ],
               "version": "{{ __release_metadata.release_id }}"
@@ -141,10 +141,10 @@
             Authorization: 'Bearer {{ sentry_auth_token }}'
           body: |
             {
-              "environment": "{{ sites[cli__site_domain].env_vars.APP_ENV  }}",
+              "environment": "{{ webserver__vhosts[cli__site_domain].env_vars.APP_ENV  }}",
             }
           status_code: 201
-      when: sites[cli__site_domain].sentry_project is defined
+      when: webserver__vhosts[cli__site_domain].sentry_project is defined
       run_once: true
       delegate_to: localhost
 
@@ -174,8 +174,8 @@
             headers:
               Host: '{{ cli__site_domain }}'
             url: 'https://localhost/'
-            url_password: '{{ sites[cli__site_domain].auth.password | default("") }}'
-            url_username: '{{ sites[cli__site_domain].auth.username | default("") }}'
+            url_password: '{{ webserver__vhosts[cli__site_domain].auth.password | default("") }}'
+            url_username: '{{ webserver__vhosts[cli__site_domain].auth.username | default("") }}'
             validate_certs: false
           register: __smoketest_response
           failed_when: >

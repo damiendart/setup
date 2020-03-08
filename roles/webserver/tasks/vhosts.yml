@@ -1,0 +1,84 @@
+# The following tasks configures Apache virtual hosts.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure base virtual hosts directories base structures exist'
+  file:
+    group: '{{ item.1.group }}'
+    mode: '{{ item.1.mode }}'
+    owner: '{{ webserver__administrator_username }}'
+    path: '/var/www/{{ item.0 }}/{{ item.1.directory }}'
+    state: 'directory'
+  loop: '{{ webserver__vhosts | product(webserver__vhost_base_directories) | list }}'
+
+- name: 'Ensure Apache virtual hosts configuration files exist'
+  template:
+    dest: '/etc/apache2/sites-available/{{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
+    group: 'root'
+    mode: 0600
+    owner: 'root'
+    src: 'virtualhost.conf.j2'
+  loop: '{{ webserver__vhosts | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+  notify: 'Reload Apache'
+
+- name: 'Ensure ".htpasswd" files exist for password-protected Apache virtual hosts'
+  htpasswd:
+    group: 'www-data'
+    mode: 0640
+    name: '{{ item.value.auth.username }}'
+    owner: 'root'
+    password: '{{ item.value.auth.password }}'
+    path: '/var/www/{{ item.key }}/shared/protected/.htpasswd'
+  when: item.value.auth.password is defined and item.value.auth.username is defined
+  loop: '{{ webserver__vhosts | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+  notify: 'Reload Apache'
+
+- name: 'Ensure Apache virtual hosts scheduled tasks scripts exist'
+  template:
+    src: 'www-cron.sh.j2'
+    dest: '/etc/cron.{{ item }}/www-cron'
+    owner: 'root'
+    group: 'root'
+    mode: 0755
+  loop:
+    - 'hourly'
+    - 'daily'
+    - 'weekly'
+    - 'monthly'
+
+- name: 'Ensure Apache virtual hosts are active'
+  command: 'a2ensite {{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
+  args:
+    creates: '/etc/apache2/sites-enabled/{{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
+  loop: '{{ webserver__vhosts | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+  notify: 'Reload Apache'
+
+- name: 'Ensure unnecessary Apache virtual hosts are inactive'
+  command: 'a2dissite {{ item }}.conf'
+  args:
+    removes: '/etc/apache2/sites-enabled/{{ item }}.conf'
+  loop:
+    - '000-default'
+    - 'default-ssl'
+  notify:
+    - 'Reload Apache'
+
+- name: 'Ensure "/etc/hosts" contains entries for virtual hosts'
+  lineinfile:
+    dest: '/etc/hosts'
+    regexp: '127.0.0.1 {{ item.key }}$'
+    line: '127.0.0.1 {{ item.key }}'
+    state: 'present'
+  loop: '{{ webserver__vhosts | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
+  when: webserver__add_vhosts_to_etc_hosts

@@ -1,3 +1,5 @@
+# This roles installs and configures Apache and friends.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
@@ -5,284 +7,28 @@
 ---
 - name: 'Ensure "deb.sury.org" repositories are present in APT source lists'
   apt_repository:
-    repo: "ppa:ondrej/{{ item }}"
-    state: present
+    repo: 'ppa:ondrej/{{ item }}'
+    state: 'present'
   loop:
-    - apache2
-    - php
+    - 'apache2'
+    - 'php'
 
-- name: Ensure webserver-related packages are installed
+- name: 'Ensure webserver-related packages are installed'
   apt:
-    force_apt_get: yes
+    force_apt_get: true
     name:
-      - apache2
-      # Kirby 3 uses the ImageMagick command-line tools instead of the
-      # native Imagick PHP extension.
-      - imagemagick
-      - goaccess
+      - 'apache2'
+      # Some PHP applications use the ImageMagick command-line tools
+      # instead of the native Imagick PHP extension.
+      - 'imagemagick'
+      - 'goaccess'
       # PHP-FPM is required for HTTP/2 support.
-      - "php{{ php_version }}-fpm"
-      # Kirby 3 requires the following PHP extensions.
-      - "php{{ php_version }}-curl"
-      - "php{{ php_version }}-gd"
-      - "php{{ php_version }}-mbstring"
-    state: present
-
-# "deb.sury.org"'s Apache package does not provide an UFW profile.
-- name: Ensure Apache UFW profile exists
-  copy:
-    content: |
-      [Apache Full]
-      title=Web Server (HTTP,HTTPS)
-      description=The Apache web server.
-      ports=80,443/tcp
-    dest: /etc/ufw/applications.d/apache2-utils.ufw.profile
-    owner: root
-    group: root
-    mode: '0644'
-  notify: Restart UFW
-
-- name: Ensure UFW Apache profile is active
-  ufw:
-    name: Apache Full
-    rule: allow
-  notify: Restart UFW
-
-- name: Ensure required Apache modules are enabled
-  apache2_module:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - cgid
-    - expires
-    - headers
-    - http2
-    - macro
-    - mpm_event
-    - proxy_fcgi
-    - rewrite
-    - setenvif
-    - ssl
-  notify: Reload Apache
-
-- name: Ensure legacy and unnecessary Apache modules are disabled
-  apache2_module:
-    force: yes
-    name: "{{ item }}"
-    state: absent
-  loop:
-    - autoindex
-    - dav
-    - include
-    - mpm_prefork
-    - status
-  notify: Reload Apache
-
-- name: Ensure legacy or unnecessary Apache configuration files are disabled
-  command: "a2disconf {{ item }}"
-  args:
-    removes: "/etc/apache2/conf-enabled/{{ item }}.conf"
-  loop:
-    - charset
-    - localized-error-pages
-    - other-vhosts-access-log
-    - serve-cgi-bin
-  notify:
-    - Reload Apache
-
-- name: Ensure custom Apache configuration file exists
-  template:
-    src: apache2.conf.j2
-    dest: /etc/apache2/conf-available/zzz.conf
-    owner: root
-    group: root
-    mode: '0600'
-  notify: Reload Apache
-
-- name: Ensure custom Apache configuration file is active
-  command: a2enconf zzz
-  args:
-    creates: /etc/apache2/conf-enabled/zzz.conf
-  notify:
-    - Reload Apache
-
-- name: Ensure the PHP-FPM Apache configuration file is active
-  command: "a2enconf php{{ php_version }}-fpm"
-  args:
-    creates: "/etc/apache2/conf-enabled/php{{ php_version }}-fpm.conf"
-  notify:
-    - Reload Apache
-    - Reload PHP-FPM
-
-- name: Ensure PHP allows uploads of sizes up to 20MB
-  lineinfile:
-    dest: "/etc/php/{{ php_version }}/fpm/php.ini"
-    regexp: '^{{ item }}'
-    line: '{{ item }} = 20M'
-    state: present
-  loop:
-    - post_max_size
-    - upload_max_filesize
-  notify: Reload PHP-FPM
-
-- name: Ensure Apache virtual hosts base folder structures exist
-  file:
-    group: '{{ item.1.group }}'
-    mode: '{{ item.1.mode }}'
-    owner: '{{ administrator_username }}'
-    path: '/var/www/{{ item.0 }}/{{ item.1.directory }}'
-    state: directory
-  loop: '{{ sites | product(virtual_host_base_folder_structure) | list }}'
-
-- name: Ensure Apache virtual hosts configuration files exist
-  template:
-    src: virtualhost.conf.j2
-    dest: '/etc/apache2/sites-available/{{ "00-" if item.key == server_name else "" }}{{ item.key }}.conf'
-    owner: root
-    group: root
-    mode: '0600'
-  loop: '{{ sites | dict2items }}'
-  loop_control:
-    label: '{{ item.key }}'
-  notify: Reload Apache
-
-- name: 'Ensure ".htpasswd" files exist for password-protected Apache virtual hosts'
-  htpasswd:
-    group: 'www-data'
-    mode: '0640'
-    owner: 'root'
-    path: '/var/www/{{ item.key }}/shared/protected/.htpasswd'
-    name: '{{ item.value.auth.username }}'
-    password: '{{ item.value.auth.password }}'
-  when: item.value.auth.password is defined and item.value.auth.username is defined
-  loop: "{{ sites | dict2items }}"
-  loop_control:
-    label: '{{ item.key }}'
-  notify: Reload Apache
-
-- name: Ensure Apache virtual hosts scheduled tasks scripts exist
-  template:
-    src: www-cron.sh.j2
-    dest: '/etc/cron.{{ item }}/www-cron'
-    owner: root
-    group: root
-    mode: '0755'
-  loop:
-    - hourly
-    - daily
-    - weekly
-    - monthly
-
-- name: Ensure Apache virtual host Kirby-related folders exist
-  file:
-    group: 'www-data'
-    mode: "2750"
-    owner: 'www-data'
-    path: "/var/www/{{ item.0.key }}/{{ item.1 }}"
-    state: directory
-  with_nested:
-    - "{{ lookup('dict', sites) }}"
-    - [ "shared/protected/accounts", "shared/protected/content", "shared/protected/sessions" ]
-  when: item[0].value.kirby_key is defined
-  notify: Reload Apache
-
-- name: Ensure Apache virtual hosts are active
-  command: 'a2ensite {{ "00-" if item.key == server_name else "" }}{{ item.key }}.conf'
-  args:
-    creates: '/etc/apache2/sites-enabled/{{ "00-" if item.key == server_name else "" }}{{ item.key }}.conf'
-  loop: '{{ sites | dict2items }}'
-  loop_control:
-    label: '{{ item.key }}'
-  notify: Reload Apache
-
-- name: Ensure unnecessary Apache virtual hosts are inactive
-  command: "a2dissite {{ item }}.conf"
-  args:
-    removes: "/etc/apache2/sites-enabled/{{ item }}.conf"
-  loop:
-    - 000-default
-    - default-ssl
-  notify:
-    - Reload Apache
-
-- name: Ensure Composer exists
-  get_url:
-    url: "https://getcomposer.org/download/{{ composer_version }}/composer.phar"
-    dest: /usr/local/bin/composer
-    mode: 0755
-    group: root
-    owner: root
-    checksum: "sha256:{{ composer_sha256_hash }}"
-
-- name: Ensure Composer configuration folder for administrator exists
-  file:
-    path: /home/{{ administrator_username }}/.config/composer
-    state: directory
-    owner: "{{ administrator_username }}"
-    group: "{{ administrator_username }}"
-    mode: '0755'
-
-- name: 'Ensure Composer "auth.json" for administrator exists'
-  copy:
-    content: |
-      {
-          "bitbucket-oauth": {},
-          "github-oauth": {
-              "github.com": "{{ composer_github_token }}"
-          },
-          "gitlab-oauth": {},
-          "gitlab-token": {},
-          "http-basic": {}
-      }
-    dest: "/home/{{ administrator_username }}/.config/composer/auth.json"
-    owner: "{{ administrator_username }}"
-    group: "{{ administrator_username }}"
-    mode: '0644'
-
-- name: Ensure custom GoAccess wrapper script exists
-  template:
-    src: webstats.sh.j2
-    dest: /usr/local/bin/webstats
-    owner: root
-    group: root
-    mode: '0700'
-
-- name: 'Ensure "webstats" Bash completion script exists'
-  template:
-    src: webstats_bash_completion.sh.j2
-    dest: /etc/bash_completion.d/webstats
-    owner: root
-    group: root
-    mode: '0644'
-
-- name: Run Xdebug-related tasks
-  block:
-  - name: Ensure Xdebug is installed
-    apt:
-      force_apt_get: yes
-      name: php-xdebug
-      state: present
-
-  - name: Ensure Xdebug's remote debugger is enabled
-    copy:
-      content: xdebug.remote_enable=1
-      dest: "/etc/php/{{ php_version }}/fpm/conf.d/20-xdebug-remote-enable.ini"
-      owner: root
-      group: root
-      mode: '0644'
-    notify: Reload PHP-FPM
-  when: webserver__install_xdebug
-
-- name: 'Ensure "/etc/hosts" contains entries for virtual hosts'
-  lineinfile:
-    dest: /etc/hosts
-    regexp: "127.0.0.1 {{ item.key }}$"
-    line: "127.0.0.1 {{ item.key }}"
-    state: present
-  loop: "{{ sites | dict2items }}"
-  loop_control:
-    label: '{{ item.key }}'
-  when: webserver__add_vhosts_to_etc_hosts
+      - 'php{{ webserver__php_version }}-fpm'
+      # The following are commonly-used PHP extensions.
+      - 'php{{ webserver__php_version }}-curl'
+      - 'php{{ webserver__php_version }}-gd'
+      - 'php{{ webserver__php_version }}-mbstring'
+    state: 'present'
 
 - name: 'Ensure Apache and PHP-FPM are running and start on system boot'
   service:
@@ -291,10 +37,36 @@
     state: 'started'
   loop:
     - 'apache2'
-    - 'php{{ php_version }}-fpm'
+    - 'php{{ webserver__php_version }}-fpm'
+
+# The Apache package from "deb.sury.org" does not provide an UFW profile
+# out-of-the-box; the following is taken from a fresh Ubuntu install.
+- name: 'Ensure an Apache UFW profile exists'
+  copy:
+    content: |
+      [Apache Full]
+      title=Web Server (HTTP,HTTPS)
+      description=The Apache web server.
+      ports=80,443/tcp
+    dest: '/etc/ufw/applications.d/apache2-utils.ufw.profile'
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  notify: 'Restart UFW'
+
+- name: 'Ensure the Apache UFW profile is active'
+  ufw:
+    name: 'Apache Full'
+    rule: 'allow'
+  notify: 'Restart UFW'
+
+- include: 'base-configure.yml'
+- include: 'vhosts.yml'
+- include: 'composer.yml'
+- include: 'xdebug.yml'
 
 # We force any notified handlers to run in case there are any changes
 # that need to be applied before other roles that have this role as a
 # dependency are executed.
-- name: Force all currently notified handlers to run
-  meta: flush_handlers
+- name: 'Force all currently notified handlers to run'
+  meta: 'flush_handlers'
