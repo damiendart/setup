@@ -3,15 +3,12 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- hosts: all
-  gather_facts: no
-  become: yes
-  vars:
-    project_base_directory: '/var/www/{{ cli__site_domain }}'
-    project_release_base_directory: '{{ project_base_directory }}/releases/{{ __release_metadata.release_id }}'
-
+- hosts: 'all'
+  gather_facts: false
+  become: true
   tasks:
-    - name: 'Check release archive for "public" folder'
+    # A "public" directory is required for Apache to serve files from.
+    - name: 'Check release archive for "public" directory'
       command:
         cmd: 'tar -tvf {{ cli__release_artifact_folder }}/release.tgz "./public/"'
         warn: false
@@ -19,67 +16,75 @@
       delegate_to: 'localhost'
       run_once: true
 
-    - name: Get applicable hosts for release
-      meta: end_host
-      when: webserver__vhosts[cli__site_domain] is not defined
-
-    - name: 'Load variables from release artifact metadata'
+    - name: 'Load variables from release artifact metadata YAML document'
       include_vars:
         file: '{{ cli__release_artifact_folder }}/release.yml'
         name: __release_metadata
 
-    - name: Gather Facts
+    - name: 'Set virtual host base directory fact'
+      set_fact:
+        __vhost_base_directory: '/var/www/{{ cli__site_domain }}'
+
+    - name: 'Set release base directory fact'
+      set_fact:
+        __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_id }}'
+
+    - name: 'End play for non-applicable hosts'
+      meta: 'end_host'
+      when: webserver__vhosts[cli__site_domain] is not defined
+
+    - name: 'Gather Facts'
       setup:
 
-    - name: Ensure project release folder exists
+    - name: 'Create release base directory'
       file:
-        path: '{{ project_release_base_directory }}'
-        state: directory
-        owner: '{{ administrator_username }}'
-        group: www-data
-        mode: '0750'
+        group: 'www-data'
+        mode: 0750
+        owner: '{{ webserver__administrator_username }}'
+        path: '{{ __release_base_directory }}'
+        state: 'directory'
 
-    - name: Ensure project release archive has been extracted
+    - name: 'Unarchive release artifact archive into release base directory'
       unarchive:
         src: '{{ cli__release_artifact_folder }}/release.tgz'
-        dest: '{{ project_release_base_directory }}'
+        dest: '{{ __release_base_directory }}'
       become: no
 
-    - name: 'Check for and install PHP dependencies'
+    - name: 'Check for and install PHP dependencies with Composer'
       block:
-        - name: 'Get status of "composer.json" in release'
+        - name: 'Get status of "composer.json" in release directory'
           stat:
-            path: '{{ project_release_base_directory }}/composer.json'
+            path: '{{ __release_base_directory }}/composer.json'
           register: __composer_json_status
 
         - name: 'Install PHP dependencies with Composer'
           composer:
             classmap_authoritative: true
             command: 'install'
-            working_dir: '{{ project_release_base_directory }}'
+            working_dir: '{{ __release_base_directory }}'
           become: false
           changed_when: true
           when: __composer_json_status.stat.exists
 
-    - name: Ensure owners and permissions for files in project release folder are correct
+    - name: 'Update owners and permissions of release directory contents'
       command: '{{ item }}'
       args:
-        chdir: '{{ project_release_base_directory }}'
+        chdir: '{{ __release_base_directory }}'
       changed_when: true
       loop:
-        - "find . -wholename './composer.*' -exec chown '{{ administrator_username }}:root' {} \\;"
-        - "find . -wholename './private*' -exec chown '{{ administrator_username }}:root' {} \\;"
-        - "find . -wholename './protected*' -exec chown '{{ administrator_username }}:www-data' {} \\;"
-        - "find . -wholename './public*' -exec chown '{{ administrator_username }}:www-data' {} \\;"
+        - "find . -mindepth 1 -exec chown '{{ webserver__administrator_username }}:root' {} \\;"
+        - "find . -wholename './private*' -exec chown '{{ webserver__administrator_username }}:root' {} \\;"
+        - "find . -wholename './protected*' -exec chown '{{ webserver__administrator_username }}:www-data' {} \\;"
+        - "find . -wholename './public*' -exec chown '{{ webserver__administrator_username }}:www-data' {} \\;"
         - 'find . -type d -exec chmod 0750 {} \;'
         - 'find . -type f -exec chmod 0640 {} \;'
         - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
         - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
 
-    - name: Ensure project release Apache configuration file exists
+    - name: 'Update release Apache configuration file'
       copy:
         content: |
-          Define DEPLOYED_RELEASE {{ __release_metadata.release_id| quote }}
+          Define DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
 
           SetEnv DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
           SetEnv DEPLOYED_RELEASE_GIT_HASH {{ __release_metadata.release_git_sha | quote }}
@@ -89,36 +94,31 @@
               SetEnv {{ i.key }} {{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
-        dest: '{{ project_base_directory }}/current_release.apache2.conf'
-        owner: '{{ administrator_username }}'
-        group: root
-        mode: '0640'
+        dest: '{{ __vhost_base_directory }}/current_release.apache2.conf'
+        group: 'root'
+        mode: 0640
+        owner: '{{ webserver__administrator_username }}'
 
-    - name: Ensure project release environment variables file exists
+    - name: 'Update release Bash shell configuration file'
       copy:
         content: |
           export DEPLOYED_RELEASE={{ __release_metadata.release_id | quote }}
           export DEPLOYED_RELEASE_GIT_HASH={{ __release_metadata.release_git_sha | quote }}
-          export SHARED_ROOT={{ project_base_directory ~ '/shared' | quote }}
+          export SHARED_ROOT={{ __vhost_base_directory ~ '/shared' | quote }}
           {% if webserver__vhosts[cli__site_domain].env_vars is defined %}
             {% for i in webserver__vhosts[cli__site_domain].env_vars | dict2items %}
               export {{ i.key }}={{ i.value | string | quote }}
             {% endfor %}
           {% endif %}
-        dest: '{{ project_base_directory }}/current_release.sh'
-        owner: '{{ administrator_username }}'
-        group: root
-        mode: '0640'
+        dest: '{{ __vhost_base_directory }}/current_release.sh'
+        group: 'root'
+        mode: 0640
+        owner: '{{ webserver__administrator_username }}'
 
-    - name: Ensure Sentry is aware of project release and deployment
+    - name: 'Make Sentry aware of deployment'
       block:
-      - name: Ensure Sentry is aware of project release and deployment
+      - name: 'Make Sentry aware of release'
         uri:
-          url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/'
-          method: POST
-          body_format: json
-          headers:
-            Authorization: 'Bearer {{ sentry_auth_token }}'
           body: |
             {
               "projects": ["{{ webserver__vhosts[cli__site_domain].sentry_project }}"],
@@ -130,39 +130,44 @@
               ],
               "version": "{{ __release_metadata.release_id }}"
             }
-          status_code: 201
-
-      - name: Ensure Sentry is aware of project release deployment
-        uri:
-          url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ __release_metadata.release_id }}/deploys/'
-          method: POST
-          body_format: json
+          body_format: 'json'
           headers:
             Authorization: 'Bearer {{ sentry_auth_token }}'
+          method: 'POST'
+          status_code: 201
+          url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/'
+
+      - name: 'Make Sentry aware of deployment'
+        uri:
           body: |
             {
-              "environment": "{{ webserver__vhosts[cli__site_domain].env_vars.APP_ENV  }}",
+              "environment": "{{ webserver__vhosts[cli__site_domain].env_vars.APP_ENV }}"
             }
+          body_format: 'json'
+          headers:
+            Authorization: 'Bearer {{ sentry_auth_token }}'
+          method: 'POST'
           status_code: 201
+          url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ __release_metadata.release_id }}/deploys/'
       when: webserver__vhosts[cli__site_domain].sentry_project is defined
       run_once: true
-      delegate_to: localhost
+      delegate_to: 'localhost'
 
-    - name: Reload Apache
+    - name: 'Reload Apache'
       service:
-        name: apache2
-        state: reloaded
+        name: 'apache2'
+        state: 'reloaded'
 
-    - name: Reload PHP-FPM
+    - name: 'Reload PHP-FPM'
       service:
-        name: php7.4-fpm
-        state: reloaded
+        name: 'php7.4-fpm'
+        state: 'reloaded'
 
-    - name: Ensure only current and previous project release folders exist
-      shell: 'set -eo pipefail; ls -1tr {{ project_base_directory }}/releases | head -n -2 | xargs rm -rf'
+    - name: 'Clean up virtual host releases folder'
+      shell: 'set -eo pipefail; ls -1tr {{ __vhost_base_directory }}/releases | head -n -2 | xargs rm -rf'
       args:
-        chdir: '{{ project_base_directory }}/releases'
-        executable: /bin/bash
+        chdir: '{{ __vhost_base_directory }}/releases'
+        executable: '/bin/bash'
       changed_when: true
 
     - name: 'Perform smoke tests'
