@@ -5,15 +5,6 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-# A "public" directory is required for Apache to serve files from.
-- name: 'Check release archive for "public" directory'
-  command:
-    cmd: 'tar -tvf {{ deploy_to_vhost__release_artifact_folder }}/release.tgz "./public/"'
-    warn: false
-  changed_when: false
-  delegate_to: 'localhost'
-  run_once: true
-
 - name: 'Load variables from release artifact metadata YAML document'
   include_vars:
     file: '{{ deploy_to_vhost__release_artifact_folder }}/release.yml'
@@ -26,6 +17,8 @@
 - name: 'Set release base directory fact'
   set_fact:
     __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_id }}'
+
+- include: 'preflight.yml'
 
 - name: 'Create release base directory'
   file:

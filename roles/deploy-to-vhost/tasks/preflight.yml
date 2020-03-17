@@ -1,0 +1,31 @@
+# The following tasks perform pre-deployment checks.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# A "public" directory is required for Apache to serve files from.
+- name: 'Check release archive for "public" directory'
+  command:
+    cmd: 'tar -tvf {{ deploy_to_vhost__release_artifact_folder }}/release.tgz "./public/"'
+    warn: false
+  changed_when: false
+  delegate_to: 'localhost'
+  run_once: true
+
+- name: 'Check release ID a non-empty string'
+  assert:
+    that:
+      - __release_metadata.release_id | length > 0
+
+- name: 'Check release base directory does not already exist'
+  block:
+    - name: 'Get release base directory status'
+      stat:
+        path: '{{ __release_base_directory }}'
+      register: __release_base_directory_status
+
+    - name: 'Check release base directory does not already exist'
+      assert:
+        that: __release_base_directory_status.stat.islnk is not defined
