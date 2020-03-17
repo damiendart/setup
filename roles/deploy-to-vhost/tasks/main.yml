@@ -1,0 +1,183 @@
+# The following tasks perform a Capistrano-style website deployment.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# A "public" directory is required for Apache to serve files from.
+- name: 'Check release archive for "public" directory'
+  command:
+    cmd: 'tar -tvf {{ deploy_to_vhost__release_artifact_folder }}/release.tgz "./public/"'
+    warn: false
+  changed_when: false
+  delegate_to: 'localhost'
+  run_once: true
+
+- name: 'Load variables from release artifact metadata YAML document'
+  include_vars:
+    file: '{{ deploy_to_vhost__release_artifact_folder }}/release.yml'
+    name: __release_metadata
+
+- name: 'Set virtual host base directory fact'
+  set_fact:
+    __vhost_base_directory: '/var/www/{{ deploy_to_vhost__site_domain }}'
+
+- name: 'Set release base directory fact'
+  set_fact:
+    __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_id }}'
+
+- name: 'Create release base directory'
+  file:
+    group: 'www-data'
+    mode: 0750
+    owner: '{{ deploy_to_vhost__administrator_username }}'
+    path: '{{ __release_base_directory }}'
+    state: 'directory'
+
+- name: 'Unarchive release artifact archive into release base directory'
+  unarchive:
+    src: '{{ deploy_to_vhost__release_artifact_folder }}/release.tgz'
+    dest: '{{ __release_base_directory }}'
+  become: no
+
+- name: 'Check for and install PHP dependencies with Composer'
+  block:
+    - name: 'Get status of "composer.json" in release directory'
+      stat:
+        path: '{{ __release_base_directory }}/composer.json'
+      register: __composer_json_status
+
+    - name: 'Install PHP dependencies with Composer'
+      composer:
+        classmap_authoritative: true
+        command: 'install'
+        working_dir: '{{ __release_base_directory }}'
+      become: false
+      changed_when: true
+      when: __composer_json_status.stat.exists
+
+- name: 'Update owners and permissions of release directory contents'
+  command: '{{ item }}'
+  args:
+    chdir: '{{ __release_base_directory }}'
+  changed_when: true
+  loop:
+    - "find . -mindepth 1 -exec chown '{{ deploy_to_vhost__administrator_username }}:root' {} \\;"
+    - "find . -wholename './private*' -exec chown '{{ deploy_to_vhost__administrator_username }}:root' {} \\;"
+    - "find . -wholename './protected*' -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
+    - "find . -wholename './public*' -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
+    - 'find . -type d -exec chmod 0750 {} \;'
+    - 'find . -type f -exec chmod 0640 {} \;'
+    - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
+    - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
+
+- name: 'Update release Apache configuration file'
+  copy:
+    content: |
+      Define DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
+
+      SetEnv DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
+      SetEnv DEPLOYED_RELEASE_GIT_HASH {{ __release_metadata.release_git_sha | quote }}
+
+      {% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
+        {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
+          SetEnv {{ i.key }} {{ i.value | string | quote }}
+        {% endfor %}
+      {% endif %}
+    dest: '{{ __vhost_base_directory }}/current_release.apache2.conf'
+    group: 'root'
+    mode: 0640
+    owner: '{{ deploy_to_vhost__administrator_username }}'
+
+- name: 'Update release Bash shell configuration file'
+  copy:
+    content: |
+      export DEPLOYED_RELEASE={{ __release_metadata.release_id | quote }}
+      export DEPLOYED_RELEASE_GIT_HASH={{ __release_metadata.release_git_sha | quote }}
+      export SHARED_ROOT={{ __vhost_base_directory ~ '/shared' | quote }}
+      {% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
+        {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
+          export {{ i.key }}={{ i.value | string | quote }}
+        {% endfor %}
+      {% endif %}
+    dest: '{{ __vhost_base_directory }}/current_release.sh'
+    group: 'root'
+    mode: 0640
+    owner: '{{ deploy_to_vhost__administrator_username }}'
+
+- name: 'Make Sentry aware of deployment'
+  block:
+  - name: 'Make Sentry aware of release'
+    uri:
+      body: |
+        {
+          "projects": ["{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project }}"],
+          "refs": [
+            {
+              "commit": "{{ __release_metadata.release_git_sha }}",
+              "repository": "{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].github_project }}"
+            }
+          ],
+          "version": "{{ __release_metadata.release_id }}"
+        }
+      body_format: 'json'
+      headers:
+        Authorization: 'Bearer {{ sentry_auth_token }}'
+      method: 'POST'
+      status_code: 201
+      url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/'
+
+  - name: 'Make Sentry aware of deployment'
+    uri:
+      body: |
+        {
+          "environment": "{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars.APP_ENV }}"
+        }
+      body_format: 'json'
+      headers:
+        Authorization: 'Bearer {{ sentry_auth_token }}'
+      method: 'POST'
+      status_code: 201
+      url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ __release_metadata.release_id }}/deploys/'
+  when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
+  run_once: true
+  delegate_to: 'localhost'
+
+- name: 'Reload Apache'
+  service:
+    name: 'apache2'
+    state: 'reloaded'
+
+- name: 'Reload PHP-FPM'
+  service:
+    name: 'php7.4-fpm'
+    state: 'reloaded'
+
+- name: 'Clean up virtual host releases folder'
+  shell: 'set -eo pipefail; ls -1tr {{ __vhost_base_directory }}/releases | head -n -2 | xargs rm -rf'
+  args:
+    chdir: '{{ __vhost_base_directory }}/releases'
+    executable: '/bin/bash'
+  changed_when: true
+
+- name: 'Perform smoke tests'
+  tags:
+    - 'smoketest'
+  block:
+    - name: 'Check release deployments'
+      uri:
+        headers:
+          Host: '{{ deploy_to_vhost__site_domain }}'
+        url: 'https://localhost/'
+        url_password: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.password | default("") }}'
+        url_username: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.username | default("") }}'
+        validate_certs: false
+      register: __smoketest_response
+      failed_when: >
+        (__smoketest_response.x_release is not defined) or
+        (__release_metadata.release_id | string not in __smoketest_response.x_release)
+  rescue:
+    # This pretty-prints any errors from the block above.
+    - debug:
+        var: __smoketest_response
