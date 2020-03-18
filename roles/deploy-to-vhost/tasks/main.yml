@@ -20,6 +20,19 @@
 
 - include: 'preflight.yml'
 
+# The following directory structure is similar to the one used by
+# Capistrano and similar deployment tools.
+- name: 'Ensure base deployment-related directories'
+  file:
+    group: 'www-data'
+    mode: 0750
+    owner: '{{ deploy_to_vhost__administrator_username }}'
+    path: '{{ __vhost_base_directory }}/{{ item }}'
+    state: 'directory'
+  loop:
+    - 'releases' # holds all deployments.
+    - 'shared' # holds data that persists across releases.
+
 - name: 'Create release base directory'
   file:
     group: 'www-data'
