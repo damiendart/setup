@@ -1,0 +1,19 @@
+#!/bin/bash
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+export RELEASE_TIMESTAMP="{{ __release_metadata.release_id }}"
+export RELEASE_GIT_SHA="{{ __release_metadata.release_git_sha }}"
+export SHARED_ROOT="{{ __vhost_base_directory ~ '/shared' }}"
+
+# Override Jinja control structure syntax so that it doesn't
+# cause issues with ShellCheck.
+#% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %#
+  #% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %#
+    # shellcheck disable=SC1083,SC2154
+    export {{ i.key }}="{{ i.value | string }}"
+  #% endfor %#
+#% endif %#

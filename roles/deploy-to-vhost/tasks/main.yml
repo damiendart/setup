@@ -33,6 +33,21 @@
     - 'releases' # holds all deployments.
     - 'shared' # holds data that persists across releases.
 
+- name: 'Ensure release scheduled task helper scripts exist'
+  template:
+    # By default, "run-parts" ignores executable files that have
+    # periods in their names.
+    dest: '/etc/cron.{{ item }}/vhost-{{ deploy_to_vhost__site_domain | replace(".","_") }}'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    src: 'vhost-cron.sh.j2'
+  loop:
+    - 'hourly'
+    - 'daily'
+    - 'weekly'
+    - 'monthly'
+
 - name: 'Create release base directory'
   file:
     group: 'www-data'
@@ -78,7 +93,7 @@
     - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
     - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
 
-- name: 'Update release Apache configuration file'
+- name: 'Update environment Apache configuration file'
   copy:
     content: |
       Define DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
@@ -96,21 +111,17 @@
     mode: 0640
     owner: '{{ deploy_to_vhost__administrator_username }}'
 
-- name: 'Update release Bash shell configuration file'
-  copy:
-    content: |
-      export DEPLOYED_RELEASE={{ __release_metadata.release_id | quote }}
-      export DEPLOYED_RELEASE_GIT_HASH={{ __release_metadata.release_git_sha | quote }}
-      export SHARED_ROOT={{ __vhost_base_directory ~ '/shared' | quote }}
-      {% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
-        {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
-          export {{ i.key }}={{ i.value | string | quote }}
-        {% endfor %}
-      {% endif %}
-    dest: '{{ __vhost_base_directory }}/current_release.sh'
+- name: 'Update environment Bash shell configuration file'
+  template:
+    # Override Jinja control structure syntax so that it doesn't
+    # cause issues with ShellCheck.
+    block_end_string: '%#'
+    block_start_string: '#%'
+    dest: '{{ __vhost_base_directory }}/deploy.sh'
     group: 'root'
-    mode: 0640
     owner: '{{ deploy_to_vhost__administrator_username }}'
+    mode: 0640
+    src: 'deploy.sh.j2'
 
 - name: 'Make Sentry aware of deployment'
   block:

@@ -40,19 +40,6 @@
     label: '{{ item.key }}'
   notify: 'Reload Apache'
 
-- name: 'Ensure Apache virtual hosts scheduled tasks scripts exist'
-  template:
-    src: 'www-cron.sh.j2'
-    dest: '/etc/cron.{{ item }}/www-cron'
-    owner: 'root'
-    group: 'root'
-    mode: 0755
-  loop:
-    - 'hourly'
-    - 'daily'
-    - 'weekly'
-    - 'monthly'
-
 - name: 'Ensure Apache virtual hosts are active'
   command: 'a2ensite {{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
   args:
