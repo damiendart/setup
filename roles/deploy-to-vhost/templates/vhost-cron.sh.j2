@@ -5,13 +5,10 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE file.
 
+set -e
+
 export CRON=true
 
-if [ -f "{{ __vhost_base_directory }}/deploy.sh" ]; then
-  # shellcheck source=/dev/null
-  source "{{ __vhost_base_directory }}/deploy.sh"
-
-  if [ -x "{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}" ]; then
-    "{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}"
-  fi
-fi
+# shellcheck source=/dev/null
+source "{{ __vhost_base_directory }}/deploy.sh"
+"{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}"

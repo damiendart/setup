@@ -39,7 +39,7 @@
   template:
     # By default, "run-parts" ignores executable files that have
     # periods in their names.
-    dest: '/etc/cron.{{ item }}/vhost-{{ deploy_to_vhost__site_domain | replace(".","_") }}'
+    dest: '/etc/cron.{{ item }}/vhost-{{ deploy_to_vhost__site_domain | replace(".","-") }}'
     group: 'root'
     mode: 0755
     owner: 'root'
