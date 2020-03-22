@@ -7,5 +7,5 @@ webserver__add_vhosts_to_etc_hosts: false
 webserver__composer_version: '1.10.1'
 webserver__composer_sha256: '1831f266580f221189dc04d4b58d7fc50c934ffc3a0eca89ecb4a53aa44867e2'
 webserver__install_xdebug: false
-webserver__php_version: 7.4
+webserver__php_version: '7.4'
 webserver__static_caching: true

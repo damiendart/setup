@@ -124,8 +124,8 @@
       status_code: 201
       url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ __release_metadata.release_timestamp }}/deploys/'
   when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
-  run_once: true
   delegate_to: 'localhost'
+  run_once: true
 
 - name: 'Clean up virtual host releases folder'
   shell: 'set -eo pipefail; ls -1tr {{ __vhost_base_directory }}/releases | head -n -2 | xargs rm -rf'
