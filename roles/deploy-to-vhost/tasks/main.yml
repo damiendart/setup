@@ -19,51 +19,7 @@
     __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_timestamp }}'
 
 - include: 'preflight.yml'
-
-# The following directory structure is similar to the one used by
-# Capistrano and similar deployment tools.
-- name: 'Ensure base deployment-related directories'
-  file:
-    group: 'www-data'
-    mode: 0750
-    owner: '{{ deploy_to_vhost__administrator_username }}'
-    path: '{{ __vhost_base_directory }}/{{ item }}'
-    state: 'directory'
-  loop:
-    - 'releases' # holds all deployments.
-    - 'shared' # holds data that persists across releases.
-
-- name: 'Ensure "private" shared-data directory exists'
-  file:
-    group: 'root'
-    mode: 0750
-    owner: '{{ deploy_to_vhost__administrator_username }}'
-    path: '{{ __vhost_base_directory }}/shared/private'
-    state: 'directory'
-
-- name: 'Ensure "protected" shared-data directory exists'
-  file:
-    group: 'www-data'
-    # Octal file permissions must contain a leading zero or be a string.
-    mode: '2750'
-    owner: '{{ deploy_to_vhost__administrator_username }}'
-    path: '{{ __vhost_base_directory }}/shared/protected'
-    state: 'directory'
-
-- name: 'Ensure release scheduled task helper scripts exist'
-  template:
-    # By default, "run-parts" ignores executable files that have
-    # periods in their names.
-    dest: '/etc/cron.{{ item }}/vhost-{{ deploy_to_vhost__site_domain | replace(".","_") }}'
-    group: 'root'
-    mode: 0755
-    owner: 'root'
-    src: 'vhost-cron.sh.j2'
-  loop:
-    - 'hourly'
-    - 'daily'
-    - 'weekly'
-    - 'monthly'
+- include: 'setup.yml'
 
 - name: 'Create release base directory'
   file:
