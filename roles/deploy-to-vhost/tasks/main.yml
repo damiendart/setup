@@ -73,6 +73,9 @@
     mode: 0640
     owner: '{{ deploy_to_vhost__administrator_username }}'
     src: 'deploy.apache2.conf.j2'
+  notify:
+    - 'Reload Apache'
+    - 'Reload PHP-FPM'
 
 - name: 'Update environment Bash shell configuration file'
   template:
@@ -124,22 +127,15 @@
   run_once: true
   delegate_to: 'localhost'
 
-- name: 'Reload Apache'
-  service:
-    name: 'apache2'
-    state: 'reloaded'
-
-- name: 'Reload PHP-FPM'
-  service:
-    name: 'php7.4-fpm'
-    state: 'reloaded'
-
 - name: 'Clean up virtual host releases folder'
   shell: 'set -eo pipefail; ls -1tr {{ __vhost_base_directory }}/releases | head -n -2 | xargs rm -rf'
   args:
     chdir: '{{ __vhost_base_directory }}/releases'
     executable: '/bin/bash'
   changed_when: true
+
+- name: 'Force all currently notified handlers to run'
+  meta: 'flush_handlers'
 
 - name: 'Perform smoke tests'
   tags:
