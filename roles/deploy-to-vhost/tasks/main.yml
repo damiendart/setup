@@ -68,11 +68,11 @@
 
 - name: 'Update environment Apache configuration file'
   template:
-    dest: '{{ __vhost_base_directory }}/deploy.apache2.conf'
+    dest: '{{ __vhost_base_directory }}/deployment.apache2.conf'
     group: 'root'
     mode: 0640
     owner: '{{ deploy_to_vhost__administrator_username }}'
-    src: 'deploy.apache2.conf.j2'
+    src: 'deployment.apache2.conf.j2'
   notify:
     - 'Reload Apache'
     - 'Reload PHP-FPM'
@@ -83,11 +83,11 @@
     # cause issues with ShellCheck.
     block_end_string: '%#'
     block_start_string: '#%'
-    dest: '{{ __vhost_base_directory }}/deploy.sh'
+    dest: '{{ __vhost_base_directory }}/deployment.conf.sh'
     group: 'root'
     owner: '{{ deploy_to_vhost__administrator_username }}'
     mode: 0640
-    src: 'deploy.sh.j2'
+    src: 'deployment.conf.sh.j2'
 
 - name: 'Make Sentry aware of deployment'
   block:

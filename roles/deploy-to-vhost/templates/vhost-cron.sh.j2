@@ -10,5 +10,5 @@ set -e
 export CRON=true
 
 # shellcheck source=/dev/null
-source "{{ __vhost_base_directory }}/deploy.sh"
+source "{{ __vhost_base_directory }}/deployment.conf.sh"
 "{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}"
