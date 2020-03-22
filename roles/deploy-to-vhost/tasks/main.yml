@@ -33,6 +33,23 @@
     - 'releases' # holds all deployments.
     - 'shared' # holds data that persists across releases.
 
+- name: 'Ensure "private" shared-data directory exists'
+  file:
+    group: 'root'
+    mode: 0750
+    owner: '{{ deploy_to_vhost__administrator_username }}'
+    path: '{{ __vhost_base_directory }}/shared/private'
+    state: 'directory'
+
+- name: 'Ensure "protected" shared-data directory exists'
+  file:
+    group: 'www-data'
+    # Octal file permissions must contain a leading zero or be a string.
+    mode: '2750'
+    owner: '{{ deploy_to_vhost__administrator_username }}'
+    path: '{{ __vhost_base_directory }}/shared/protected'
+    state: 'directory'
+
 - name: 'Ensure release scheduled task helper scripts exist'
   template:
     # By default, "run-parts" ignores executable files that have
