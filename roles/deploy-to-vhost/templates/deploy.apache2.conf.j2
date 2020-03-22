@@ -19,8 +19,8 @@ SetEnv SHARED_ROOT "${SHARED_ROOT}"
   {% endfor %}
 {% endif %}
 
-<If "%{HTTP_USER_AGENT} == 'ansible-httpget'">
-  header set "X-Release" "${RELEASE_TIMESTAMP}"
+<If "%{HTTP_USER_AGENT} == 'deploy-to-vhost-smoke-test'">
+  header set "X-Release-Timestamp" "${RELEASE_TIMESTAMP}"
 </If>
 
 IncludeOptional "${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]"
@@ -33,6 +33,7 @@ DocumentRoot "${RELEASE_ROOT}/public"
     AuthName "{{ deploy_to_vhost__site_domain }}"
     AuthBasicProvider file
     AuthUserFile "${VHOST_ROOT}/.htpasswd"
+    Require local
     Require valid-user
   </IfFile>
 

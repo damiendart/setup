@@ -30,6 +30,7 @@
   apt:
     force_apt_get: true
     name:
+      - 'curl'
       - 'git'
       - 'msmtp-mta'
       # Ansible requires Passlib for certain functions.

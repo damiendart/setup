@@ -141,18 +141,34 @@
   tags:
     - 'smoketest'
   block:
-    - name: 'Check release deployments'
+    - name: 'Check release is running on hosts'
+      command:
+        # The "--resolve" option allows "/etc/hosts"-type functionality
+        # without having to edit system-wide configuration files.
+        # Ansible's 'uri' module has no similar functionality.
+        cmd: >
+          curl -I
+          --insecure
+          --resolve '{{ deploy_to_vhost__site_domain }}:443:127.0.0.1'
+          --user-agent 'deploy-to-vhost-smoke-test'
+          'https://{{ deploy_to_vhost__site_domain }}'
+        warn: false
+      register: __smoketest_response
+      changed_when: false
+
+    - name: 'Check release is live'
       uri:
-        headers:
-          Host: '{{ deploy_to_vhost__site_domain }}'
-        url: 'https://localhost/'
+        http_agent: 'deploy-to-vhost-smoke-test'
+        url: 'https://{{ deploy_to_vhost__site_domain }}/'
         url_password: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.password | default("") }}'
         url_username: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.username | default("") }}'
         validate_certs: false
       register: __smoketest_response
       failed_when: >
-        (__smoketest_response.x_release is not defined) or
-        (__release_metadata.release_timestamp | string not in __smoketest_response.x_release)
+        (__smoketest_response.x_release_timestamp is not defined) or
+        (__release_metadata.release_timestamp | string not in __smoketest_response.x_release_timestamp)
+      delegate_to: 'localhost'
+      run_once: true
   rescue:
     # This pretty-prints any errors from the block above.
     - debug:
