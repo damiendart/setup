@@ -16,7 +16,7 @@
 
 - name: 'Set release base directory fact'
   set_fact:
-    __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_id }}'
+    __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_timestamp }}'
 
 - include: 'preflight.yml'
 
@@ -94,22 +94,12 @@
     - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
 
 - name: 'Update environment Apache configuration file'
-  copy:
-    content: |
-      Define DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
-
-      SetEnv DEPLOYED_RELEASE {{ __release_metadata.release_id | quote }}
-      SetEnv DEPLOYED_RELEASE_GIT_HASH {{ __release_metadata.release_git_sha | quote }}
-
-      {% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
-        {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
-          SetEnv {{ i.key }} {{ i.value | string | quote }}
-        {% endfor %}
-      {% endif %}
-    dest: '{{ __vhost_base_directory }}/current_release.apache2.conf'
+  template:
+    dest: '{{ __vhost_base_directory }}/deploy.apache2.conf'
     group: 'root'
     mode: 0640
     owner: '{{ deploy_to_vhost__administrator_username }}'
+    src: 'deploy.apache2.conf.j2'
 
 - name: 'Update environment Bash shell configuration file'
   template:
@@ -136,7 +126,7 @@
               "repository": "{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].github_project }}"
             }
           ],
-          "version": "{{ __release_metadata.release_id }}"
+          "version": "{{ __release_metadata.release_timestamp }}"
         }
       body_format: 'json'
       headers:
@@ -156,7 +146,7 @@
         Authorization: 'Bearer {{ sentry_auth_token }}'
       method: 'POST'
       status_code: 201
-      url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ __release_metadata.release_id }}/deploys/'
+      url: 'https://sentry.io/api/0/organizations/{{ sentry_organisation }}/releases/{{ __release_metadata.release_timestamp }}/deploys/'
   when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
   run_once: true
   delegate_to: 'localhost'
@@ -193,7 +183,7 @@
       register: __smoketest_response
       failed_when: >
         (__smoketest_response.x_release is not defined) or
-        (__release_metadata.release_id | string not in __smoketest_response.x_release)
+        (__release_metadata.release_timestamp | string not in __smoketest_response.x_release)
   rescue:
     # This pretty-prints any errors from the block above.
     - debug:

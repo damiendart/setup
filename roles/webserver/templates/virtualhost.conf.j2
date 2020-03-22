@@ -48,6 +48,18 @@
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
     </IfModule>
 
+    # The document root is not defined here (ignoring any
+    # backwards-compatibility stuff) to allow for Capistrano-style
+    # deployments. Instead, it should be defined in a
+    # "deploy.apache2.conf" configuration file in the virtual host root
+    # directory that is managed by the deployment tool of choice. For an
+    # example, please see the "deploy-to-vhost" Ansible role.
+    <IfFile "/var/www/{{ item.key }}/deploy.apache2.conf">
+      Include "/var/www/{{ item.key }}/deploy.apache2.conf"
+    </IfFile>
+
+    # The following is backwards-compatibility stuff for virtual hosts
+    # managed with the old style of deployment.
     <IfFile "/var/www/{{ item.key }}/current_release.apache2.conf">
       Include /var/www/{{ item.key }}/current_release.apache2.conf
 
@@ -71,7 +83,7 @@
           AuthType Basic
           AuthName "{{ item.key }}"
           AuthBasicProvider file
-          AuthUserFile "/var/www/{{ item.key }}/shared/protected/.htpasswd"
+          AuthUserFile "/var/www/{{ item.key }}/.htpasswd"
           Require user {{ item.value.auth.username }}
         {% endif %}
 
@@ -102,7 +114,7 @@
       </Directory>
     </IfFile>
 
-    <IfFile ! "/var/www/{{ item.key }}/current_release.apache2.conf">
+    <IfFile ! "/var/www/{{ item.key }}/deploy.apache2.conf">
       <IfModule mod_rewrite.c>
         RewriteEngine on
 

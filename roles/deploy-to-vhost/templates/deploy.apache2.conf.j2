@@ -1,0 +1,63 @@
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+Define SHARED_ROOT "{{ __vhost_base_directory }}/shared"
+Define RELEASE_ROOT "{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_timestamp }}"
+Define RELEASE_TIMESTAMP "{{ __release_metadata.release_timestamp }}"
+Define VHOST_ROOT "{{ __vhost_base_directory }}"
+
+SetEnv RELEASE_TIMESTAMP "${RELEASE_TIMESTAMP}"
+SetEnv RELEASE_GIT_SHA "{{ __release_metadata.release_git_sha }}"
+SetEnv SHARED_ROOT "${SHARED_ROOT}"
+      
+{% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
+  {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
+    SetEnv {{ i.key }} "{{ i.value | string }}"
+  {% endfor %}
+{% endif %}
+
+<If "%{HTTP_USER_AGENT} == 'ansible-httpget'">
+  header set "X-Release" "${RELEASE_TIMESTAMP}"
+</If>
+
+IncludeOptional "${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]"
+
+DocumentRoot "${RELEASE_ROOT}/public"
+
+<Directory ${RELEASE_ROOT}/public>
+  <IfFile "${VHOST_ROOT}/.htpasswd">
+    AuthType Basic
+    AuthName "{{ deploy_to_vhost__site_domain }}"
+    AuthBasicProvider file
+    AuthUserFile "${VHOST_ROOT}/.htpasswd"
+    Require valid-user
+  </IfFile>
+
+  <IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteBase /
+
+    # Remove groups of slashes.
+    RewriteCond %{THE_REQUEST} //
+    RewriteRule ^.*$ $0 [L,NE,R=permanent]
+
+    # Remove "index.html" and "index.php" from URLs.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{THE_REQUEST} ^.*/index\.(html|php)
+    RewriteRule ^(.*)index\.(html|php)$ $1 [L,NE,R=permanent]
+
+    # Remove file extensions from some URLs.
+    RewriteCond %{REQUEST_FILENAME} -f
+    # TODO: Use negative lookahead to combine the two conditions?
+    RewriteCond %{THE_REQUEST} !^.*/index\.html
+    RewriteCond %{THE_REQUEST} ^.*\.html
+    RewriteRule ^(.*).html$ $1 [L,NE,R=permanent]
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^([^\.]+)$ $1.html [L,NC]
+  </IfModule>
+
+  IncludeOptional "${RELEASE_ROOT}/private/apache2/directory.apache.con[f]"
+</Directory>

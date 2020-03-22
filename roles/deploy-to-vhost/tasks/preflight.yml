@@ -14,10 +14,10 @@
   delegate_to: 'localhost'
   run_once: true
 
-- name: 'Check release ID a non-empty string'
+- name: 'Check release timestamp is a non-empty string'
   assert:
     that:
-      - __release_metadata.release_id | length > 0
+      - __release_metadata.release_timestamp | length > 0
 
 - name: 'Check release base directory does not already exist'
   block:

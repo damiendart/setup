@@ -33,7 +33,7 @@
     name: '{{ item.value.auth.username }}'
     owner: 'root'
     password: '{{ item.value.auth.password }}'
-    path: '/var/www/{{ item.key }}/shared/protected/.htpasswd'
+    path: '/var/www/{{ item.key }}/.htpasswd'
   when: item.value.auth.password is defined and item.value.auth.username is defined
   loop: '{{ webserver__vhosts | dict2items }}'
   loop_control:
