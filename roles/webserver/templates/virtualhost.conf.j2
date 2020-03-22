@@ -115,13 +115,15 @@
     </IfFile>
 
     <IfFile ! "/var/www/{{ item.key }}/deployment.apache2.conf">
-      <IfModule mod_rewrite.c>
-        RewriteEngine on
+      <IfFile ! "/var/www/{{ item.key }}/current_release.apache2.conf">
+        <IfModule mod_rewrite.c>
+          RewriteEngine on
 
-        RewriteCond %{REQUEST_URI} !^/.well-known/acme-challenge/.*
-        RewriteCond /var/www/html/%{REQUEST_URI} !-f
-        RewriteRule ^ - [R=503,L]
-      </IfModule>
+          RewriteCond %{REQUEST_URI} !^/.well-known/acme-challenge/.*
+          RewriteCond /var/www/html/%{REQUEST_URI} !-f
+          RewriteRule ^ - [R=503,L]
+        </IfModule>
+      </IfFile>
     </IfFile>
   </VirtualHost>
 </IfModule>
