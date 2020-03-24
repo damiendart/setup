@@ -29,3 +29,30 @@
     - name: 'Check release base directory does not already exist'
       assert:
         that: __release_base_directory_status.stat.islnk is not defined
+
+- name: 'Check Sentry organisation is valid'
+  tags:
+    - 'sentry'
+  uri:
+    headers:
+      Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
+    status_code: 200
+    url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/'
+  when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
+  delegate_to: 'localhost'
+  run_once: true
+
+# Sentry requires that a release's Git commit SHA-1 hash exists in the
+# project's Git repository on GitHub before it can associate the commit
+# with the release.
+- name: 'Check release Git commit SHA-1 hash is valid with GitHub'
+  tags:
+    - 'sentry'
+  uri:
+    headers:
+      Authorization: 'Token {{ deploy_to_vhost__github_auth_token }}'
+    status_code: 200
+    url: 'https://api.github.com/repos/{{ __release_metadata.github_project }}/git/commits/{{ __release_metadata.release_git_sha }}'
+  when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
+  delegate_to: 'localhost'
+  run_once: true
