@@ -11,6 +11,8 @@
     name: __release_metadata
 
 - name: 'Set virtual host base directory fact'
+  tags:
+    - 'deploy-to-vhost:setup'
   set_fact:
     __vhost_base_directory: '/var/www/{{ deploy_to_vhost__site_domain }}'
 

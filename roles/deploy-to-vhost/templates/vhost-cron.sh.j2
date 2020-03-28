@@ -11,4 +11,7 @@ export CRON=true
 
 # shellcheck source=/dev/null
 source "{{ __vhost_base_directory }}/deployment.conf.sh"
-"{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}"
+
+if [[ -f "{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}" ]]; then
+  "{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}"
+fi

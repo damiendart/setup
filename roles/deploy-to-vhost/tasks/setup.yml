@@ -8,6 +8,8 @@
 # The following directory structure is similar to the one used by
 # Capistrano and similar deployment tools.
 - name: 'Ensure base deployment-related directories exist'
+  tags:
+    - 'deploy-to-vhost:setup'
   file:
     group: 'www-data'
     mode: 0750
@@ -19,6 +21,8 @@
     - 'shared' # holds data that persists across releases.
 
 - name: 'Ensure "private" shared-data directory exists'
+  tags:
+    - 'deploy-to-vhost:setup'
   file:
     group: 'root'
     mode: 0750
@@ -27,6 +31,8 @@
     state: 'directory'
 
 - name: 'Ensure "protected" shared-data directory exists'
+  tags:
+    - 'deploy-to-vhost:setup'
   file:
     group: 'www-data'
     # Octal file permissions must contain a leading zero or be a string.
@@ -36,6 +42,8 @@
     state: 'directory'
 
 - name: 'Ensure release scheduled task helper scripts exist'
+  tags:
+    - 'deploy-to-vhost:setup'
   template:
     # By default, "run-parts" ignores executable files that have
     # periods in their names.
