@@ -13,6 +13,8 @@
     path: '/var/www/{{ item.key }}'
     state: 'directory'
   loop: '{{ webserver__vhosts | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'
 
 - name: 'Ensure Apache virtual hosts configuration files exist'
   template:
