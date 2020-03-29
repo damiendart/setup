@@ -19,7 +19,7 @@
 
 - name: 'Parse dry-run "apt-get dist-upgrade" output'
   set_fact:
-    updates: '{{ apt_update_dry_run.stdout_lines | select("match", "^Inst ") | list | sort }}'
+    updates: '{{ apt_update_dry_run.stdout_lines | apt_simulate_output_cleanup }}'
   changed_when: false
 
 - name: 'Perform dry-run of "apt-get autoremove"'
@@ -31,7 +31,7 @@
 
 - name: 'Parse dry-run "apt-get autoremove" output'
   set_fact:
-    removals: '{{ apt_removal_dry_run.stdout_lines | select("match", "^Remv ") | list | sort }}'
+    removals: '{{ apt_removal_dry_run.stdout_lines | apt_simulate_output_cleanup }}'
   changed_when: false
 
 - name: 'Ensure APT packages are up-to-date'
