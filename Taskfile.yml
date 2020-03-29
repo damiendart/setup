@@ -25,7 +25,7 @@ tasks:
 
   lint:ansible:
     cmds:
-      - ansible-lint -p --nocolor playbook-apt-update.yml
+      - ansible-lint -p --nocolor playbook-apt-maintainance.yml
       - ansible-lint -p --nocolor playbook-deploy-website.yml
       - ansible-lint -p --nocolor playbook-provision.yml
     desc: Lint Ansible-related files with Ansible Lint
