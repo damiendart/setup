@@ -3,19 +3,19 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- hosts: production
-  become: yes
+- hosts: 'production'
+  become: true
   roles:
-    - backup
-    - base
-    - letsencrypt
-    - livepatch
-    - monitoring
-    - webserver
+    - 'backup'
+    - 'base'
+    - 'letsencrypt'
+    - 'livepatch'
+    - 'monitoring'
+    - 'webserver'
 
-- hosts: local
-  become: yes
+- hosts: 'local'
+  become: true
   roles:
-    - base
-    - development
-    - webserver
+    - 'base'
+    - 'development'
+    - 'webserver'
