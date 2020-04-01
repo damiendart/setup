@@ -68,6 +68,26 @@
     - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
     - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
 
+- name: 'Add web-server-writable directories to release directory'
+  file:
+    path: '{{ __release_base_directory }}/{{ item }}'
+    state: 'directory'
+    owner: 'www-data'
+    group: 'www-data'
+    mode: '2750'
+  loop: '{{ __release_metadata.writable_directories_release }}'
+  when: __release_metadata.writable_directories_release is defined
+
+- name: 'Ensure web-server-writable directories exist in shared directory'
+  file:
+    path: '{{ __vhost_base_directory }}/shared/{{ item }}'
+    state: 'directory'
+    owner: 'www-data'
+    group: 'www-data'
+    mode: '2750'
+  loop: '{{ __release_metadata.writable_directories_shared }}'
+  when: __release_metadata.writable_directories_shared is defined
+
 - name: 'Update environment Apache configuration file'
   template:
     dest: '{{ __vhost_base_directory }}/deployment.apache2.conf'
