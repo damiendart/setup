@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+<IfModule mod_macro.c>
+  <Macro NoQueryStrings>
+    RewriteCond %{QUERY_STRING} !=""
+    RewriteRule ^(.*)$ $1? [L,R=permanent]
+  </Macro>
+
+  <Macro AllowSomeQueryStrings $regex>
+    RewriteCond %{QUERY_STRING} !=""
+    RewriteCond %{REQUEST_URI} $regex
+    RewriteRule ^(.*)$ $1? [L,R=permanent]
+  </Macro>
+</IfModule>

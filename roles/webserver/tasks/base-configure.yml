@@ -55,10 +55,22 @@
     src: 'apache2.conf.j2'
   notify: 'Reload Apache'
 
-- name: 'Ensure custom Apache configuration file is active'
-  command: 'a2enconf zzz'
+- name: 'Ensure custom Apache macros configuration file exists'
+  template:
+    dest: '/etc/apache2/conf-available/zzz-macros.conf'
+    group: 'root'
+    mode: 0600
+    owner: 'root'
+    src: 'apache2-macros.conf.j2'
+  notify: 'Reload Apache'
+
+- name: 'Ensure custom Apache configuration files are active'
+  command: 'a2enconf {{ item }}'
   args:
-    creates: '/etc/apache2/conf-enabled/zzz.conf'
+    creates: '/etc/apache2/conf-enabled/{{ item }}.conf'
+  loop:
+    - 'zzz'
+    - 'zzz-macros'
   notify: 'Reload Apache'
 
 - name: 'Ensure the PHP-FPM Apache configuration file is active'
