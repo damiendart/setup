@@ -12,9 +12,10 @@ Define VHOST_ROOT "{{ __vhost_base_directory }}"
 SetEnv RELEASE_TIMESTAMP "${RELEASE_TIMESTAMP}"
 SetEnv RELEASE_GIT_SHA "{{ __release_metadata.release_git_sha }}"
 SetEnv SHARED_ROOT "${SHARED_ROOT}"
-      
+
 {% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
   {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
+    Define {{ i.key }} "{{ i.value | string }}"
     SetEnv {{ i.key }} "{{ i.value | string }}"
   {% endfor %}
 {% endif %}
@@ -62,3 +63,18 @@ DocumentRoot "${RELEASE_ROOT}/public"
 
   IncludeOptional "${RELEASE_ROOT}/private/apache2/directory.apache.con[f]"
 </Directory>
+
+# Variable scope is not a thing in Apache configuration; undefining
+# variables prevents any data from being unintentially visible to any
+# later configuration directives beyond the enclosing virtual host.
+
+UnDefine SHARED_ROOT
+UnDefine RELEASE_ROOT
+UnDefine RELEASE_TIMESTAMP
+UnDefine VHOST_ROOT
+
+{% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
+  {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
+    UnDefine {{ i.key }}
+  {% endfor %}
+{% endif %}
