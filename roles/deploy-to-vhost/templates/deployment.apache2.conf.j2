@@ -24,7 +24,7 @@ SetEnv SHARED_ROOT "${SHARED_ROOT}"
   header set "X-Release-Timestamp" "${RELEASE_TIMESTAMP}"
 </If>
 
-IncludeOptional "${RELEASE_ROOT}/private/apache2/virtualhost.apache.con[f]"
+IncludeOptional "${RELEASE_ROOT}/private/apache2/virtualhost.con[f]"
 
 DocumentRoot "${RELEASE_ROOT}/public"
 
@@ -61,7 +61,7 @@ DocumentRoot "${RELEASE_ROOT}/public"
     RewriteRule ^([^\.]+)$ $1.html [L,NC]
   </IfModule>
 
-  IncludeOptional "${RELEASE_ROOT}/private/apache2/directory.apache.con[f]"
+  IncludeOptional "${RELEASE_ROOT}/private/apache2/directory.con[f]"
 </Directory>
 
 # Variable scope is not a thing in Apache configuration; undefining
