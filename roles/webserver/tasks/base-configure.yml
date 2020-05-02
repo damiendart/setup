@@ -46,6 +46,15 @@
     - 'serve-cgi-bin'
   notify: 'Reload Apache'
 
+- name: 'Ensure custom PHP-FPM Apache configuration file exists'
+  template:
+    dest: '/etc/apache2/conf-available/php{{ webserver__php_version }}-fpm.conf'
+    group: 'root'
+    mode: 0600
+    owner: 'root'
+    src: 'php-fpm.apache.conf.j2'
+  notify: 'Reload Apache'
+
 - name: 'Ensure custom Apache configuration file exists'
   template:
     dest: '/etc/apache2/conf-available/zzz.conf'
@@ -69,6 +78,7 @@
   args:
     creates: '/etc/apache2/conf-enabled/{{ item }}.conf'
   loop:
+    - 'php{{ webserver__php_version }}-fpm'
     - 'zzz'
     - 'zzz-macros'
   notify: 'Reload Apache'

@@ -1,0 +1,28 @@
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+<IfModule proxy_fcgi_module>
+  <IfModule setenvif_module>
+    # Enable HTTP authorization headers.
+    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+  </IfModule>
+
+  <FilesMatch ".+\.ph(ar|p|tml)$">
+    <If "-f %{REQUEST_FILENAME}">
+      SetHandler "proxy:unix:/run/php/php7.4-fpm.sock|fcgi://localhost"
+    </If>
+  </FilesMatch>
+
+  # Deny access to raw PHP sources.
+  <FilesMatch ".+\.phps$">
+    Require all denied
+  </FilesMatch>
+
+  # Deny access to files without filename.
+  <FilesMatch "^\.ph(ar|p|ps|tml)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
