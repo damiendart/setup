@@ -99,4 +99,5 @@
   tags:
     - 'gui'
 
+- include: 'docker.yml'
 - include: 'virtualbox.yml'

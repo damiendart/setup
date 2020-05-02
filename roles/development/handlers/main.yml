@@ -1,0 +1,11 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Notify user about group membership update'
+  debug:
+    msg: >-
+      If the administrator user is currently logged in, you will need
+      to log out and log back in for the "docker" group membership to
+      take effect.
