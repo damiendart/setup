@@ -5,8 +5,8 @@ A mess of Ansible stuff that I use to provision and maintain my personal
 development environment and a couple of servers that I host a few small
 websites on.
 
-  - I currently use Ubuntu 18.04, so the included Ansible playbooks and
-    roles have only been tested there.
+  - I currently use macOS Catalina and Ubuntu 18.04, so the included
+    Ansible playbooks and roles have only been tested on those OSes.
   - All Ansible hosts must have Python 3 installed beforehand.
   - Mitogen has been included as a dependency, but you'll need to
     [manually set it up][1] for it to take effect.

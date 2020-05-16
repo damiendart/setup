@@ -1,0 +1,33 @@
+#!/bin/bash
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE file.
+
+export EDITOR="vim"
+export HISTCONTROL=ignoreboth
+export HISTFILESIZE=100000
+export HISTSIZE="$HISTFILESIZE"
+export HISTTIMEFORMAT='%s '
+export NPM_CONFIG_PREFIX="$HOME/.npm"
+export PATH="$PATH:$NPM_CONFIG_PREFIX/bin:$HOME/Library/Python/3.7/bin/"
+export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
+
+git config --global core.excludesfile "$HOME/.gitignore"
+cat > "$HOME/.gitignore" <<GITIGNORE
+*.swp
+.idea
+node_modules
+GITIGNORE
+
+git config --global user.email "{{ macos__user_email }}"
+git config --global user.name "{{ macos__user_full_name }}"
+
+# shellcheck source=/dev/null
+source "$HOME/Library/Python/3.7/bin/virtualenvwrapper_lazy.sh"
+# shellcheck source=/dev/null
+source "$(brew --prefix)/opt/fzf/shell/completion.zsh"
+# shellcheck source=/dev/null
+source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"

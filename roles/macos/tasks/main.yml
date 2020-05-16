@@ -1,0 +1,28 @@
+# This role installs and configures my macOS stuff.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure required packages are installed'
+  homebrew:
+    name:
+      - 'fzf'
+      - 'go-task/tap/go-task'
+      - 'node@{{ macos__node_major_version }}'
+      - 'php@{{ macos__php_version }}'
+      - 'shellcheck'
+      - 'tig'
+      - 'tree'
+      - 'vim'
+    state: 'present'
+  become: false
+
+- name: 'Ensure custom ".zshrc" exists in administrator home directory'
+  template:
+    dest: '/Users/{{ macos__user_username }}/.zshrc'
+    group: 'staff'
+    mode: 0600
+    owner: '{{ macos__user_username }}'
+    src: 'zshrc.sh.j2'

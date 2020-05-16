@@ -19,3 +19,8 @@
     - 'base'
     - 'development'
     - 'webserver'
+
+- hosts: 'macos'
+  become: true
+  roles:
+    - 'macos'
