@@ -37,6 +37,7 @@
       - 'python3-passlib'
       - 'openssh-server'
       - 'ufw'
+      - 'unzip'
     state: 'present'
 
 - name: 'Ensure OpenSSH Server and UFW are running and start on system boot'
