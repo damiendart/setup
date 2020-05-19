@@ -28,7 +28,7 @@
       - 'vim'
     state: 'present'
 
-- name: 'Ensure Task installed'
+- name: 'Ensure Task is installed'
   snap:
     classic: true
     name: 'task'
@@ -82,7 +82,7 @@
       path: '/home/{{ development__user_username }}/.fonts/iosevka'
       state: 'directory'
 
-  - name: 'Ensure the Iosevka font files is installed'
+  - name: 'Ensure the Iosevka font files are installed'
     unarchive:
       dest: '/home/{{ administrator_username }}/.fonts/iosevka'
       exclude: '{{ development__iosevka_archive_excludes }}'
