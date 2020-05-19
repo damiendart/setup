@@ -101,3 +101,4 @@
 
 - include: 'docker.yml'
 - include: 'virtualbox.yml'
+- include: 'open-vm-tools.yml'
