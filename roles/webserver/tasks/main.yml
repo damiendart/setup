@@ -28,7 +28,11 @@
       - 'php{{ webserver__php_version }}-curl'
       - 'php{{ webserver__php_version }}-gd'
       - 'php{{ webserver__php_version }}-mbstring'
+      - 'php{{ webserver__php_version }}-zip'
     state: 'present'
+  notify:
+    - 'Reload Apache'
+    - 'Reload PHP-FPM'
 
 - name: 'Ensure Apache and PHP-FPM are running and start on system boot'
   service:
