@@ -5,42 +5,44 @@
 ---
 version: 2
 
+output: 'prefixed'
+
 tasks:
   default:
     deps:
-      - task: lint
+      - task: 'lint'
 
   dependencies:
     cmds:
-      - pip3 install -r requirements.txt
-    desc: Install Python dependencies
+      - 'pip3 install -r requirements.txt'
+    desc: 'Install Python dependencies'
 
   lint:
     cmds:
-      - task: lint:ansible
-      - task: lint:python
-      - task: lint:shell
-      - task: lint:yaml
-    desc: Run all linting-related tasks
+      - task: 'lint:ansible'
+      - task: 'lint:python'
+      - task: 'lint:shell'
+      - task: 'lint:yaml'
+    desc: 'Run all linting-related tasks'
 
   lint:ansible:
     cmds:
-      - ansible-lint -p --nocolor playbook-deploy-website.yml
-      - ansible-lint -p --nocolor playbook-package-maintainance.yml
-      - ansible-lint -p --nocolor playbook-provision.yml
-    desc: Lint Ansible-related files with Ansible Lint
+      - 'ansible-lint -p --nocolor playbook-deploy-website.yml'
+      - 'ansible-lint -p --nocolor playbook-package-maintainance.yml'
+      - 'ansible-lint -p --nocolor playbook-provision.yml'
+    desc: 'Lint Ansible-related files with Ansible Lint'
 
   lint:python:
     cmds:
-      - flake8 roles/*/*/*.py*
-    desc: Lint Python scripts with Flake8
+      - 'flake8 roles/*/*/*.py*'
+    desc: 'Lint Python scripts with Flake8'
 
   lint:shell:
     cmds:
-      - shellcheck roles/*/*/*.sh*
-    desc: Lint shell scripts with ShellCheck
+      - 'shellcheck roles/*/*/*.sh*'
+    desc: 'Lint shell scripts with ShellCheck'
 
   lint:yaml:
     cmds:
-      - yamllint -s -f parsable .
-    desc: Lint YAML files with yamllint
+      - 'yamllint -s -f parsable .'
+    desc: 'Lint YAML files with yamllint'
