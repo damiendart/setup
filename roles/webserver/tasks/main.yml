@@ -28,6 +28,7 @@
       - 'php{{ webserver__php_version }}-curl'
       - 'php{{ webserver__php_version }}-gd'
       - 'php{{ webserver__php_version }}-mbstring'
+      - 'php{{ webserver__php_version }}-xml'
       - 'php{{ webserver__php_version }}-zip'
     state: 'present'
   notify:
