@@ -165,13 +165,14 @@
   tags:
     - 'smoketest'
   block:
-    - name: 'Check release is running on hosts'
+    - name: 'Check release is running on host'
       command:
         # The "--resolve" option allows "/etc/hosts"-type functionality
         # without having to edit system-wide configuration files.
         # Ansible's 'uri' module has no similar functionality.
         cmd: >
-          curl -I
+          curl -IsS
+          --fail
           --insecure
           --resolve '{{ deploy_to_vhost__site_domain }}:443:127.0.0.1'
           --user-agent 'deploy-to-vhost-smoke-test'
