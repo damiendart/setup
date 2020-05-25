@@ -10,24 +10,24 @@
     RewriteRule ^(.*)$ $1? [L,R=permanent]
   </Macro>
 
-  <Macro AllowSomeQueryStrings $regex>
+  <Macro AllowSomeQueryStrings $REGEX>
     RewriteCond %{QUERY_STRING} !=""
-    RewriteCond %{REQUEST_URI} $regex
+    RewriteCond %{REQUEST_URI} $REGEX
     RewriteRule ^(.*)$ $1? [L,R=permanent]
   </Macro>
 
-  <Macro setup__cache_buster_css_js ${TIMESTAMP}>
-    RewriteCond %{REQUEST_FILENAME} ^(.*)\.${TIMESTAMP}\.(css|js)$
+  <Macro setup__cache_buster_css_js $TIMESTAMP>
+    RewriteCond %{REQUEST_FILENAME} ^(.*)\.$TIMESTAMP\.(css|js)$
     RewriteCond %1.%2 -f
-    RewriteRule ^(.*)\.${TIMESTAMP}\.(css|js)$ $1.$2 [END,NC]
+    RewriteRule ^(.*)\.$TIMESTAMP\.(css|js)$ $1.$2 [END,NC]
     RewriteCond %{REQUEST_FILENAME} -f
-    RewriteRule ^(.*).(css|js)$ $1.${TIMESTAMP}.$2 [L,NE,R=permanent]
+    RewriteRule ^(.*).(css|js)$ $1.$TIMESTAMP.$2 [L,NE,R=permanent]
     RewriteCond %{REQUEST_FILENAME} ^(.*)\.(\d{14})\.(css|js)$
     RewriteCond %1.%3 -f
-    RewriteCond %2 -gt${TIMESTAMP}
-    RewriteRule ^(.*)\.\d{14}\.(css|js)$ $1.${TIMESTAMP}.$2 [L,NE,R=307]
+    RewriteCond %2 -gt$TIMESTAMP
+    RewriteRule ^(.*)\.\d{14}\.(css|js)$ $1.$TIMESTAMP.$2 [L,NE,R=307]
     RewriteCond %{REQUEST_FILENAME} ^(.*)\.\d{14}\.(css|js)$
     RewriteCond %1.%2 -f
-    RewriteRule ^(.*)\.\d{14}\.(css|js)$ $1.${TIMESTAMP}.$2 [L,NE,R=permanent]
+    RewriteRule ^(.*)\.\d{14}\.(css|js)$ $1.$TIMESTAMP.$2 [L,NE,R=permanent]
   </Macro>
 </IfModule>
