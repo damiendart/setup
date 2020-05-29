@@ -19,6 +19,15 @@
     state: 'present'
   become: false
 
+- name: 'Ensure the BrowserStack Local binary is installed'
+  unarchive:
+    dest: '/usr/local/bin'
+    group: 'admin'
+    mode: 0755
+    owner: '{{ macos__user_username }}'
+    remote_src: true
+    src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-darwin-x64.zip'
+
 - name: 'Ensure custom ".zshrc" exists in administrator home directory'
   template:
     dest: '/Users/{{ macos__user_username }}/.zshrc'
