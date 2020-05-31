@@ -19,6 +19,7 @@
     - 'proxy_fcgi'
     - 'rewrite'
     - 'setenvif'
+    - 'socache_shmcb'
     - 'ssl'
   notify: 'Reload Apache'
 

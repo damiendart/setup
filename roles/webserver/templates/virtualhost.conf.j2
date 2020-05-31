@@ -30,7 +30,6 @@
     CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
     <IfFile "/etc/letsencrypt/live/{{ item.key }}/fullchain.pem">
-      Include /usr/lib/python3/dist-packages/certbot_apache/options-ssl-apache.conf
       SSLCertificateFile /etc/letsencrypt/live/{{ item.key }}/fullchain.pem
       SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.key }}/privkey.pem
     </IfFile>
