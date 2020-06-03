@@ -57,6 +57,6 @@ Header always set X-XSS-Protection "1; mode=block"
   SSLHonorCipherOrder off
   SSLProtocol all -SSLv3 -TLSv1 -TLSv1.1
   SSLSessionTickets off
-  SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
+  SSLStaplingCache "shmcb:${APACHE_RUN_DIR}/ssl_stapling(32768)"
   SSLUseStapling On
 </IfModule>
