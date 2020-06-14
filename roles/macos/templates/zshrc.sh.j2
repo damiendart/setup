@@ -6,14 +6,19 @@
 # more information, please refer to the accompanying "UNLICENCE file.
 
 export EDITOR="vim"
-export HISTCONTROL=ignoreboth
-export HISTFILESIZE=100000
-export HISTSIZE="$HISTFILESIZE"
-export HISTTIMEFORMAT='%s '
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE="100000"
 export NPM_CONFIG_PREFIX="$HOME/.npm"
 export PATH="$PATH:$NPM_CONFIG_PREFIX/bin:$HOME/Library/Python/3.7/bin/"
-export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+export SAVEHIST="$HISTSIZE"
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
+
+setopt EXTENDED_HISTORY
+setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_SAVE_NO_DUPS
+setopt INC_APPEND_HISTORY
 
 git config --global core.excludesfile "$HOME/.gitignore"
 cat > "$HOME/.gitignore" <<GITIGNORE
