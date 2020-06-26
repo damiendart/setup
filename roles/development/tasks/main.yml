@@ -112,3 +112,4 @@
 - include: 'docker.yml'
 - include: 'virtualbox.yml'
 - include: 'open-vm-tools.yml'
+- include: 'rust.yml'

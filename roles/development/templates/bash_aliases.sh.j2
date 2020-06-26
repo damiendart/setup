@@ -18,7 +18,7 @@ export HISTFILESIZE=100000
 export HISTSIZE="$HISTFILESIZE"
 export HISTTIMEFORMAT='%s '
 export NPM_CONFIG_PREFIX="$HOME/.npm"
-export PATH="$PATH:$GEM_HOME/bin:$NPM_CONFIG_PREFIX/bin:$HOME/.local/bin"
+export PATH="$PATH:$GEM_HOME/bin:$NPM_CONFIG_PREFIX/bin:$HOME/.cargo/bin:$HOME/.local/bin"
 export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 shopt -s cmdhist

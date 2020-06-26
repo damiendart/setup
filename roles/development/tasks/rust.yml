@@ -1,0 +1,40 @@
+# The following tasks install Rust-related bits and pieces with rustup.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Get status of rustup'
+  stat:
+    path: '/home/{{ development__user_username }}/.cargo/bin/rustup'
+  changed_when: false
+  register: __rustup_binary
+
+- name: 'Ensure rustup and friends are installed'
+  block:
+    - name: 'Download "rustup-init"'
+      get_url:
+        dest: '/tmp/rustup-init'
+        group: '{{ development__user_username }}'
+        mode: 0755
+        owner: '{{ development__user_username }}'
+        url: 'https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init'
+
+    - name: 'Ensure rustup and friends are installed'
+      command: '/tmp/rustup-init --no-modify-path -y'
+      become: true
+      become_user: '{{ development__user_username }}'
+  always:
+    - name: 'Remove "rustup-init"'
+      file:
+        path: '/tmp/rustup-init'
+        state: 'absent'
+  when: not __rustup_binary.stat.exists
+
+- name: 'Ensure rustup and friends are up-to-date'
+  command: 'rustup update'
+  register: __rustup_update
+  changed_when: __rustup_update.stdout | regex_search('install(ed|ing)')
+  become: true
+  become_user: '{{ development__user_username }}'
