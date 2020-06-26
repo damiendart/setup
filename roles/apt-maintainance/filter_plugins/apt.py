@@ -26,6 +26,6 @@ class FilterModule(object):
 
             elif line.startswith('Remv'):
                 words = line.split(' ')
-                output.append(words[0])
+                output.append(words[1])
 
         return sorted(output)
