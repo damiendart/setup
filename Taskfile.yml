@@ -44,5 +44,5 @@ tasks:
 
   lint:yaml:
     cmds:
-      - 'yamllint -s -f parsable .'
+      - 'yamllint -s -f parsable . .github'
     desc: 'Lint YAML files with yamllint'

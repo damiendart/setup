@@ -1,25 +1,33 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
 ---
-name: Lint Project
+name: 'Lint Project'
 
 on:
   push:
     branches:
-      - master
+      - 'master'
 
 jobs:
   lint-yaml:
-    name: Lint project
-    runs-on: ubuntu-18.04
+    name: 'Lint project'
+    runs-on: 'ubuntu-18.04'
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v1
-      - name: Set up Python environment
-        uses: actions/setup-python@v1
+      - name: 'Check out repository'
+        uses: 'actions/checkout@v1'
+
+      - name: 'Set up Python environment'
+        uses: 'actions/setup-python@v1'
         with:
-          python-version: 3.x
-      - name: Install Task
-        run: curl -sL https://taskfile.dev/install.sh | sh
-      - name: Install project dependencies
-        run: ./bin/task dependencies
-      - name: Run all linting-related tasks
-        run: ./bin/task lint
+          python-version: '3.x'
+
+      - name: 'Install Task'
+        run: 'curl -sL https://taskfile.dev/install.sh | sh'
+
+      - name: 'Install project dependencies'
+        run: './bin/task dependencies'
+
+      - name: 'Run all linting-related tasks'
+        run: './bin/task lint'
