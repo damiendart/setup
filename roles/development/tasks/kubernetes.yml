@@ -1,0 +1,32 @@
+# The following tasks install Kubernetes-related bits and pieces.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: "Ensure Google Cloud's package signing key is present for APT"
+  apt_key:
+    state: 'present'
+    url: 'https://packages.cloud.google.com/apt/doc/apt-key.gpg'
+
+- name: 'Ensure the Kubernetes repository is present in APT sources list'
+  apt_repository:
+    # The repository is as per the installation guide at
+    # <https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-using-native-package-management>.
+    repo: 'deb https://apt.kubernetes.io/ kubernetes-xenial main'
+    state: 'present'
+
+- name: 'Ensure "kubectl" is installed'
+  apt:
+    force_apt_get: true
+    name: 'kubectl'
+    state: 'present'
+
+- name: 'Ensure "minikube" is installed'
+  get_url:
+    dest: '/usr/local/bin/minikube'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    url: 'https://github.com/kubernetes/minikube/releases/download/{{ development__minikube_version }}/minikube-linux-x86_64'
