@@ -28,7 +28,7 @@
 
 - name: 'Ensure administrator can run docker commands without sudo'
   user:
-    name: '{{ development__user_username }}'
+    name: '{{ docker__administrator_user_username }}'
     groups: 'docker'
     append: true
   notify: 'Notify user about group membership update'

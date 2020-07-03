@@ -109,7 +109,6 @@
         state: 'present'
   when: development__run_gui_tasks | bool
 
-- include: 'docker.yml'
 - include: 'virtualbox.yml'
 - include: 'open-vm-tools.yml'
 - include: 'rust.yml'

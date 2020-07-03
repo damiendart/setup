@@ -18,6 +18,7 @@
   roles:
     - 'base'
     - 'development'
+    - 'docker'
     - 'webserver'
 
 - hosts: 'macos'
