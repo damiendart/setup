@@ -19,6 +19,7 @@
     - 'base'
     - 'development'
     - 'docker'
+    - 'kubernetes-playground'
     - 'webserver'
 
 - hosts: 'macos'

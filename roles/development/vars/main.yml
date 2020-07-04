@@ -12,6 +12,5 @@ development__iosevka_archive_excludes:
   - woff/*
   - woff2/*
 development__iosevka_version: v3.0.0-alpha.2
-development__minikube_version: 'v1.11.0'
 development__node_major_version: 14
 development__virtualbox_version: '6.1'

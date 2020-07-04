@@ -112,4 +112,3 @@
 - include: 'virtualbox.yml'
 - include: 'open-vm-tools.yml'
 - include: 'rust.yml'
-- include: 'kubernetes.yml'

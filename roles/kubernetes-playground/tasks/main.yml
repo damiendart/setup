@@ -1,4 +1,4 @@
-# The following tasks install Kubernetes-related bits and pieces.
+# This role installs Kubernetes-related bits and pieces.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -29,4 +29,4 @@
     group: 'root'
     mode: 0755
     owner: 'root'
-    url: 'https://github.com/kubernetes/minikube/releases/download/{{ development__minikube_version }}/minikube-linux-x86_64'
+    url: 'https://github.com/kubernetes/minikube/releases/download/{{ kubernetes__minikube_version }}/minikube-linux-x86_64'
