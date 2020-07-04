@@ -33,7 +33,7 @@
   when: not __rustup_binary.stat.exists
 
 - name: 'Ensure rustup and friends are up-to-date'
-  command: 'rustup update'
+  command: '/home/{{ development__user_username }}/.cargo/bin/rustup update'
   register: __rustup_update
   changed_when: __rustup_update.stdout | regex_search('install(ed|ing)')
   become: true
