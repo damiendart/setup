@@ -20,7 +20,7 @@
     - 'monitoring'
     - 'webserver'
 
-- hosts: 'local'
+- hosts: 'development'
   become: true
   roles:
     - 'base'
