@@ -1,5 +1,9 @@
 # This role installs Kubernetes-related bits and pieces.
 #
+# This role is a result of futzing around with setting up a single
+# Kubernetes cluster within a single system for learning purposes, so
+# adjust your expectations accordingly.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
@@ -17,16 +21,41 @@
     repo: 'deb https://apt.kubernetes.io/ kubernetes-xenial main'
     state: 'present'
 
-- name: 'Ensure "kubectl" is installed'
+- name: 'Ensure kubeadm, kubectl and kubelet are installed'
   apt:
     force_apt_get: true
-    name: 'kubectl'
+    name:
+      - 'kubeadm'
+      - 'kubectl'
+      - 'kubelet'
     state: 'present'
 
-- name: 'Ensure "minikube" is installed'
-  get_url:
-    dest: '/usr/local/bin/minikube'
-    group: 'root'
-    mode: 0755
-    owner: 'root'
-    url: 'https://github.com/kubernetes/minikube/releases/download/{{ kubernetes__minikube_version }}/minikube-linux-x86_64'
+# Kubelets requires system swap to be disabled. For more information,
+# along with some notes on running Kubernetes with system swap, please
+# see <https://github.com/kubernetes/kubernetes/issues/53533>.
+- name: 'Ensure system swap is disabled'
+  block:
+  - name: 'Ensure system swap is disabled'
+    command: 'swapoff -av'
+    register: __swapoff
+    changed_when: __swapoff.stdout | regex_search('swapoff')
+
+  - name: 'Ensure disabled system swap persists after system reboot'
+    lineinfile:
+      backrefs: true
+      dest: '/etc/fstab'
+      line: '# \1'
+      regexp: '(?i)^([^#][\S]+\s+(none|swap)\s+swap.*)'
+      state: 'present'
+
+  - name: 'Ensure swappiness is set to zero'
+    sysctl:
+      name: 'vm.swappiness'
+      state: 'present'
+      value: '0'
+
+- name: 'Ensure kubelet is running and starts on system boot'
+  service:
+    enabled: true
+    name: 'kubelet'
+    state: 'started'

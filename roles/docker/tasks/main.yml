@@ -1,10 +1,37 @@
-# The following role installs Docker.
+# The following role installs Docker and friends.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+- name: 'Ensure kernel modules for containerd are loaded'
+  modprobe:
+    name: '{{ item }}'
+    state: 'present'
+  loop:
+    - 'br_netfilter'
+    - 'overlay'
+
+# IP forwarding is required so that the Linux kernel can route traffic
+# from hosted containers to the outside world.
+- name: 'Ensure IP forwarding is enabled'
+  sysctl:
+    name: 'net.ipv4.ip_forward'
+    state: 'present'
+    value: '1'
+
+# These settings are required so that the Linux kernel can perform
+# address translation in packets going to and from hosted containers.
+- name: 'Ensure "iptables" can see bridged traffic'
+  sysctl:
+    name: '{{ item.key }}'
+    state: 'present'
+    value: '{{ item.value }}'
+  loop:
+    - { key: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
+    - { key: 'net.bridge.bridge-nf-call-iptables', value: '1' }
+
 - name: 'Ensure the Docker package signing key is present for APT'
   apt_key:
     state: 'present'
@@ -15,7 +42,7 @@
     repo: 'deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
     state: 'present'
 
-- name: 'Ensure Docker is installed'
+- name: 'Ensure Docker and containerd are installed'
   apt:
     force_apt_get: true
     name:
@@ -32,3 +59,26 @@
     groups: 'docker'
     append: true
   notify: 'Notify user about group membership update'
+
+- name: 'Get containerd default configuration'
+  command: 'containerd config default'
+  changed_when: false
+  register: __containerd_config_default
+
+- name: 'Ensure containerd configuration file contains default configuration'
+  copy:
+    content: '{{ __containerd_config_default.stdout }}'
+    dest: '/etc/containerd/config.toml'
+    group: 'root'
+    mode: 0600
+    owner: 'root'
+  notify: 'Restart containerd'
+
+- name: 'Ensure containerd and Docker are running and start on system boot'
+  service:
+    enabled: true
+    name: '{{ item }}'
+    state: 'started'
+  loop:
+    - 'containerd'
+    - 'docker'
