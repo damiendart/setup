@@ -59,3 +59,29 @@
     enabled: true
     name: 'kubelet'
     state: 'started'
+
+- name: 'Ensure the Kubernetes control-plane node is set up'
+  command:
+    cmd: >
+      kubeadm init
+      --pod-network-cidr=192.168.0.0/16
+      --cri-socket "unix:///run/containerd/containerd.sock"
+    creates: '/etc/kubernetes/admin.conf'
+    warn: false
+
+- name: 'Ensure ".kube" directory exists in administrator home directory'
+  file:
+    group: '{{ kubernetes__administrator_username }}'
+    mode: 0700
+    owner: '{{ kubernetes__administrator_username }}'
+    path: '/home/{{ kubernetes__administrator_username }}/.kube'
+    state: 'directory'
+
+- name: 'Ensure K8s configuration file exists in administrator home directory'
+  copy:
+    dest: '/home/{{ kubernetes__administrator_username }}/.kube/config'
+    group: '{{ kubernetes__administrator_username }}'
+    owner: '{{ kubernetes__administrator_username }}'
+    mode: 0600
+    remote_src: true
+    src: '/etc/kubernetes/admin.conf'
