@@ -85,3 +85,23 @@
     mode: 0600
     remote_src: true
     src: '/etc/kubernetes/admin.conf'
+
+- name: 'Ensure pods can be scheduled on the control-plane node'
+  block:
+    - name: 'Get control-plane node status'
+      command: 'kubectl describe node'
+      register: __kubectl_describe_node
+      changed_when: false
+
+    - name: 'Ensure "NoSchedule" taint is not applied to control-plane node'
+      command: 'kubectl taint node {{ ansible_hostname }} node-role.kubernetes.io/master-'
+      when: __kubectl_describe_node.stdout is search('node-role.kubernetes.io/master:NoSchedule')
+  become: true
+  become_user: '{{ kubernetes__administrator_username }}'
+
+- name: 'Ensure Calico is installed'
+  command: 'kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml'
+  register: __kubectl_apply_calico
+  become: true
+  become_user: '{{ kubernetes__administrator_username }}'
+  changed_when: __kubectl_apply_calico is search(' created')
