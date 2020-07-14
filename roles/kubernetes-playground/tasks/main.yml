@@ -64,7 +64,7 @@
   command:
     cmd: >
       kubeadm init
-      --pod-network-cidr=192.168.0.0/16
+      --pod-network-cidr "{{ kubernetes__pod_network_cidr }}"
       --cri-socket "unix:///run/containerd/containerd.sock"
     creates: '/etc/kubernetes/admin.conf'
     warn: false
@@ -99,9 +99,52 @@
   become: true
   become_user: '{{ kubernetes__administrator_username }}'
 
-- name: 'Ensure Calico is installed'
-  command: 'kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml'
-  register: __kubectl_apply_calico
+- name: 'Ensure third-party manifests have been applied'
+  command: 'kubectl apply -f {{ item }}'
+  register: __kubectl_apply_third_party
   become: true
   become_user: '{{ kubernetes__administrator_username }}'
-  changed_when: __kubectl_apply_calico is search(' created')
+  changed_when: __kubectl_apply_third_party is search(' created')
+  loop:
+    # A Pod network add-on based on the Container Network Interface
+    # (CNI), Calico in this instance, must be installed for pods to be
+    # able to communicate with each other.
+    - 'https://docs.projectcalico.org/v3.8/manifests/calico.yaml'
+    # MetalLB provides a network load-balancer implementation so that
+    # "LoadBalancer" services work as intended.
+    - 'https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml'
+    - 'https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml'
+    # The "cloud" manifest is used over the bare-metal manifest as it
+    # sets up "ingress-nginx" as a "LoadBalancer" service as opposed to
+    # a "NodePort" service, which allows more flexibility and is more in
+    # line with commercial Kubernetes offerings.
+    - 'https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.0/deploy/static/provider/cloud/deploy.yaml'
+
+- name: 'Ensure MetalLB is configured'
+  block:
+    - name: 'Ensure MetalLB speaker communication key is set'
+      command:
+        cmd: 'kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="{{ kubernetes__metallb_speaker_key }}"'
+      register: __kubectl_apply_metallb_secret
+      changed_when: __kubectl_apply_metallb_secret is search(' created')
+
+    - name: "Ensure MetalLB's address pool is configured"
+      command:
+        cmd: 'kubectl apply -f -'
+        stdin: |
+          apiVersion: 'v1'
+          kind: 'ConfigMap'
+          metadata:
+            namespace: 'metallb-system'
+            name: 'config'
+          data:
+            config: |
+              address-pools:
+                - name: 'default'
+                  protocol: 'layer2'
+                  addresses:
+                    - '{{ kubernetes__metallb_address_pool }}'
+      register: __kubectl_apply_metallb_config
+      changed_when: __kubectl_apply_metallb_config is search(' created')
+  become: true
+  become_user: '{{ kubernetes__administrator_username }}'
