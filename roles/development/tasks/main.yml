@@ -73,6 +73,15 @@
     remote_src: true
     src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
 
+- name: 'Ensure the Packer binary is installed'
+  unarchive:
+    dest: '/usr/local/bin'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    remote_src: true
+    src: 'https://releases.hashicorp.com/packer/{{ development__packer_version }}/packer_{{ development__packer_version }}_linux_amd64.zip'
+
 - name: 'Ensure custom ".bash_aliases" exists in administrator home directory'
   template:
     dest: '/home/{{ development__user_username }}/.bash_aliases'

@@ -28,6 +28,15 @@
     remote_src: true
     src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-darwin-x64.zip'
 
+- name: 'Ensure the Packer binary is installed'
+  unarchive:
+    dest: '/usr/local/bin'
+    group: 'admin'
+    mode: 0755
+    owner: '{{ macos__user_username }}'
+    remote_src: true
+    src: 'https://releases.hashicorp.com/packer/{{ macos__packer_version }}/packer_{{ macos__packer_version }}_darwin_amd64.zip'
+
 - name: 'Ensure custom ".zshrc" exists in administrator home directory'
   template:
     dest: '/Users/{{ macos__user_username }}/.zshrc'
