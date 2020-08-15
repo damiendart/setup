@@ -19,6 +19,7 @@
     - 'proxy_fcgi'
     - 'rewrite'
     - 'setenvif'
+    - 'status'
     - 'socache_shmcb'
     - 'ssl'
   notify: 'Reload Apache'
@@ -33,7 +34,6 @@
     - 'dav'
     - 'include'
     - 'mpm_prefork'
-    - 'status'
   notify: 'Reload Apache'
 
 - name: 'Ensure legacy or unnecessary Apache configuration files are disabled'
@@ -45,6 +45,14 @@
     - 'localized-error-pages'
     - 'other-vhosts-access-log'
     - 'serve-cgi-bin'
+  notify: 'Reload Apache'
+
+# Enabling "mod_status" brings along an unwanted configuration file
+# that's hard to override elsewhere, hence the nuclear option.
+- name: 'Ensure unwanted base "mod_status" Apache configuration file is removed'
+  file:
+    path: '/etc/apache2/mods-enabled/status.conf'
+    state: 'absent'
   notify: 'Reload Apache'
 
 - name: 'Ensure custom PHP-FPM Apache configuration file exists'

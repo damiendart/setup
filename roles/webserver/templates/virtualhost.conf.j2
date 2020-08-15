@@ -15,7 +15,23 @@
   ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
   CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
-  Redirect permanent "/" "https://{{ item.key }}/"
+  {% if item.key == webserver__server_name %}
+    <Location "/{{ webserver__status_path_apache }}">
+      <If "-R '127.0.0.1/8'">
+        Require local
+        SetHandler server-status
+      </If>
+      <Else>
+        Redirect permanent "/" "https://{{ item.key }}/"
+      </Else>
+    </Location>
+
+    <LocationMatch "/(?!{{ webserver__status_path_apache }})">
+      Redirect permanent "/" "https://{{ item.key }}/"
+    </LocationMatch>
+  {% else %}
+    Redirect permanent "/" "https://{{ item.key }}/"
+  {% endif %}
 </VirtualHost>
 
 <IfModule mod_ssl.c>
