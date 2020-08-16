@@ -35,4 +35,4 @@
   replace:
     path: '/etc/cron.d/certbot'
     regexp: 'certbot -q renew$'
-    replace: "certbot -q renew --webroot --webroot-path /var/www/html --renew-hook 'service apache2 graceful'"
+    replace: "certbot -q renew --webroot --webroot-path /var/www/html --deploy-hook 'service apache2 graceful'"
