@@ -26,7 +26,17 @@
       </Else>
     </Location>
 
-    <LocationMatch "/(?!{{ webserver__status_path_apache }})">
+    <LocationMatch "/({{ webserver__ping_path_php_fpm }}|{{ webserver__status_path_php_fpm }})">
+      <If "-R '127.0.0.1/8'">
+        Require local
+        SetHandler "proxy:unix:/run/php/php{{ webserver__php_version }}-fpm.sock|fcgi://localhost"
+      </If>
+      <Else>
+        Redirect permanent "/" "https://{{ item.key }}/"
+      </Else>
+    </LocationMatch>
+
+    <LocationMatch "/(?!{{ webserver__ping_path_php_fpm }}|{{ webserver__status_path_apache }}|{{ webserver__status_path_php_fpm }})">
       Redirect permanent "/" "https://{{ item.key }}/"
     </LocationMatch>
   {% else %}

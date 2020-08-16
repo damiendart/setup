@@ -110,3 +110,12 @@
     - 'post_max_size'
     - 'upload_max_filesize'
   notify: 'Reload PHP-FPM'
+
+- name: 'Ensure custom PHP-FPM pool configuration file exists and is active'
+  template:
+    dest: '/etc/php/{{ webserver__php_version }}/fpm/pool.d/zzz.conf'
+    group: 'root'
+    mode: 0600
+    owner: 'root'
+    src: 'php-fpm-pool.conf.j2'
+  notify: 'Reload PHP-FPM'
