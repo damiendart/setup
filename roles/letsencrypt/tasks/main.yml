@@ -27,6 +27,7 @@
     executable: '/usr/bin/python3'
   register: certbot_update
   changed_when: certbot_update.stdout is search('Certificate')
+  ignore_errors: true
   loop: '{{ letsencrypt__sites | dict2items }}'
   loop_control:
     label: '{{ item.key }}'
