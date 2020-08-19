@@ -141,13 +141,31 @@
 
     <IfFile ! "/var/www/{{ item.key }}/deployment.apache2.conf">
       <IfFile ! "/var/www/{{ item.key }}/current_release.apache2.conf">
-        <IfModule mod_rewrite.c>
-          RewriteEngine on
+        DocumentRoot "/var/www/{{ item.key }}"
 
-          RewriteCond %{REQUEST_URI} !^/.well-known/acme-challenge/.*
-          RewriteCond /var/www/html/%{REQUEST_URI} !-f
-          RewriteRule ^ - [R=503,L]
-        </IfModule>
+        <Directory "/var/www/{{ item.key }}">
+          <IfFile "/var/www/{{ item.key }}/.htpasswd">
+            AuthType Basic
+            AuthName "{{ item.key }}"
+            AuthBasicProvider file
+            AuthUserFile "/var/www/{{ item.key }}/.htpasswd"
+            Require local
+            Require valid-user
+
+            <IfModule mod_rewrite.c>
+              RewriteEngine on
+              RewriteCond %{LA-U:REMOTE_USER} !^$
+              RewriteRule ^ - [R=503,L]
+            </IfModule>
+          </IfFile>
+
+          <IfFile ! "/var/www/{{ item.key }}/.htpasswd">
+            <IfModule mod_rewrite.c>
+              RewriteEngine on
+              RewriteRule ^ - [R=503,L]
+            </IfModule>
+          </IfFile>
+        </Directory>
       </IfFile>
     </IfFile>
   </VirtualHost>
