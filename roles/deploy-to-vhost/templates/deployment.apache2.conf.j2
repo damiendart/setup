@@ -44,6 +44,14 @@ DocumentRoot "${RELEASE_ROOT}/public"
 
     # Remove groups of slashes.
     RewriteCond %{THE_REQUEST} //
+    # The following accounts for a bug in Kirby CMS where the Panel
+    # generates API request URLs that have double-slashes in their path.
+    # For more information, see
+    # <https://github.com/getkirby/kirby/issues/2740>.
+    <IfDefine KIRBY_PANEL>
+      RewriteCond %{REQUEST_URI} !^/api
+      RewriteCond %{REQUEST_URI} !^/panel
+    </IfDefine>
     RewriteRule ^.*$ $0 [L,NE,R=permanent]
 
     # Remove "index.html" and "index.php" from URLs.
