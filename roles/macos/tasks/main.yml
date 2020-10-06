@@ -13,6 +13,7 @@
       - 'node@{{ macos__node_major_version }}'
       - 'php@{{ macos__php_version }}'
       - 'shellcheck'
+      - 'tarsnap'
       - 'tig'
       - 'tree'
       - 'vim'
