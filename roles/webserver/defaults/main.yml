@@ -8,4 +8,14 @@ webserver__composer_version: '1.10.1'
 webserver__composer_sha256: '1831f266580f221189dc04d4b58d7fc50c934ffc3a0eca89ecb4a53aa44867e2'
 webserver__install_xdebug: false
 webserver__php_version: '7.4'
+# The following default PHP-FPM dynamic settings are tailored towards
+# use on the smallest available DigitalOcean droplet. For more
+# information on tweaking PHP-FPM's dynamic settings, see:
+#   - <https://serversforhackers.com/c/php-fpm-process-management>,
+#   - <https://cmorrell.com/php-fpm/>, and
+#   - <https://tideways.com/profiler/blog/an-introduction-to-php-fpm-tuning>.
+webserver__php_fpm_max_children: 12
+webserver__php_fpm_start_servers: 6
+webserver__php_fpm_min_spare_servers: 6
+webserver__php_fpm_max_spare_servers: 10
 webserver__static_caching: true
