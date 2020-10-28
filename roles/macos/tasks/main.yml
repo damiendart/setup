@@ -8,6 +8,7 @@
 - name: 'Ensure required packages are installed'
   homebrew:
     name:
+      - 'composer'
       - 'fzf'
       - 'go-task/tap/go-task'
       - 'node@{{ macos__node_major_version }}'
