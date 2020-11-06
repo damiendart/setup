@@ -15,7 +15,7 @@
       setup:
 
   roles:
-    - role: 'deploy-to-vhost'
+    - role: 'deploy_to_vhost'
       vars:
         deploy_to_vhost__release_artifact_folder: '{{ cli__release_artifact_folder }}'
         deploy_to_vhost__site_domain: '{{ cli__site_domain }}'

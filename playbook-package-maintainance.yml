@@ -7,4 +7,4 @@
   become: true
   serial: 1
   roles:
-    - 'apt-maintainance'
+    - 'apt_maintainance'

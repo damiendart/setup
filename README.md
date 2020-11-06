@@ -9,11 +9,6 @@ websites on.
     it comes to using the included Ansible playbooks and roles on any
     other operating systems.
   - All Ansible hosts must have Python 3 installed beforehand.
-  - Mitogen has been included as a dependency, but you'll need to
-    [manually set it up][1] for it to take effect.
-
-[1]: <https://mitogen.networkgenomics.com/ansible_detailed.html#installation>
-
 
 ## Linting and style guide
 
