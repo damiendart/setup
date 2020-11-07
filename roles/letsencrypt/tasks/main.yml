@@ -31,6 +31,8 @@
   loop: '{{ letsencrypt__sites | dict2items }}'
   loop_control:
     label: '{{ item.key }}'
+  notify:
+    'Reload Apache'
 
 - name: 'Ensure the Certbot scheduled task plays nicely with Apache'
   replace:
