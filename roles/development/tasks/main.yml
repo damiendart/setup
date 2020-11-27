@@ -22,7 +22,6 @@
       - 'build-essential'
       - 'nodejs'
       - 'python3-pip'
-      - 'shellcheck'
       - 'tig'
       - 'tree'
       - 'vim'
@@ -81,6 +80,16 @@
     owner: 'root'
     remote_src: true
     src: 'https://releases.hashicorp.com/packer/{{ development__packer_version }}/packer_{{ development__packer_version }}_linux_amd64.zip'
+
+- name: 'Ensure the ShellCheck binary is installed'
+  unarchive:
+    dest: '/usr/local/bin'
+    exclude: '*.txt'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    remote_src: true
+    src: 'https:/github.com/koalaman/shellcheck/releases/download/v{{ development__shellcheck_version }}/shellcheck-v{{ development__shellcheck_version }}.linux.x86_64.tar.xz'
 
 - name: 'Ensure custom ".bash_aliases" exists in administrator home directory'
   template:
