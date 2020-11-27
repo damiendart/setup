@@ -27,12 +27,6 @@
       - 'vim'
     state: 'present'
 
-- name: 'Ensure Task is installed'
-  snap:
-    classic: true
-    name: 'task'
-    state: 'present'
-
 - name: 'Ensure development-related Python packages are installed in administrator home directory'
   pip:
     executable: '/usr/bin/pip3'
@@ -43,14 +37,24 @@
   become: true
   become_user: '{{ development__user_username }}'
 
-- name: 'Ensure fzf is installed'
+- name: 'Ensure development-related binaries are installed'
   unarchive:
     dest: '/usr/local/bin'
+    exclude:
+      - '*.txt'
+      - '*.md'
+      - 'LICENSE'
     group: 'root'
     mode: 0755
     owner: 'root'
     remote_src: true
-    src: 'https://github.com/junegunn/fzf-bin/releases/download/{{ development__fzf_version }}/fzf-{{ development__fzf_version }}-linux_amd64.tgz'
+    src: '{{ item }}'
+  loop:
+    - 'https://github.com/go-task/task/releases/download/v3.0.0/task_linux_amd64.tar.gz'
+    - 'https://github.com/junegunn/fzf-bin/releases/download/{{ development__fzf_version }}/fzf-{{ development__fzf_version }}-linux_amd64.tgz'
+    - 'https://github.com/koalaman/shellcheck/releases/download/v{{ development__shellcheck_version }}/shellcheck-v{{ development__shellcheck_version }}.linux.x86_64.tar.xz' # noqa 204
+    - 'https://releases.hashicorp.com/packer/{{ development__packer_version }}/packer_{{ development__packer_version }}_linux_amd64.zip'
+    - 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
 
 - name: 'Ensure fzf supplimentary files are installed'
   get_url:
@@ -62,34 +66,6 @@
   loop:
     - 'completion.bash'
     - 'key-bindings.bash'
-
-- name: 'Ensure the BrowserStack Local binary is installed'
-  unarchive:
-    dest: '/usr/local/bin'
-    group: 'root'
-    mode: 0755
-    owner: 'root'
-    remote_src: true
-    src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
-
-- name: 'Ensure the Packer binary is installed'
-  unarchive:
-    dest: '/usr/local/bin'
-    group: 'root'
-    mode: 0755
-    owner: 'root'
-    remote_src: true
-    src: 'https://releases.hashicorp.com/packer/{{ development__packer_version }}/packer_{{ development__packer_version }}_linux_amd64.zip'
-
-- name: 'Ensure the ShellCheck binary is installed'
-  unarchive:
-    dest: '/usr/local/bin'
-    exclude: '*.txt'
-    group: 'root'
-    mode: 0755
-    owner: 'root'
-    remote_src: true
-    src: 'https:/github.com/koalaman/shellcheck/releases/download/v{{ development__shellcheck_version }}/shellcheck-v{{ development__shellcheck_version }}.linux.x86_64.tar.xz'
 
 - name: 'Ensure custom ".bash_aliases" exists in administrator home directory'
   template:
