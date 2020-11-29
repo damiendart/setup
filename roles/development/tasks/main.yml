@@ -67,13 +67,13 @@
     - 'completion.bash'
     - 'key-bindings.bash'
 
-- name: 'Ensure custom ".bash_aliases" exists in administrator home directory'
-  template:
-    dest: '/home/{{ development__user_username }}/.bash_aliases'
+- name: 'Ensure personal projects directory exists in administrator home directory'
+  file:
     group: '{{ development__user_username }}'
-    mode: 0600
+    mode: 0700
     owner: '{{ development__user_username }}'
-    src: 'bash_aliases.sh.j2'
+    path: '/home/{{ development__user_username }}/shed'
+    state: 'directory'
 
 - name: 'Run GUI-based development tasks'
   tags:
@@ -103,6 +103,7 @@
         state: 'present'
   when: development__run_gui_tasks | bool
 
+- include: 'dotfiles.yml'
 - include: 'virtualbox.yml'
 - include: 'open-vm-tools.yml'
 - include: 'rust.yml'
