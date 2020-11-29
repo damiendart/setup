@@ -20,7 +20,7 @@ For things that the above doesn't cover, the aim is to adhere to the
 [Ansible Best Practices guide][2] and the [WhiteCloud Ansible
 style guide][3] with the following amendments:
 
-  - Files should start, where appropriate, with 
+  - Files should start, where appropriate, with
     - a comment that includes a sentence explaining the file's purpose,
       any additional information, and the file's licence; and
     - a blank line, followed by `---`.
