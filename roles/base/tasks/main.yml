@@ -12,12 +12,30 @@
 - name: 'Ensure an non-root administrator user account exists'
   user:
     append: true
+    generate_ssh_key: '{{ base__administrator_has_ssh_key | default(false) }}'
     groups:
       - 'sudo'
     name: '{{ base__administrator_username }}'
     password: '{{ base__administrator_password | password_hash("sha512") }}'
     state: 'present'
     update_password: 'on_create'
+  register: __user
+
+- name: 'Prompt user to check SSH-public-key-related bits-and-pieces'
+  block:
+    - name: 'Show SSH public key for non-root administrator user'
+      debug:
+        var: __user.ssh_public_key
+
+    - name: 'Prompt user to check SSH public key'
+      debug:
+        msg: >-
+          Ensure any applicable Ansible inventories and GitHub accounts
+          contain the SSH public key shown above
+
+    - name: 'Wait for user confirmation to proceed'
+      pause:
+  when: __user.ssh_public_key is defined
 
 - name: 'Ensure non-root administrator user has authorised SSH keys'
   authorized_key:
