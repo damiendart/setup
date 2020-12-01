@@ -27,8 +27,3 @@
     - 'development'
     - 'docker'
     - 'webserver'
-
-- hosts: 'macos'
-  become: true
-  roles:
-    - 'macos'

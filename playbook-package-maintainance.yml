@@ -3,7 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- hosts: 'all:!macos'
+- hosts: 'all'
   become: true
   serial: 1
   roles:

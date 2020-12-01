@@ -5,9 +5,8 @@ A mess of Ansible stuff that I use to provision and maintain my personal
 development environments and a couple of servers that I host a few small
 websites on.
 
-  - I use macOS Catalina and Ubuntu 18.04 so your mileage may vary when
-    it comes to using the included Ansible playbooks and roles on any
-    other operating systems.
+  - I use Ubuntu 18.04 so your mileage may vary when using the included
+    Ansible playbooks and roles on any other operating systems.
   - All Ansible hosts must have Python 3 installed beforehand.
 
 ## Linting and style guide
