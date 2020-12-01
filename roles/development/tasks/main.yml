@@ -44,6 +44,9 @@
       - '*.txt'
       - '*.md'
       - 'LICENSE'
+    extra_opts:
+      - '--transform'
+      - 's/^shellcheck-v{{ development__shellcheck_version }}\///'
     group: 'root'
     mode: 0755
     owner: 'root'
