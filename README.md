@@ -9,6 +9,20 @@ websites on.
     Ansible playbooks and roles on any other operating systems.
   - All Ansible hosts must have Python 3 installed beforehand.
 
+
+## Testing server state
+
+There is also a small test suite that uses [TestInfra][2] to perform
+some server state tests. These tests are currently a bit bare-bones and
+are a work-in-progress.
+
+Note that you'll need to set the "ControlMaster" and "ControlPath"
+configuration options when testing over SSH, otherwise Fail2Ban and UFW
+will quickly put a stop to your testing.
+
+[2]: <https://testinfra.readthedocs.io/en/latest/>
+
+
 ## Linting and style guide
 
 There's a bunch of editor-configuration and linting gubbins that should
@@ -16,8 +30,8 @@ keep most things relatively consistent. For more information, see
 _.ansible-lint_, _.editorconfig_, _Taskfile.yml_, and _.yamllint_.
 
 For things that the above doesn't cover, the aim is to adhere to the
-[Ansible Best Practices guide][2] and the [WhiteCloud Ansible
-style guide][3] with the following amendments:
+[Ansible Best Practices guide][3] and the [WhiteCloud Ansible
+style guide][4] with the following amendments:
 
   - Files should start, where appropriate, with
     - a comment that includes a sentence explaining the file's purpose,
@@ -29,5 +43,5 @@ style guide][3] with the following amendments:
       command-line interface, or
     - `__` if the variable is not meant to be overridden elsewhere.
 
-[2]: <https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html>
-[3]: <https://github.com/whitecloud/ansible-styleguide>
+[3]: <https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html>
+[4]: <https://github.com/whitecloud/ansible-styleguide>

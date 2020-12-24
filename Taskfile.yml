@@ -34,7 +34,7 @@ tasks:
 
   lint:python:
     cmds:
-      - 'flake8 roles/*/*/*.py*'
+      - 'flake8 roles/*/*/*.py* tests/*.py'
     desc: 'Lint Python scripts with Flake8'
 
   lint:shell:
