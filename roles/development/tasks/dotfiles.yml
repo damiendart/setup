@@ -11,6 +11,12 @@
         key: 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==' # noqa 204
         name: 'github.com'
 
+    # The following task will fail if using SSH agent forwarding when
+    # connecting to a host; tasks that use "become" and friends do not
+    # inherit any environment variables set by SSH during login,
+    # including the "SSH_AUTH_SOCK" environment variable required for
+    # SSH agent forwarding. For more information and potential
+    # workarounds, see <https://stackoverflow.com/q/24124140>.
     - name: 'Ensure the "toolbox" Git repository exists'
       ansible.builtin.git:
         dest: '/home/{{ development__user_username }}/shed/toolbox'
@@ -27,3 +33,4 @@
       changed_when: toolbox_install.stdout is search('Created')
   become: true
   become_user: '{{ development__user_username }}'
+  ignore_errors: true
