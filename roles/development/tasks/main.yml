@@ -64,7 +64,21 @@
     - 'https://github.com/junegunn/fzf-bin/releases/download/{{ development__fzf_version }}/fzf-{{ development__fzf_version }}-linux_amd64.tgz'
     - 'https://github.com/koalaman/shellcheck/releases/download/v{{ development__shellcheck_version }}/shellcheck-v{{ development__shellcheck_version }}.linux.x86_64.tar.xz' # noqa 204
     - 'https://releases.hashicorp.com/packer/{{ development__packer_version }}/packer_{{ development__packer_version }}_linux_amd64.zip'
-    - 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
+
+# The BrowserStack Local binary archive doesn't play nicely with the
+# others above, because reasons. (The "unzip" command used by the
+# "unarchive" module errors out with "-fn or any combination of -c, -l,
+# -p, -t, -u and -v options invalid", even though none of those flags
+# are used.) Extracting the binary in a seperate task is the least
+# arduous workaround.
+- name: 'Ensure the BrowserStack Local binary is installed'
+  ansible.builtin.unarchive:
+    dest: '/usr/local/bin'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    remote_src: true
+    src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
 
 - name: 'Ensure fzf supplimentary files are installed'
   get_url:
