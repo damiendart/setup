@@ -24,11 +24,7 @@
         update: no
 
     - name: 'Ensure the "toolbox" install script runs successfully'
-      ansible.builtin.command:
-        # The "cmd" parameter doesn't work here; for more information,
-        # see <https://github.com/ansible/ansible/issues/72627>.
-        argv:
-          - '/home/{{ development__user_username }}/shed/toolbox/install'
+      ansible.builtin.command: '/home/{{ development__user_username }}/shed/toolbox/install'
       register: toolbox_install
       changed_when: toolbox_install.stdout is search('Created')
   become: true
