@@ -4,11 +4,11 @@
 
 ---
 - name: Restart Fail2ban
-  service:
+  ansible.builtin.service:
     name: fail2ban
     state: restarted
 
 - name: Restart Monit
-  service:
+  ansible.builtin.service:
     name: monit
     state: restarted

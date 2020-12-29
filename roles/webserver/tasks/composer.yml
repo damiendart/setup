@@ -6,7 +6,7 @@
 
 ---
 - name: 'Ensure the Composer executable exists'
-  get_url:
+  ansible.builtin.get_url:
     checksum: 'sha256:{{ webserver__composer_sha256 }}'
     dest: '/usr/local/bin/composer'
     group: 'root'
@@ -15,7 +15,7 @@
     url: 'https://getcomposer.org/download/{{ webserver__composer_version }}/composer.phar'
 
 - name: 'Ensure a Composer configuration folder for administrator exists'
-  file:
+  ansible.builtin.file:
     group: '{{ webserver__administrator_username }}'
     mode: 0755
     owner: '{{ webserver__administrator_username }}'
@@ -23,7 +23,7 @@
     state: 'directory'
 
 - name: 'Ensure the Composer "auth.json" for administrator exists'
-  copy:
+  ansible.builtin.copy:
     content: |
       {
         "bitbucket-oauth": {},

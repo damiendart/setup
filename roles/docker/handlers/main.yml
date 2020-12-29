@@ -4,13 +4,13 @@
 
 ---
 - name: 'Notify user about group membership update'
-  debug:
+  ansible.builtin.debug:
     msg: >-
       If the administrator user is currently logged in, you will need
       to log out and log back in for the "docker" group membership to
       take effect.
 
 - name: 'Restart containerd'
-  service:
+  ansible.builtin.service:
     name: 'containerd'
     state: 'restarted'

@@ -6,11 +6,11 @@
 
 ---
 - name: 'Ensure the timezone is set correctly'
-  timezone:
+  ansible.builtin.timezone:
     name: 'Europe/London'
 
 - name: 'Ensure an non-root administrator user account exists'
-  user:
+  ansible.builtin.user:
     append: true
     generate_ssh_key: '{{ base__administrator_has_ssh_key | default(false) }}'
     groups:
@@ -24,28 +24,28 @@
 - name: 'Prompt user to check SSH-public-key-related bits-and-pieces'
   block:
     - name: 'Show SSH public key for non-root administrator user'
-      debug:
+      ansible.builtin.debug:
         var: __user.ssh_public_key
 
     - name: 'Prompt user to check SSH public key'
-      debug:
+      ansible.builtin.debug:
         msg: >-
           Ensure any applicable Ansible inventories and GitHub accounts
           contain the SSH public key shown above
 
     - name: 'Wait for user confirmation to proceed'
-      pause:
+      ansible.builtin.pause:
   when: __user.ssh_public_key is defined
 
 - name: 'Ensure non-root administrator user has authorised SSH keys'
-  authorized_key:
+  ansible.builtin.authorized_key:
     exclusive: true
     user: '{{ base__administrator_username }}'
     key: '{{ base__authorised_keys }}'
     state: 'present'
 
 - name: 'Ensure base software is installed'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name:
       - 'curl'
@@ -59,7 +59,7 @@
     state: 'present'
 
 - name: 'Ensure OpenSSH Server and UFW are running and start on system boot'
-  service:
+  ansible.builtin.service:
     enabled: true
     name: '{{ item }}'
     state: 'started'
@@ -68,13 +68,13 @@
     - 'ufw'
 
 - name: 'Ensure the OpenSSH Server UFW profile is active'
-  ufw:
+  ansible.builtin.ufw:
     name: 'OpenSSH'
     rule: 'limit'
   notify: 'Restart UFW'
 
 - name: 'Ensure security-related OpenSSH Server options are configured'
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: '/etc/ssh/sshd_config'
     line: '{{ item }} no'
     regexp: '^{{ item }}'
@@ -85,7 +85,7 @@
   notify: 'Restart OpenSSH Server'
 
 - name: 'Ensure msmtp is configured'
-  template:
+  ansible.builtin.template:
     dest: '/etc/msmtprc'
     group: 'root'
     # The msmtp configuration file has relaxed permissions as a few

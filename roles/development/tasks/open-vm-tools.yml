@@ -10,12 +10,12 @@
 
 ---
 - name: 'Get virtualisation status'
-  command: 'dmidecode -s system-product-name'
+  ansible.builtin.command: 'dmidecode -s system-product-name'
   register: system_product_name
   changed_when: false
 
 - name: 'Ensure Open Virtual Machine Tools is installed'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name: 'open-vm-tools'
     state: 'present'

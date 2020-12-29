@@ -6,59 +6,59 @@
 
 ---
 - name: 'Ensure APT package lists are up-to-date'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     update-cache: true
 
 - name: 'Perform dry-run of "apt-get dist-upgrade"'
-  command: 'apt-get --simulate dist-upgrade'
+  ansible.builtin.command: 'apt-get --simulate dist-upgrade'
   args:
     warn: false
   register: apt_update_dry_run
   changed_when: false
 
 - name: 'Parse dry-run "apt-get dist-upgrade" output'
-  set_fact:
+  ansible.builtin.set_fact:
     updates: '{{ apt_update_dry_run.stdout_lines | apt_simulate_output_cleanup }}'
   changed_when: false
 
 - name: 'Perform dry-run of "apt-get autoremove"'
-  command: 'apt-get --simulate autoremove'
+  ansible.builtin.command: 'apt-get --simulate autoremove'
   args:
     warn: false
   register: apt_removal_dry_run
   changed_when: false
 
 - name: 'Parse dry-run "apt-get autoremove" output'
-  set_fact:
+  ansible.builtin.set_fact:
     removals: '{{ apt_removal_dry_run.stdout_lines | apt_simulate_output_cleanup }}'
   changed_when: false
 
 - name: 'Ensure APT packages are up-to-date'
   block:
     - name: 'Show APT packages to be updated'
-      debug:
+      ansible.builtin.debug:
         var: updates
 
     - name: 'Wait for user confirmation to proceed'
-      pause:
+      ansible.builtin.pause:
 
     - name: 'Ensure APT packages are up-to-date'
-      apt:
+      ansible.builtin.apt:
         upgrade: 'dist'
   when: updates.0 is defined
 
 - name: 'Ensure out-of-date and unused APT packages are removed'
   block:
     - name: 'Show APT packages to be removed'
-      debug:
+      ansible.builtin.debug:
         var: removals
 
     - name: 'Wait for user confirmation to proceed'
-      pause:
+      ansible.builtin.pause:
 
     - name: 'Ensure out-of-date and unused APT packages are removed'
-      command: 'apt-get -y autoremove'
+      ansible.builtin.command: 'apt-get -y autoremove'
       args:
         warn: false
   when: removals.0 is defined

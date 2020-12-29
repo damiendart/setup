@@ -6,7 +6,7 @@
 
 ---
 - name: 'Ensure virtual hosts base directories exist'
-  file:
+  ansible.builtin.file:
     group: 'www-data'
     mode: 0750
     owner: '{{ webserver__administrator_username }}'
@@ -17,7 +17,7 @@
     label: '{{ item.key }}'
 
 - name: 'Ensure Apache virtual hosts configuration files exist'
-  template:
+  ansible.builtin.template:
     dest: '/etc/apache2/sites-available/{{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
     group: 'root'
     mode: 0600
@@ -29,7 +29,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure ".htpasswd" files exist for password-protected Apache virtual hosts'
-  htpasswd:
+  community.general.htpasswd:
     group: 'www-data'
     mode: 0640
     name: '{{ item.value.auth.username }}'
@@ -43,7 +43,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure Apache virtual hosts are active'
-  command: 'a2ensite {{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
+  ansible.builtin.command: 'a2ensite {{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
   args:
     creates: '/etc/apache2/sites-enabled/{{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
   loop: '{{ webserver__vhosts | dict2items }}'
@@ -52,7 +52,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure unnecessary Apache virtual hosts are inactive'
-  command: 'a2dissite {{ item }}.conf'
+  ansible.builtin.command: 'a2dissite {{ item }}.conf'
   args:
     removes: '/etc/apache2/sites-enabled/{{ item }}.conf'
   loop:
@@ -62,7 +62,7 @@
     - 'Reload Apache'
 
 - name: 'Ensure "/etc/hosts" contains entries for virtual hosts'
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: '/etc/hosts'
     regexp: '127.0.0.1 {{ item.key }}$'
     line: '127.0.0.1 {{ item.key }}'

@@ -6,17 +6,17 @@
 
 ---
 - name: 'Ensure the Tarsnap package signing key is present for APT'
-  apt_key:
+  ansible.builtin.apt_key:
     state: 'present'
     url: 'https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc'
 
 - name: 'Ensure the Tarsnap repository is present in APT sources list'
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./'
     state: 'present'
 
 - name: 'Ensure Tarsnap is installed'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name: 'tarsnap'
     state: 'present'
@@ -26,7 +26,7 @@
 # stop any future backups or add new archives with faulty data. A
 # write-only key can be created with "tarsnap-keymgmt".
 - name: 'Ensure a write-only Tarsnap key is present'
-  copy:
+  ansible.builtin.copy:
     content: '{{ tarsnap__write_only_key }}'
     dest: '/root/tarsnap.key'
     group: 'root'
@@ -34,7 +34,7 @@
     owner: 'root'
 
 - name: 'Ensure Tarsnap is set up to run daily'
-  template:
+  ansible.builtin.template:
     dest: '/etc/cron.daily/tarsnap'
     group: 'root'
     mode: 0755

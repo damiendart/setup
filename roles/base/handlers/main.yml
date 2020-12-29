@@ -4,11 +4,11 @@
 
 ---
 - name: 'Restart OpenSSH Server'
-  service:
+  ansible.builtin.service:
     name: 'ssh'
     state: 'restarted'
 
 - name: 'Restart UFW'
-  service:
+  ansible.builtin.service:
     name: 'ufw'
     state: 'restarted'

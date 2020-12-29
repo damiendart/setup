@@ -6,25 +6,25 @@
 
 ---
 - name: 'Load variables from release artifact metadata YAML document'
-  include_vars:
+  ansible.builtin.include_vars:
     file: '{{ deploy_to_vhost__release_artifact_folder }}/release.yml'
     name: __release_metadata
 
 - name: 'Set virtual host base directory fact'
   tags:
     - 'deploy-to-vhost:setup'
-  set_fact:
+  ansible.builtin.set_fact:
     __vhost_base_directory: '/var/www/{{ deploy_to_vhost__site_domain }}'
 
 - name: 'Set release base directory fact'
-  set_fact:
+  ansible.builtin.set_fact:
     __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_timestamp }}'
 
 - include: 'preflight.yml'
 - include: 'setup.yml'
 
 - name: 'Create release base directory'
-  file:
+  ansible.builtin.file:
     group: 'www-data'
     mode: 0750
     owner: '{{ deploy_to_vhost__administrator_username }}'
@@ -32,7 +32,7 @@
     state: 'directory'
 
 - name: 'Unarchive release artifact archive into release base directory'
-  unarchive:
+  ansible.builtin.unarchive:
     src: '{{ deploy_to_vhost__release_artifact_folder }}/release.tgz'
     dest: '{{ __release_base_directory }}'
   become: no
@@ -40,12 +40,12 @@
 - name: 'Check for and install PHP dependencies with Composer'
   block:
     - name: 'Get status of "composer.json" in release directory'
-      stat:
+      ansible.builtin.stat:
         path: '{{ __release_base_directory }}/composer.json'
       register: __composer_json_status
 
     - name: 'Install PHP dependencies with Composer'
-      composer:
+      community.general.composer:
         classmap_authoritative: true
         command: 'install'
         working_dir: '{{ __release_base_directory }}'
@@ -54,7 +54,7 @@
       when: __composer_json_status.stat.exists
 
 - name: 'Update owners and permissions of release directory contents'
-  command: '{{ item }}'
+  ansible.builtin.command: '{{ item }}'
   args:
     chdir: '{{ __release_base_directory }}'
   changed_when: true
@@ -69,7 +69,7 @@
     - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
 
 - name: 'Add web-server-writable directories to release directory'
-  file:
+  ansible.builtin.file:
     path: '{{ __release_base_directory }}/{{ item }}'
     state: 'directory'
     owner: 'www-data'
@@ -79,7 +79,7 @@
   when: __release_metadata.writable_directories_release is defined
 
 - name: 'Ensure web-server-writable directories exist in shared directory'
-  file:
+  ansible.builtin.file:
     path: '{{ __vhost_base_directory }}/shared/{{ item }}'
     state: 'directory'
     owner: 'www-data'
@@ -89,7 +89,7 @@
   when: __release_metadata.writable_directories_shared is defined
 
 - name: 'Update environment Apache configuration file'
-  template:
+  ansible.builtin.template:
     dest: '{{ __vhost_base_directory }}/deployment.apache2.conf'
     group: 'root'
     mode: 0640
@@ -100,7 +100,7 @@
     - 'Reload PHP-FPM'
 
 - name: 'Update environment Bash shell configuration file'
-  template:
+  ansible.builtin.template:
     # Override Jinja control structure syntax so that it doesn't
     # cause issues with ShellCheck.
     block_end_string: '%#'
@@ -116,7 +116,7 @@
     - 'sentry'
   block:
   - name: 'Make Sentry aware of release'
-    uri:
+    ansible.builtin.uri:
       body: |
         {
           "projects": ["{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project }}"],
@@ -136,7 +136,7 @@
       url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/'
 
   - name: 'Make Sentry aware of deployment'
-    uri:
+    ansible.builtin.uri:
       body: |
         {
           "environment": "{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars.APP_ENV }}"
@@ -152,21 +152,21 @@
   run_once: true
 
 - name: 'Clean up virtual host releases folder'
-  shell: 'set -eo pipefail; ls -1tr {{ __vhost_base_directory }}/releases | head -n -2 | xargs rm -rf'
+  ansible.builtin.shell: 'set -eo pipefail; ls -1tr {{ __vhost_base_directory }}/releases | head -n -2 | xargs rm -rf'
   args:
     chdir: '{{ __vhost_base_directory }}/releases'
     executable: '/bin/bash'
   changed_when: true
 
 - name: 'Force all currently notified handlers to run'
-  meta: 'flush_handlers'
+  ansible.builtin.meta: 'flush_handlers'
 
 - name: 'Perform smoke tests'
   tags:
     - 'smoketest'
   block:
     - name: 'Check release is running on host'
-      command:
+      ansible.builtin.command:
         # The "--resolve" option allows "/etc/hosts"-type functionality
         # without having to edit system-wide configuration files.
         # Ansible's 'uri' module has no similar functionality.
@@ -182,7 +182,7 @@
       changed_when: false
 
     - name: 'Check release is live'
-      uri:
+      ansible.builtin.uri:
         http_agent: 'deploy-to-vhost-smoke-test'
         url: 'https://{{ deploy_to_vhost__site_domain }}/'
         url_password: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.password | default("") }}'
@@ -196,5 +196,5 @@
       run_once: true
   rescue:
     # This pretty-prints any errors from the block above.
-    - debug:
+    - ansible.builtin.debug:
         var: __smoketest_response

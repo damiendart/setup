@@ -6,7 +6,7 @@
 
 ---
 - name: 'Ensure kernel modules for containerd are loaded'
-  modprobe:
+  community.general.modprobe:
     name: '{{ item }}'
     state: 'present'
   loop:
@@ -16,7 +16,7 @@
 # IP forwarding is required so that the Linux kernel can route traffic
 # from hosted containers to the outside world.
 - name: 'Ensure IP forwarding is enabled'
-  sysctl:
+  ansible.posix.sysctl:
     name: 'net.ipv4.ip_forward'
     state: 'present'
     value: '1'
@@ -24,7 +24,7 @@
 # These settings are required so that the Linux kernel can perform
 # address translation in packets going to and from hosted containers.
 - name: 'Ensure "iptables" can see bridged traffic'
-  sysctl:
+  ansible.posix.sysctl:
     name: '{{ item.key }}'
     state: 'present'
     value: '{{ item.value }}'
@@ -33,17 +33,17 @@
     - { key: 'net.bridge.bridge-nf-call-iptables', value: '1' }
 
 - name: 'Ensure the Docker package signing key is present for APT'
-  apt_key:
+  ansible.builtin.apt_key:
     state: 'present'
     url: 'https://download.docker.com/linux/ubuntu/gpg'
 
 - name: 'Ensure the Docker repository is present in APT sources list'
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
     state: 'present'
 
 - name: 'Ensure Docker and containerd are installed'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name:
       # The following packages are as per the installation guide at
@@ -54,19 +54,19 @@
     state: 'present'
 
 - name: 'Ensure administrator can run docker commands without sudo'
-  user:
+  ansible.builtin.user:
     name: '{{ docker__administrator_user_username }}'
     groups: 'docker'
     append: true
   notify: 'Notify user about group membership update'
 
 - name: 'Get containerd default configuration'
-  command: 'containerd config default'
+  ansible.builtin.command: 'containerd config default'
   changed_when: false
   register: __containerd_config_default
 
 - name: 'Ensure containerd configuration file contains default configuration'
-  copy:
+  ansible.builtin.copy:
     content: '{{ __containerd_config_default.stdout }}'
     dest: '/etc/containerd/config.toml'
     group: 'root'
@@ -75,7 +75,7 @@
   notify: 'Restart containerd'
 
 - name: 'Ensure containerd and Docker are running and start on system boot'
-  service:
+  ansible.builtin.service:
     enabled: true
     name: '{{ item }}'
     state: 'started'

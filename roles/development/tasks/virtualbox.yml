@@ -10,17 +10,17 @@
     - 'virtualbox'
   block:
     - name: 'Ensure the VirtualBox package signing key is present for APT'
-      apt_key:
+      ansible.builtin.apt_key:
         state: 'present'
         url: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
 
     - name: 'Ensure the VirtualBox repository is present in APT sources list'
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: 'deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib'
         state: 'present'
 
     - name: 'Ensure VirtualBox is installed'
-      apt:
+      ansible.builtin.apt:
         force_apt_get: true
         name: 'virtualbox-{{ development__virtualbox_version }}'
         state: 'present'

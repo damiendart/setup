@@ -4,11 +4,11 @@
 
 ---
 - name: 'Reload Apache'
-  service:
+  ansible.builtin.service:
     name: 'apache2'
     state: 'reloaded'
 
 - name: 'Reload PHP-FPM'
-  service:
+  ansible.builtin.service:
     name: 'php{{ webserver__php_version }}-fpm'
     state: 'reloaded'

@@ -6,18 +6,18 @@
 
 ---
 - name: 'Ensure Canonical Livepatch is installed'
-  snap:
+  community.general.snap:
     name: 'canonical-livepatch'
     state: 'present'
 
 - name: 'Check Canonical Livepatch status'
-  command: 'canonical-livepatch status --verbose'
+  ansible.builtin.command: 'canonical-livepatch status --verbose'
   changed_when: false
   ignore_errors: 'yes'
   register: __livepatch_status
 
 - name: 'Enable Canonical Livepatch'
-  command: 'canonical-livepatch enable {{ livepatch__key }}'
+  ansible.builtin.command: 'canonical-livepatch enable {{ livepatch__key }}'
   when: >
     __livepatch_status is defined
     and __livepatch_status.stdout is defined

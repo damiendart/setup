@@ -10,7 +10,7 @@
 - name: 'Ensure base deployment-related directories exist'
   tags:
     - 'deploy-to-vhost:setup'
-  file:
+  ansible.builtin.file:
     group: 'www-data'
     mode: 0750
     owner: '{{ deploy_to_vhost__administrator_username }}'
@@ -23,7 +23,7 @@
 - name: 'Ensure "private" shared-data directory exists'
   tags:
     - 'deploy-to-vhost:setup'
-  file:
+  ansible.builtin.file:
     group: 'root'
     mode: 0750
     owner: '{{ deploy_to_vhost__administrator_username }}'
@@ -33,7 +33,7 @@
 - name: 'Ensure "protected" shared-data directory exists'
   tags:
     - 'deploy-to-vhost:setup'
-  file:
+  ansible.builtin.file:
     group: 'www-data'
     # Octal file permissions must contain a leading zero or be a string.
     mode: '2750'
@@ -44,7 +44,7 @@
 - name: 'Ensure release scheduled task helper scripts exist'
   tags:
     - 'deploy-to-vhost:setup'
-  template:
+  ansible.builtin.template:
     # By default, "run-parts" ignores executable files that have
     # periods in their names.
     dest: '/etc/cron.{{ item }}/vhost-{{ deploy_to_vhost__site_domain | replace(".","-") }}'

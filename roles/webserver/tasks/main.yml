@@ -6,7 +6,7 @@
 
 ---
 - name: 'Ensure "deb.sury.org" repositories are present in APT source lists'
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'ppa:ondrej/{{ item }}'
     state: 'present'
   loop:
@@ -14,7 +14,7 @@
     - 'php'
 
 - name: 'Ensure webserver-related packages are installed'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name:
       - 'apache2'
@@ -36,7 +36,7 @@
     - 'Reload PHP-FPM'
 
 - name: 'Ensure Apache and PHP-FPM are running and start on system boot'
-  service:
+  ansible.builtin.service:
     enabled: true
     name: '{{ item }}'
     state: 'started'
@@ -47,7 +47,7 @@
 # The Apache package from "deb.sury.org" does not provide an UFW profile
 # out-of-the-box; the following is taken from a fresh Ubuntu install.
 - name: 'Ensure an Apache UFW profile exists'
-  copy:
+  ansible.builtin.copy:
     content: |
       [Apache Full]
       title=Web Server (HTTP,HTTPS)
@@ -60,7 +60,7 @@
   notify: 'Restart UFW'
 
 - name: 'Ensure the Apache UFW profile is active'
-  ufw:
+  community.general.ufw:
     name: 'Apache Full'
     rule: 'allow'
   notify: 'Restart UFW'
@@ -74,4 +74,4 @@
 # that need to be applied before other roles that have this role as a
 # dependency are executed.
 - name: 'Force all currently notified handlers to run'
-  meta: 'flush_handlers'
+  ansible.builtin.meta: 'flush_handlers'

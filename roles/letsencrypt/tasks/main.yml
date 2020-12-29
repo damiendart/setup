@@ -11,18 +11,18 @@
 
 ---
 - name: 'Ensure the Certbot PPA is present in APT sources list'
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'ppa:certbot/certbot'
     state: 'present'
 
 - name: 'Ensure Certbot is installed'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name: 'python-certbot-apache'
     state: 'present'
 
 - name: "Ensure valid Let's Encrypt certificates for sites exist"
-  script: 'certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(" ") }}'
+  ansible.builtin.script: 'certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(" ") }}'
   args:
     executable: '/usr/bin/python3'
   register: certbot_update
@@ -35,7 +35,7 @@
     'Reload Apache'
 
 - name: 'Ensure the Certbot scheduled task plays nicely with Apache'
-  replace:
+  ansible.builtin.replace:
     path: '/etc/cron.d/certbot'
     regexp: 'certbot -q renew$'
     replace: "certbot -q renew --webroot --webroot-path /var/www/html --deploy-hook 'service apache2 graceful'"

@@ -6,17 +6,17 @@
 
 ---
 - name: 'Ensure the NodeSource package signing key is present for APT'
-  apt_key:
+  ansible.builtin.apt_key:
     state: 'present'
     url: 'https://deb.nodesource.com/gpgkey/nodesource.gpg.key'
 
 - name: 'Ensure NodeSource repository is present in APT sources list'
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'deb https://deb.nodesource.com/node_{{ development__node_major_version }}.x {{ ansible_distribution_release }} main'
     state: 'present'
 
 - name: 'Ensure development-related packages are installed'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name:
       - 'build-essential'
@@ -28,7 +28,7 @@
     state: 'present'
 
 - name: 'Ensure development-related Python packages are installed in administrator home directory'
-  pip:
+  ansible.builtin.pip:
     executable: '/usr/bin/pip3'
     extra_args: '--user'
     name:
@@ -38,7 +38,7 @@
   become_user: '{{ development__user_username }}'
 
 - name: 'Ensure development-related binaries are installed'
-  unarchive:
+  ansible.builtin.unarchive:
     dest: '/usr/local/bin'
     exclude:
       - '*.txt'
@@ -81,7 +81,7 @@
     src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
 
 - name: 'Ensure fzf supplimentary files are installed'
-  get_url:
+  ansible.builtin.get_url:
     dest: '/usr/local/etc/fzf-{{ item }}'
     group: 'root'
     mode: 0755
@@ -92,7 +92,7 @@
     - 'key-bindings.bash'
 
 - name: 'Ensure personal projects directory exists in administrator home directory'
-  file:
+  ansible.builtin.file:
     group: '{{ development__user_username }}'
     mode: 0700
     owner: '{{ development__user_username }}'
@@ -104,7 +104,7 @@
     - 'gui'
   block:
     - name: 'Ensure fonts directory exists in administrator home directory'
-      file:
+      ansible.builtin.file:
         group: '{{ development__user_username }}'
         mode: 0700
         owner: '{{ development__user_username }}'
@@ -112,7 +112,7 @@
         state: 'directory'
 
     - name: 'Ensure the Iosevka font files are installed'
-      unarchive:
+      ansible.builtin.unarchive:
         dest: '/home/{{ administrator_username }}/.fonts/iosevka'
         exclude: '{{ development__iosevka_archive_excludes }}'
         group: '{{ development__user_username }}'
@@ -121,7 +121,7 @@
         src: 'https://github.com/be5invis/Iosevka/releases/download/{{ development__iosevka_version }}/{{ development__iosevka_archive_filename }}'
 
     - name: 'Ensure the PhpStorm snap is installed'
-      snap:
+      community.general.snap:
         classic: true
         name: 'phpstorm'
         state: 'present'

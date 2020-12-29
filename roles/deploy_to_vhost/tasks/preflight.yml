@@ -7,7 +7,7 @@
 ---
 # A "public" directory is required for Apache to serve files from.
 - name: 'Check release archive for "public" directory'
-  command:
+  ansible.builtin.command:
     cmd: 'tar -tvf {{ deploy_to_vhost__release_artifact_folder }}/release.tgz "./public/"'
     warn: false
   changed_when: false
@@ -15,25 +15,25 @@
   run_once: true
 
 - name: 'Check release timestamp is a non-empty string'
-  assert:
+  ansible.builtin.assert:
     that:
       - __release_metadata.release_timestamp | length > 0
 
 - name: 'Check release base directory does not already exist'
   block:
     - name: 'Get release base directory status'
-      stat:
+      ansible.builtin.stat:
         path: '{{ __release_base_directory }}'
       register: __release_base_directory_status
 
     - name: 'Check release base directory does not already exist'
-      assert:
+      ansible.builtin.assert:
         that: __release_base_directory_status.stat.islnk is not defined
 
 - name: 'Check Sentry organisation is valid'
   tags:
     - 'sentry'
-  uri:
+  ansible.builtin.uri:
     headers:
       Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
     status_code: 200
@@ -48,7 +48,7 @@
 - name: 'Check release Git commit SHA-1 hash is valid with GitHub'
   tags:
     - 'sentry'
-  uri:
+  ansible.builtin.uri:
     headers:
       Authorization: 'Token {{ deploy_to_vhost__github_auth_token }}'
     status_code: 200

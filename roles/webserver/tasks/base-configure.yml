@@ -6,7 +6,7 @@
 
 ---
 - name: 'Ensure required Apache modules are enabled'
-  apache2_module:
+  community.general.apache2_module:
     name: '{{ item }}'
     state: 'present'
   loop:
@@ -25,7 +25,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure legacy and unnecessary Apache modules are disabled'
-  apache2_module:
+  community.general.apache2_module:
     force: true
     name: '{{ item }}'
     state: 'absent'
@@ -37,7 +37,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure legacy or unnecessary Apache configuration files are disabled'
-  command: 'a2disconf {{ item }}'
+  ansible.builtin.command: 'a2disconf {{ item }}'
   args:
     removes: '/etc/apache2/conf-enabled/{{ item }}.conf'
   loop:
@@ -50,13 +50,13 @@
 # Enabling "mod_status" brings along an unwanted configuration file
 # that's hard to override elsewhere, hence the nuclear option.
 - name: 'Ensure unwanted base "mod_status" Apache configuration file is removed'
-  file:
+  ansible.builtin.file:
     path: '/etc/apache2/mods-enabled/status.conf'
     state: 'absent'
   notify: 'Reload Apache'
 
 - name: 'Ensure custom PHP-FPM Apache configuration file exists'
-  template:
+  ansible.builtin.template:
     dest: '/etc/apache2/conf-available/php{{ webserver__php_version }}-fpm.conf'
     group: 'root'
     mode: 0600
@@ -65,7 +65,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure custom Apache configuration file exists'
-  template:
+  ansible.builtin.template:
     dest: '/etc/apache2/conf-available/zzz.conf'
     group: 'root'
     mode: 0600
@@ -74,7 +74,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure custom Apache macros configuration file exists'
-  template:
+  ansible.builtin.template:
     dest: '/etc/apache2/conf-available/zzz-macros.conf'
     group: 'root'
     mode: 0600
@@ -83,7 +83,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure custom Apache configuration files are active'
-  command: 'a2enconf {{ item }}'
+  ansible.builtin.command: 'a2enconf {{ item }}'
   args:
     creates: '/etc/apache2/conf-enabled/{{ item }}.conf'
   loop:
@@ -93,7 +93,7 @@
   notify: 'Reload Apache'
 
 - name: 'Ensure the PHP-FPM Apache configuration file is active'
-  command: 'a2enconf php{{ webserver__php_version }}-fpm'
+  ansible.builtin.command: 'a2enconf php{{ webserver__php_version }}-fpm'
   args:
     creates: '/etc/apache2/conf-enabled/php{{ webserver__php_version }}-fpm.conf'
   notify:
@@ -101,7 +101,7 @@
     - 'Reload PHP-FPM'
 
 - name: 'Ensure PHP allows uploads of sizes up to 20MB'
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: '/etc/php/{{ webserver__php_version }}/fpm/php.ini'
     line: '{{ item }} = 20M'
     regexp: '^{{ item }}'
@@ -112,7 +112,7 @@
   notify: 'Reload PHP-FPM'
 
 - name: 'Ensure custom PHP-FPM pool configuration file exists and is active'
-  template:
+  ansible.builtin.template:
     dest: '/etc/php/{{ webserver__php_version }}/fpm/pool.d/zzz.conf'
     group: 'root'
     mode: 0600

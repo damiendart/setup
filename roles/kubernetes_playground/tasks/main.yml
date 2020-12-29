@@ -10,19 +10,19 @@
 
 ---
 - name: "Ensure Google Cloud's package signing key is present for APT"
-  apt_key:
+  ansible.builtin.apt_key:
     state: 'present'
     url: 'https://packages.cloud.google.com/apt/doc/apt-key.gpg'
 
 - name: 'Ensure the Kubernetes repository is present in APT sources list'
-  apt_repository:
+  ansible.builtin.apt_repository:
     # The repository is as per the installation guide at
     # <https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-using-native-package-management>.
     repo: 'deb https://apt.kubernetes.io/ kubernetes-xenial main'
     state: 'present'
 
 - name: 'Ensure kubeadm, kubectl and kubelet are installed'
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     name:
       - 'kubeadm'
@@ -36,12 +36,12 @@
 - name: 'Ensure system swap is disabled'
   block:
   - name: 'Ensure system swap is disabled'
-    command: 'swapoff -av'
+    ansible.builtin.command: 'swapoff -av'
     register: __swapoff
     changed_when: __swapoff.stdout | regex_search('swapoff')
 
   - name: 'Ensure disabled system swap persists after system reboot'
-    lineinfile:
+    ansible.builtin.lineinfile:
       backrefs: true
       dest: '/etc/fstab'
       line: '# \1'
@@ -49,19 +49,19 @@
       state: 'present'
 
   - name: 'Ensure swappiness is set to zero'
-    sysctl:
+    ansible.posix.sysctl:
       name: 'vm.swappiness'
       state: 'present'
       value: '0'
 
 - name: 'Ensure kubelet is running and starts on system boot'
-  service:
+  ansible.builtin.service:
     enabled: true
     name: 'kubelet'
     state: 'started'
 
 - name: 'Ensure the Kubernetes control-plane node is set up'
-  command:
+  ansible.builtin.command:
     cmd: >
       kubeadm init
       --pod-network-cidr "{{ kubernetes__pod_network_cidr }}"
@@ -70,7 +70,7 @@
     warn: false
 
 - name: 'Ensure ".kube" directory exists in administrator home directory'
-  file:
+  ansible.builtin.file:
     group: '{{ kubernetes__administrator_username }}'
     mode: 0700
     owner: '{{ kubernetes__administrator_username }}'
@@ -78,7 +78,7 @@
     state: 'directory'
 
 - name: 'Ensure K8s configuration file exists in administrator home directory'
-  copy:
+  ansible.builtin.copy:
     dest: '/home/{{ kubernetes__administrator_username }}/.kube/config'
     group: '{{ kubernetes__administrator_username }}'
     owner: '{{ kubernetes__administrator_username }}'
@@ -89,18 +89,18 @@
 - name: 'Ensure pods can be scheduled on the control-plane node'
   block:
     - name: 'Get control-plane node status'
-      command: 'kubectl describe node'
+      ansible.builtin.command: 'kubectl describe node'
       register: __kubectl_describe_node
       changed_when: false
 
     - name: 'Ensure "NoSchedule" taint is not applied to control-plane node'
-      command: 'kubectl taint node {{ ansible_hostname }} node-role.kubernetes.io/master-'
+      ansible.builtin.command: 'kubectl taint node {{ ansible_hostname }} node-role.kubernetes.io/master-'
       when: __kubectl_describe_node.stdout is search('node-role.kubernetes.io/master:NoSchedule')
   become: true
   become_user: '{{ kubernetes__administrator_username }}'
 
 - name: 'Ensure third-party manifests have been applied'
-  command: 'kubectl apply -f {{ item }}'
+  ansible.builtin.command: 'kubectl apply -f {{ item }}'
   register: __kubectl_apply_third_party
   become: true
   become_user: '{{ kubernetes__administrator_username }}'
@@ -123,13 +123,13 @@
 - name: 'Ensure MetalLB is configured'
   block:
     - name: 'Ensure MetalLB speaker communication key is set'
-      command:
+      ansible.builtin.command:
         cmd: 'kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="{{ kubernetes__metallb_speaker_key }}"'
       register: __kubectl_apply_metallb_secret
       changed_when: __kubectl_apply_metallb_secret is search(' created')
 
     - name: "Ensure MetalLB's address pool is configured"
-      command:
+      ansible.builtin.command:
         cmd: 'kubectl apply -f -'
         stdin: |
           apiVersion: 'v1'
