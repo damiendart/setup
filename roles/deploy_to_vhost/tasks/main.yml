@@ -196,5 +196,6 @@
       run_once: true
   rescue:
     # This pretty-prints any errors from the block above.
-    - ansible.builtin.debug:
+    - name: 'Pretty-print any smoketest-related errors'
+      ansible.builtin.debug:
         var: __smoketest_response
