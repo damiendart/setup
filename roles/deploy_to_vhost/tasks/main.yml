@@ -35,7 +35,7 @@
   ansible.builtin.unarchive:
     src: '{{ deploy_to_vhost__release_artifact_folder }}/release.tgz'
     dest: '{{ __release_base_directory }}'
-  become: no
+  become: false
 
 - name: 'Check for and install PHP dependencies with Composer'
   block:

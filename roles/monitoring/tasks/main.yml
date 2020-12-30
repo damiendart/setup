@@ -1,87 +1,81 @@
+# This roles installs and configurates monitoring-related stuff.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: Ensure monitoring-related packages are installed
+- name: 'Ensure monitoring-related packages are installed'
   ansible.builtin.apt:
-    force_apt_get: yes
+    force_apt_get: true
     name:
-      - fail2ban
-      - logrotate
-      - logwatch
-      - monit
-    state: present
+      - 'fail2ban'
+      - 'logrotate'
+      - 'logwatch'
+      - 'monit'
+    state: 'present'
 
-- name: Ensure custom notfication scripts exist
+- name: 'Ensure custom notfication scripts exist'
   ansible.builtin.template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: root
-    group: root
+    dest: '{{ item.dest }}'
+    group: 'root'
     mode: '0700'
-  with_items:
-    - { src: session-notify.sh.j2, dest: /usr/local/bin/session-notify }
+    owner: 'root'
+    src: '{{ item.src }}'
+  loop:
+    - dest: '/usr/local/bin/session-notify'
+      src: 'session-notify.sh.j2'
 
-- name: Ensure SSH session notifications are enabled
+- name: 'Ensure SSH session notifications are enabled'
   community.general.pamd:
-    name: sshd
-    new_control: optional
-    new_module_path: pam_exec.so
-    new_type: session
-    module_arguments: /usr/local/bin/session-notify
-    state: after
-    type: session
-    module_path: pam_mail.so
-    control: optional
+    control: 'optional'
+    module_arguments: '/usr/local/bin/session-notify'
+    module_path: 'pam_mail.so'
+    name: 'sshd'
+    new_control: 'optional'
+    new_module_path: 'pam_exec.so'
+    new_type: 'session'
+    state: 'after'
+    type: 'session'
 
-- name: Ensure custom Fail2ban configuration file exist
+- name: 'Ensure custom Fail2ban configuration file exist'
   ansible.builtin.template:
-    src: jail.local.j2
-    dest: /etc/fail2ban/jail.local
-    owner: root
-    group: root
+    dest: '/etc/fail2ban/jail.local'
+    group: 'root'
+    owner: 'root'
     mode: '0600'
-  notify: Restart Fail2ban
+    src: 'jail.local.j2'
+  notify: 'Restart Fail2ban'
 
-- name: Ensure custom Logwatch configuration file exist
+- name: 'Ensure custom Logwatch configuration file exist'
   ansible.builtin.template:
-    src: logwatch.conf.j2
-    dest: /etc/logwatch/conf/logwatch.conf
-    owner: root
-    group: root
+    dest: '/etc/logwatch/conf/logwatch.conf'
+    group: 'root'
     mode: '0600'
+    owner: 'root'
+    src: 'logwatch.conf.j2'
 
-- name: Ensure custom Monit configuration file exist
+- name: 'Ensure custom Monit configuration file exist'
   ansible.builtin.template:
-    src: monitrc.j2
     # The weird name is to ensure this configuration file is loaded last.
-    dest: /etc/monit/conf.d/zzz.conf
-    owner: root
-    group: root
+    dest: '/etc/monit/conf.d/zzz.conf'
+    group: 'root'
     mode: '0600'
-    validate: monit -c %s -t
-  notify: Restart Monit
+    owner: 'root'
+    src: 'monitrc.j2'
+    validate: 'monit -c %s -t'
+  notify: 'Restart Monit'
 
-- name: Ensure custom Tarsnap logrotate configuration file exists (if required)
+- name: 'Ensure custom Tarsnap logrotate configuration file exists (if required)'
   ansible.builtin.template:
-    src: tarsnap-cron-logrotate.j2
-    dest: /etc/logrotate.d/tarsnap-cron
-    owner: root
-    group: root
+    dest: '/etc/logrotate.d/tarsnap-cron'
+    group: 'root'
     mode: '0600'
+    owner: 'root'
+    src: 'tarsnap-cron-logrotate.j2'
   when: '"backup" in ansible_play_role_names'
 
-- name: Ensure monitoring-related services are operational and set to run on boot
-  ansible.builtin.service:
-    name: "{{ item }}"
-    state: started
-    enabled: yes
-  loop:
-    - fail2ban
-    - monit
-
-- name: 'Ensure Fail2ban and Monit are running and start on system boot'
+- name: 'Ensure monitoring-related services are operational and set to run on boot'
   ansible.builtin.service:
     enabled: true
     name: '{{ item }}'

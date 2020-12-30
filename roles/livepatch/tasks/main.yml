@@ -13,7 +13,7 @@
 - name: 'Check Canonical Livepatch status'
   ansible.builtin.command: 'canonical-livepatch status --verbose'
   changed_when: false
-  ignore_errors: 'yes'
+  ignore_errors: true
   register: __livepatch_status
 
 - name: 'Enable Canonical Livepatch'
