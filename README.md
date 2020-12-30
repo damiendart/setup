@@ -18,7 +18,7 @@ There is also a small test suite that uses [TestInfra][2] to perform
 some server state tests. These tests are currently a bit bare-bones and
 are a work-in-progress.
 
-Note that you'll need to set the "ControlMaster" and "ControlPath"
+Note that you'll need to set the _ControlMaster_ and _ControlPath_
 configuration options when testing over SSH, otherwise Fail2Ban and UFW
 will quickly put a stop to your testing.
 
