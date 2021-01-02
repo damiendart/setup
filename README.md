@@ -1,13 +1,9 @@
 setup
 =====
 
-A mess of [Ansible][1] stuff that I use to provision and maintain my
-personal development environments and a couple of servers that I host a
-few small websites on.
-
-  - I use Ubuntu 18.04 so your mileage may vary when using the included
-    Ansible playbooks and roles on any other operating systems.
-  - All Ansible hosts must have Python 3 installed beforehand.
+A mess of [Ansible][1] stuff that I use to provision and maintain a
+bunch of Ubuntu 18.04 installations, including personal development
+environments and a couple of servers where I host a few small websites.
 
 [1]: <https://docs.ansible.com/ansible/latest/index.html>
 
