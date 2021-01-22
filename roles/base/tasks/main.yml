@@ -93,3 +93,9 @@
     mode: 0644
     owner: 'root'
     src: 'msmtprc.j2'
+
+- name: 'Ensure cron "MAILTO" variable is set to the administrator email address'
+  ansible.builtin.cron:
+    env: true
+    job: '{{ base__administrator_email }}'
+    name: 'MAILTO'
