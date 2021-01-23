@@ -10,7 +10,7 @@
   - name: 'Ensure Xdebug is installed'
     ansible.builtin.apt:
       force_apt_get: true
-      name: 'php-xdebug'
+      name: 'php{{ webserver__php_version }}-xdebug'
       state: 'present'
 
   - name: "Ensure Xdebug's remote debugger is enabled"

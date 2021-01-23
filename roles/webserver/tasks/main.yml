@@ -22,12 +22,15 @@
       # instead of the native Imagick PHP extension.
       - 'imagemagick'
       - 'goaccess'
-      # PHP-FPM is required for HTTP/2 support.
-      - 'php{{ webserver__php_version }}-fpm'
-      # The following are commonly-used PHP extensions.
+      - 'php{{ webserver__php_version }}-cli'
+      - 'php{{ webserver__php_version }}-common'
       - 'php{{ webserver__php_version }}-curl'
+      - 'php{{ webserver__php_version }}-fpm'
       - 'php{{ webserver__php_version }}-gd'
+      - 'php{{ webserver__php_version }}-json'
       - 'php{{ webserver__php_version }}-mbstring'
+      - 'php{{ webserver__php_version }}-opcache'
+      - 'php{{ webserver__php_version }}-readline'
       - 'php{{ webserver__php_version }}-xml'
       - 'php{{ webserver__php_version }}-zip'
     state: 'present'
