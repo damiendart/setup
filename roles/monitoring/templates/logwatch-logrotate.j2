@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+/var/log/logwatch {
+        rotate 14
+        daily
+        missingok
+        nocompress
+        notifempty
+        create 0644 root root
+}

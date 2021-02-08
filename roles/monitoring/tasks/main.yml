@@ -66,6 +66,14 @@
     validate: 'monit -c %s -t'
   notify: 'Restart Monit'
 
+- name: 'Ensure custom Logwatch logrotate configuration file exists'
+  ansible.builtin.template:
+    dest: '/etc/logrotate.d/logwatch'
+    group: 'root'
+    mode: '0600'
+    owner: 'root'
+    src: 'logwatch-logrotate.j2'
+
 - name: 'Ensure custom Tarsnap logrotate configuration file exists (if required)'
   ansible.builtin.template:
     dest: '/etc/logrotate.d/tarsnap-cron'

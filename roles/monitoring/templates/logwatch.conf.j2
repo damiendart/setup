@@ -6,6 +6,7 @@
 
 Detail = High
 Format = text
+mailer = "tee /var/log/logwatch | /usr/sbin/sendmail -t"
 MailTo = {{ administrator_email_address }}
 MailFrom = {{ administrator_email_address }}
 Output = mail
