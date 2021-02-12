@@ -72,7 +72,7 @@
     group: 'root'
     mode: '0600'
     owner: 'root'
-    src: 'logwatch-logrotate.j2'
+    src: 'logrotate-logwatch.conf.j2'
 
 - name: 'Ensure monitoring-related services are operational and set to run on boot'
   ansible.builtin.service:
