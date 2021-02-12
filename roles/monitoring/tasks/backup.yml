@@ -1,0 +1,38 @@
+# The following tasks add Tarsnap-monitoring gubbins
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure Tarsnap-related monitoring is in place (if required)'
+  block:
+    - name: 'Ensure custom logrotate configuration file for Tarsnap logs exists'
+      ansible.builtin.template:
+        dest: '/etc/logrotate.d/tarsnap'
+        group: 'root'
+        mode: '0600'
+        owner: 'root'
+        src: 'logrotate-tarsnap.conf.j2'
+
+    - name: 'Ensure custom Logwatch configuration files for Tarsnap logs exists'
+      ansible.builtin.template:
+        dest: '{{ item.dest }}'
+        group: 'root'
+        mode: '0600'
+        owner: 'root'
+        src: '{{ item.src }}'
+      loop:
+        - dest: '/etc/logwatch/conf/logfiles/tarsnap.conf'
+          src: 'logwatch-tarsnap-logfiles.conf.j2'
+        - dest: '/etc/logwatch/conf/services/tarsnap.conf'
+          src: 'logwatch-tarsnap-services.conf.j2'
+
+    - name: 'Ensure custom Logwatch filter for Tarsnap logs exists'
+      ansible.builtin.template:
+        dest: '/etc/logwatch/scripts/services/tarsnap'
+        group: 'root'
+        mode: '0755'
+        owner: 'root'
+        src: 'logwatch-tarsnap.sh.j2'
+  when: '"backup" in ansible_play_role_names'
