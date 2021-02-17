@@ -84,15 +84,18 @@
     - 'PermitRootLogin'
   notify: 'Restart OpenSSH Server'
 
-- name: 'Ensure msmtp is configured'
+- name: 'Ensure custom msmtp configuration files exist'
   ansible.builtin.template:
-    dest: '/etc/msmtprc'
+    dest: '/etc/{{ item }}'
     group: 'root'
-    # The msmtp configuration file has relaxed permissions as a few
+    # The msmtp configuration files has relaxed permissions as a few
     # places remain where non-root users require msmtp.
     mode: 0644
     owner: 'root'
-    src: 'msmtprc.j2'
+    src: '{{ item }}.j2'
+  loop:
+    - 'msmtprc'
+    - 'msmtp.aliases'
 
 - name: 'Ensure cron "MAILTO" variable is set to the administrator email address'
   ansible.builtin.cron:
