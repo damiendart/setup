@@ -70,7 +70,7 @@
   ansible.builtin.template:
     dest: '/etc/logrotate.d/logwatch'
     group: 'root'
-    mode: '0600'
+    mode: '0644'
     owner: 'root'
     src: 'logrotate-logwatch.conf.j2'
 
