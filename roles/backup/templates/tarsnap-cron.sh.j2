@@ -14,6 +14,8 @@ TARSNAP_LOG='/var/log/tarsnap.log'
 /usr/bin/tarsnap -c --keyfile /root/tarsnap.key \
     -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" \
     $FOLDERS_TO_BACKUP >$TARSNAP_LOG 2>&1
-echo >> $TARSNAP_LOG
-echo "Started:  $START_TIMESTAMP" >> $TARSNAP_LOG
-echo "Finished: $(date)" >> $TARSNAP_LOG
+{
+  echo
+  echo "Started:  $START_TIMESTAMP"
+  echo "Finished: $(date)"
+} >> $TARSNAP_LOG
