@@ -32,7 +32,7 @@
     executable: '/usr/bin/pip3'
     extra_args: '--user'
     name:
-      - 'ranger'
+      - 'ranger-fm'
       - 'virtualenv'
       - 'virtualenvwrapper'
   become: true
