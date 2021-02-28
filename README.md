@@ -2,8 +2,9 @@ setup
 =====
 
 A mess of [Ansible][1] stuff that I use to provision and maintain a
-bunch of Ubuntu 18.04 installations, including personal development
-environments and a couple of servers where I host a few small websites.
+bunch of Ubuntu 18.04 and 20.04 installations, including personal
+development environments and a couple of servers where I host a few
+small websites.
 
 [1]: <https://docs.ansible.com/ansible/latest/index.html>
 
