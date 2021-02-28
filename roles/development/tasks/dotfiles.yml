@@ -19,12 +19,12 @@
     # workarounds, see <https://stackoverflow.com/q/24124140>.
     - name: 'Ensure the "toolbox" Git repository exists'
       ansible.builtin.git:
-        dest: '/home/{{ development__user_username }}/shed/toolbox'
+        dest: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox'
         repo: 'git@github.com:damiendart/toolbox.git'
         update: no
 
     - name: 'Ensure the "toolbox" install script runs successfully'
-      ansible.builtin.command: '/home/{{ development__user_username }}/shed/toolbox/install'
+      ansible.builtin.command: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox/install'
       register: toolbox_install
       changed_when: toolbox_install.stdout is search('Created')
   become: true

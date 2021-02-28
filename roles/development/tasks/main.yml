@@ -86,7 +86,7 @@
     group: '{{ development__user_username }}'
     mode: 0700
     owner: '{{ development__user_username }}'
-    path: '/home/{{ development__user_username }}/shed'
+    path: '/home/{{ development__user_username }}/{{ development__projects_folder }}'
     state: 'directory'
 
 - name: 'Run GUI-based development tasks'
