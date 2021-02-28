@@ -109,12 +109,6 @@
         owner: '{{ development__user_username }}'
         remote_src: true
         src: 'https://github.com/be5invis/Iosevka/releases/download/{{ development__iosevka_version }}/{{ development__iosevka_archive_filename }}'
-
-    - name: 'Ensure the PhpStorm snap is installed'
-      community.general.snap:
-        classic: true
-        name: 'phpstorm'
-        state: 'present'
   when: development__run_gui_tasks | bool
 
 - include: 'dotfiles.yml'
