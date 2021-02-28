@@ -17,6 +17,7 @@
       - 'sudo'
     name: '{{ base__administrator_username }}'
     password: '{{ base__administrator_password | password_hash("sha512") }}'
+    ssh_key_type: '{{ base__administrator_ssh_key_type }}'
     state: 'present'
     update_password: 'on_create'
   register: __user
