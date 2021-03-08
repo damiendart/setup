@@ -84,7 +84,9 @@
 - name: 'Ensure personal projects directory exists in administrator home directory'
   ansible.builtin.file:
     group: '{{ development__user_username }}'
-    mode: 0700
+    # The personal projects directory has relaxed permissions to allow
+    # Apache access to directories within it.
+    mode: 0755
     owner: '{{ development__user_username }}'
     path: '/home/{{ development__user_username }}/{{ development__projects_folder }}'
     state: 'directory'
