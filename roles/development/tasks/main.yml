@@ -59,7 +59,7 @@
     - src: 'https://github.com/BurntSushi/ripgrep/releases/download/{{ development__ripgrep_version }}/ripgrep-{{ development__ripgrep_version }}-x86_64-unknown-linux-musl.tar.gz' # noqa 204
       extra_opts:
         - '--strip-components=1'
-    - src: 'https://github.com/go-task/task/releases/download/v3.0.0/task_linux_amd64.tar.gz'
+    - src: 'https://github.com/go-task/task/releases/download/v{{ development__task_version }}/task_linux_amd64.tar.gz'
     - src: 'https://github.com/junegunn/fzf/releases/download/{{ development__fzf_version }}/fzf-{{ development__fzf_version }}-linux_amd64.tar.gz'
     - src: 'https://github.com/koalaman/shellcheck/releases/download/v{{ development__shellcheck_version }}/shellcheck-v{{ development__shellcheck_version }}.linux.x86_64.tar.xz' # noqa 204
       extra_opts:
