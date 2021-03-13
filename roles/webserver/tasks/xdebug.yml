@@ -13,12 +13,12 @@
       name: 'php{{ webserver__php_version }}-xdebug'
       state: 'present'
 
-  - name: "Ensure Xdebug's remote debugger is enabled"
-    ansible.builtin.copy:
-      content: 'xdebug.remote_enable=1'
-      dest: '/etc/php/{{ webserver__php_version }}/fpm/conf.d/20-xdebug-remote-enable.ini'
-      owner: 'root'
+  - name: 'Ensure custom Xdebug configuration file for PHP-FPM exists'
+    ansible.builtin.template:
+      dest: '/etc/php/{{ webserver__php_version }}/fpm/conf.d/99-xdebug.ini'
       group: 'root'
       mode: 0644
+      owner: 'root'
+      src: '99-xdebug.ini.j2'
     notify: 'Reload PHP-FPM'
   when: webserver__install_xdebug
