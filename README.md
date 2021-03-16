@@ -31,13 +31,16 @@ _setup_ on a fresh install of Ubuntu 18.04 or 20.04:
      Python dependencies with `python3 -m pip install -r
      requirements.txt`.
 
+See also [my notes on setting up a personal development environment][4].
+
 [2]: <https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key>
 [3]: <https://www.robotinaponcho.net/git/#toolbox>
+[4]: <https://www.robotinaponcho.net/notes/development-environment>
 
 
 ## Testing server state
 
-There is also a small test suite that uses [TestInfra][4] to perform
+There is also a small test suite that uses [TestInfra][5] to perform
 some server state tests. These tests are currently a bit bare-bones and
 are a work-in-progress.
 
@@ -45,7 +48,7 @@ Note that you'll need to set the _ControlMaster_ and _ControlPath_
 configuration options when testing over SSH, otherwise Fail2Ban and UFW
 will quickly put a stop to your testing.
 
-[4]: <https://testinfra.readthedocs.io/en/latest/>
+[5]: <https://testinfra.readthedocs.io/en/latest/>
 
 
 ## Linting and style guide
@@ -55,8 +58,8 @@ keep most things relatively consistent. For more information, see
 _.ansible-lint_, _.editorconfig_, _Taskfile.yml_, and _.yamllint_.
 
 For things that the above doesn't cover, the aim is to adhere to the
-[Ansible Best Practices guide][5] and the [WhiteCloud Ansible
-style guide][6] with the following amendments:
+[Ansible Best Practices guide][6] and the [WhiteCloud Ansible
+style guide][7] with the following amendments:
 
   - Files should start, where appropriate, with
     - a comment that includes a sentence explaining the file's purpose,
@@ -68,5 +71,5 @@ style guide][6] with the following amendments:
       command-line interface, or
     - `__` if the variable is not meant to be overridden elsewhere.
 
-[5]: <https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html>
-[6]: <https://github.com/whitecloud/ansible-styleguide>
+[6]: <https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html>
+[7]: <https://github.com/whitecloud/ansible-styleguide>
