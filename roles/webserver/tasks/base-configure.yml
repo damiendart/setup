@@ -100,15 +100,13 @@
     - 'Reload Apache'
     - 'Reload PHP-FPM'
 
-- name: 'Ensure PHP allows uploads of sizes up to 20MB'
-  ansible.builtin.lineinfile:
-    dest: '/etc/php/{{ webserver__php_version }}/fpm/php.ini'
-    line: '{{ item }} = 20M'
-    regexp: '^{{ item }}'
-    state: 'present'
-  loop:
-    - 'post_max_size'
-    - 'upload_max_filesize'
+- name: 'Ensure custom PHP configuration file for PHP-FPM exists'
+  ansible.builtin.template:
+    dest: '/etc/php/{{ webserver__php_version }}/fpm/conf.d/99-custom.ini'
+    group: 'root'
+    mode: 0644
+    owner: 'root'
+    src: '99-custom.ini.j2'
   notify: 'Reload PHP-FPM'
 
 - name: 'Ensure custom PHP-FPM pool configuration file exists and is active'
