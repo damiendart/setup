@@ -37,6 +37,7 @@ Header always set X-XSS-Protection "1; mode=block"
 <IfModule mod_mime.c>
   # Force UTF-8 encoding for other file formats.
   AddCharset utf-8 .css .js
+  AddType application/manifest+json webmanifest
   AddType application/javascript js
   AddType application/vnd.ms-fontobject eot
   AddType application/x-font-ttf ttc ttf
