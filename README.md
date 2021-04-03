@@ -22,7 +22,9 @@ _setup_ on a fresh install of Ubuntu 18.04 or 20.04:
   3) [Generate an SSH key][2] and add the public key to things (Ansible
      inventories, GitHub, servers, etc) where appropriate.
   4) Use Git to download copies of _setup_, relevant Ansible
-     inventories, and [my dotfiles][3].
+     inventories, and [my dotfiles][3]. (Be aware that the _development_
+     Ansible role will also download a copy of my dotfiles, for more
+     information see _roles/development/tasks/dotfiles.yml_.)
   5) Run the install script included with my dotfiles. Log out and log
      back in, or `source` any new dotfiles so that they take effect in
      the current interactive shell session.
