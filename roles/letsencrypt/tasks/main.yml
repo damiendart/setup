@@ -20,6 +20,17 @@
     force_apt_get: true
     name: 'python-certbot-apache'
     state: 'present'
+  register: __apt_install_python_certbot_apache
+
+- name: "Ensure a Let's Encrypt ACME account has been registered"
+  ansible.builtin.command:
+    cmd: >
+      certbot
+      register
+      --agree-tos
+      --no-eff-email
+      --email '{{ letsencrypt__administrator_email }}'
+  when: __apt_install_python_certbot_apache.changed # noqa 503
 
 - name: "Ensure valid Let's Encrypt certificates for sites exist"
   ansible.builtin.script: 'certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(" ") }}'
