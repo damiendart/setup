@@ -5,6 +5,9 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE file.
 
+trap 'rm -f "$CURL_OUTPUT_TEMP_FILE"' EXIT
+
+CURL_OUTPUT_TEMP_FILE="$(mktemp)"
 NOTIFICATION_MESSAGE="Session opened from $PAM_RHOST at $(date)"
 NOTIFICATION_PRIORITY='0'
 NOTIFICATION_TITLE="$PAM_SERVICE: $PAM_USER@$HOSTNAME"
@@ -23,14 +26,24 @@ esac
 
 [ "$PAM_USER" = 'root' ] && NOTIFICATION_PRIORITY='1'
 
-PUSHOVER_RESULT="$(curl --silent --output /dev/null --write-out '%{http_code}' -v \
+/usr/bin/curl -fv \
   --form-string "message=$NOTIFICATION_MESSAGE" \
   --form-string "priority=$NOTIFICATION_PRIORITY" \
   --form-string "title=$NOTIFICATION_TITLE" \
   --form-string 'token={{ monitoring_pushover_api_token }}' \
   --form-string 'user={{ administrator_pushover_user_key }}' \
-  https://api.pushover.net/1/messages.json 2>/dev/null)"
+  https://api.pushover.net/1/messages.json > "$CURL_OUTPUT_TEMP_FILE" 2>&1 \
+  && exit
 
-if [ "$PUSHOVER_RESULT" != '200' ]; then
-  exit 1
-fi
+/usr/bin/msmtp -t <<EMAIL
+From: {{ monitoring__administrator_full_name }} <{{ monitoring__administrator_email }}>
+To: {{ monitoring__administrator_full_name }} <{{ monitoring__administrator_email }}>
+Subject: $NOTIFICATION_TITLE
+
+$NOTIFICATION_MESSAGE
+
+PS You're recieving this notification as an email because we were unable
+to send it with Pushover. Here's what curl had to say when we tried:
+
+$(cat "$CURL_OUTPUT_TEMP_FILE")
+EMAIL
