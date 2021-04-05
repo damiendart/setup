@@ -30,8 +30,8 @@ esac
   --form-string "message=$NOTIFICATION_MESSAGE" \
   --form-string "priority=$NOTIFICATION_PRIORITY" \
   --form-string "title=$NOTIFICATION_TITLE" \
-  --form-string 'token={{ monitoring_pushover_api_token }}' \
-  --form-string 'user={{ administrator_pushover_user_key }}' \
+  --form-string 'token={{ monitoring__pushover_api_token }}' \
+  --form-string 'user={{ monitoring__pushover_user_key }}' \
   https://api.pushover.net/1/messages.json > "$CURL_OUTPUT_TEMP_FILE" 2>&1 \
   && exit
 

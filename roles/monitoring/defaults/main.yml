@@ -1,8 +1,2 @@
 ---
-# administrator_email_address: ""
-# administrator_pushover_user_key: ""
-# monitoring_email_hostname: ""
-# monitoring_email_password: ""
-# monitoring_email_username: ""
-# monitoring_pushover_api_token: ""
 monitoring__monit_apache: false

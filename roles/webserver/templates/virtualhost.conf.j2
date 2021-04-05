@@ -6,7 +6,7 @@
 
 
 <VirtualHost *:80>
-  ServerAdmin {{ webserver__administrator_email_address }}
+  ServerAdmin {{ webserver__administrator_email }}
   ServerName {{ item.key }}
   {% if item.value.aliases is defined %}
     ServerAlias {{ item.value.aliases | join(" ") }}
@@ -46,7 +46,7 @@
 
 <IfModule mod_ssl.c>
   <VirtualHost *:443>
-    ServerAdmin {{ webserver__administrator_email_address }}
+    ServerAdmin {{ webserver__administrator_email }}
     ServerName {{ item.key }}
     {% if item.value.aliases is defined %}
       ServerAlias {{ item.value.aliases | join(" ") }}
