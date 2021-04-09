@@ -66,6 +66,7 @@
         - '--transform'
         - 's/^shellcheck-v{{ development__shellcheck_version }}\///'
     - src: 'https://releases.hashicorp.com/packer/{{ development__packer_version }}/packer_{{ development__packer_version }}_linux_amd64.zip'
+    - src: 'https://releases.hashicorp.com/terraform/{{ development__terraform_version }}/terraform_{{ development__terraform_version }}_linux_amd64.zip'
     - src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
   loop_control:
     label: '{{ item.src }}'
