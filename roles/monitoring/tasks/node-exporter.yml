@@ -1,0 +1,63 @@
+# This roles installs and configurates the Prometheus Node Exporter.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+- name: 'Ensure the Prometheus Node Exporter binary is installed'
+  ansible.builtin.unarchive:
+    dest: '/usr/local/bin'
+    exclude:
+      - 'LICENSE'
+      - 'NOTICE'
+    extra_opts:
+      - '--transform'
+      - 's/^node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64\///'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    remote_src: true
+    src: 'https://github.com/prometheus/node_exporter/releases/download/v{{ monitoring__node_exporter_version }}/node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64.tar.gz' # noqa 204
+
+- name: 'Ensure a "node_exporter" group exists'
+  ansible.builtin.group:
+    name: 'node_exporter'
+    state: 'present'
+    system: true
+
+- name: 'Ensure a "node_exporter" user exists'
+  ansible.builtin.user:
+    append: true
+    create_home: false
+    home: '/'
+    groups:
+      - 'node_exporter'
+    name: 'node_exporter'
+    shell: '/usr/sbin/nologin'
+    system: true
+
+- name: 'Ensure a Prometheus Node Exporter textfile collector directory exists'
+  ansible.builtin.file:
+    group: 'node_exporter'
+    mode: 0775
+    owner: 'node_exporter'
+    path: '{{ item }}'
+    state: 'directory'
+  loop:
+    - '/var/lib/node_exporter'
+    - '/var/lib/node_exporter/textfile_collector'
+
+- name: 'Ensure a Prometheus Node Exporter systemd unit configuration file exists'
+  ansible.builtin.template:
+    dest: '/etc/systemd/system/node_exporter.service'
+    group: 'root'
+    mode: 0644
+    owner: 'root'
+    src: 'node_exporter.service.j2'
+  notify: 'Restart Prometheus Node Exporter'
+
+- name: 'Ensure the Prometheus Node Exporter service is operational and set to run on boot'
+  ansible.builtin.service:
+    enabled: true
+    name: 'node_exporter'
+    state: 'started'

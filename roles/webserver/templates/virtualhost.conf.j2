@@ -73,6 +73,19 @@
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
     </IfModule>
 
+    {% if "monitoring" in ansible_play_role_names %}
+      <Location "/{{ webserver__status_path_node_exporter }}">
+        AuthName "Authentication Required"
+        AuthType Basic
+        AuthUserFile "/etc/apache2/node-exporter.htpasswd"
+        Require valid-user
+
+        ProxyPreserveHost On
+        ProxyPass http://localhost:9100/metrics
+        ProxyPassReverse http://localhost:9100/metrics
+      </Location>
+    {% endif %}
+
     # The document root is not defined here (ignoring any
     # backwards-compatibility stuff) to allow for Capistrano-style
     # deployments. Instead, it should be defined in a

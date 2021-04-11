@@ -12,3 +12,9 @@
   ansible.builtin.service:
     name: monit
     state: restarted
+
+- name: 'Restart Prometheus Node Exporter'
+  ansible.builtin.service:
+    daemon_reload: true
+    name: 'node_exporter'
+    state: 'restarted'

@@ -74,7 +74,7 @@
     owner: 'root'
     src: 'logrotate-logwatch.conf.j2'
 
-- name: 'Ensure monitoring-related services are operational and set to run on boot'
+- name: 'Ensure Fail2ban and Monit services are operational and set to run on boot'
   ansible.builtin.service:
     enabled: true
     name: '{{ item }}'
@@ -84,3 +84,4 @@
     - 'monit'
 
 - include: 'backup.yml'
+- include: 'node-exporter.yml'

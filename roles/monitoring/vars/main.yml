@@ -3,5 +3,4 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-dependencies:
-  - 'webserver'
+monitoring__node_exporter_version: '1.1.2'

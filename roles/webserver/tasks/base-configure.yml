@@ -17,6 +17,7 @@
     - 'macro'
     - 'mpm_event'
     - 'proxy_fcgi'
+    - 'proxy_http'
     - 'rewrite'
     - 'setenvif'
     - 'status'
@@ -117,3 +118,14 @@
     owner: 'root'
     src: 'php-fpm-pool.conf.j2'
   notify: 'Reload PHP-FPM'
+
+- name: 'Ensure Node Exporter password file exists (if required)'
+  community.general.htpasswd:
+    group: 'www-data'
+    mode: 0640
+    name: '{{ webserver__status_path_node_exporter_username }}'
+    owner: 'root'
+    password: '{{ webserver__status_path_node_exporter_password }}'
+    path: '/etc/apache2/node-exporter.htpasswd'
+  when: "'monitoring' in ansible_play_role_names"
+  notify: 'Reload Apache'
