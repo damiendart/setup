@@ -118,3 +118,4 @@
 - include: 'virtualbox.yml'
 - include: 'open-vm-tools.yml'
 - include: 'rust.yml'
+- include: 'go.yml'

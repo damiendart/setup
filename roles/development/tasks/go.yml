@@ -1,0 +1,32 @@
+# The following tasks install Go.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Check for an existing installation of Go'
+  block:
+    - name: 'Get the version of Go currently installed (if available)'
+      ansible.builtin.set_fact:
+        __go_version: "{{ lookup('file', '/usr/local/go/VERSION') }}"
+  rescue:
+    - name: 'Set Go version variable to an empty string'
+      ansible.builtin.set_fact:
+        __go_version: ''
+
+- name: 'Ensure Go is installed'
+  block:
+    - name: 'Ensure any existing installations of Go are removed'
+      ansible.builtin.file:
+        path: '/usr/local/go'
+        state: 'absent'
+
+    - name: 'Ensure Go is installed'
+      ansible.builtin.unarchive:
+        dest: '/usr/local'
+        group: 'root'
+        owner: 'root'
+        remote_src: true
+        src: 'https://golang.org/dl/go{{ development__go_version }}.linux-amd64.tar.gz'
+  when: development__go_version not in __go_version

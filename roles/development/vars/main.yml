@@ -4,6 +4,7 @@
 
 ---
 development__fzf_version: '0.25.0'
+development__go_version: '1.16.3'
 development__iosevka_archive_filename: 01-iosevka-3.0.0-alpha.2.zip
 development__iosevka_archive_excludes:
   - iosevka-regular.charmap
