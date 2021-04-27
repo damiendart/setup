@@ -4,8 +4,8 @@
 
 ---
 webserver__add_vhosts_to_etc_hosts: false
-webserver__composer_version: '2.0.3'
-webserver__composer_sha256: '5d377e9b504dc9f6c9228d81c321ba85290512cdb396a12d3708b0cd30d2e20c'
+webserver__composer_version: '2.0.13'
+webserver__composer_sha256: '116fdf07cc926af646635a6abc92d88aff7b02a5dc36538f81c50a7d27366dbf'
 webserver__install_xdebug: false
 webserver__php_version: '7.4'
 # The following default PHP-FPM dynamic settings are tailored towards
