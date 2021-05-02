@@ -20,6 +20,23 @@
   ansible.builtin.set_fact:
     __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_timestamp }}'
 
+- name: 'Check for an existing in-progress deployment'
+  block:
+    - name: 'Get status of an existing deployment lock file'
+      ansible.builtin.stat:
+        path: '{{ __vhost_base_directory }}/deploy.lock'
+      register: __deploy_lock_status
+
+    - name: 'Stop current deployment if a deployment is already in progress'
+      ansible.builtin.fail:
+        msg: 'A deployment is already in progress'
+      when: __deploy_lock_status.stat.exists
+
+- name: 'Ensure a deployment lock file exists'
+  ansible.builtin.file:
+    path: '{{ __vhost_base_directory }}/deploy.lock'
+    state: 'touch'
+
 - include: 'preflight.yml'
 - include: 'setup.yml'
 
@@ -199,3 +216,8 @@
     - name: 'Pretty-print any smoketest-related errors'
       ansible.builtin.debug:
         var: __smoketest_response
+
+- name: 'Ensure the deployment lock file is removed'
+  ansible.builtin.file:
+    path: '{{ __vhost_base_directory }}/deploy.lock'
+    state: 'absent'
