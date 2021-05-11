@@ -62,12 +62,10 @@
     - 'Reload Apache'
 
 - name: 'Ensure "/etc/hosts" contains entries for virtual hosts'
-  ansible.builtin.lineinfile:
-    dest: '/etc/hosts'
-    regexp: '127.0.0.1 {{ item.key }}$'
-    line: '127.0.0.1 {{ item.key }}'
-    state: 'present'
-  loop: '{{ webserver__vhosts | dict2items }}'
-  loop_control:
-    label: '{{ item.key }}'
+  ansible.builtin.blockinfile:
+    block: |
+      {% for hostname in webserver__vhosts.keys() %}
+        127.0.0.1 {{ hostname }}
+      {% endfor %}
+    path: '/etc/hosts'
   when: webserver__add_vhosts_to_etc_hosts
