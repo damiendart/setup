@@ -1,0 +1,63 @@
+# The following tasks clean up any virtual-host-related detritus.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Get all virtual hosts directories'
+  ansible.builtin.find:
+    excludes: '^\.\.?$'
+    file_type: 'directory'
+    paths: '/var/www'
+  register: __vhost_directories
+
+- name: 'Get all virtual hosts configuration files'
+  ansible.builtin.find:
+    excludes: '^\.\.?$'
+    paths: '/etc/apache2/sites-available'
+  register: __vhost_conf_files
+
+- name: 'Get all active virtual hosts configuration files'
+  ansible.builtin.find:
+    excludes: '^\.\.?$'
+    file_type: 'link'
+    paths: '/etc/apache2/sites-enabled'
+  register: __vhost_conf_links
+
+# This task uses an unholy mess of Jinja filters and is a little
+# fragile, so as a precaution this task will only make changes if the
+# "webserver__vhosts_cleanup" variable is set to a truthy value; that
+# way you can review what gets deleted beforehand.
+- name: 'Ensure virtual-host-related detritus no longer exists'
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: 'absent'
+  when: webserver__vhosts_cleanup | default(False)
+  loop: >
+    {{
+      __vhost_directories.files
+        | map(attribute='path')
+        | map('regex_replace', '/var/www/(html)?')
+        | reject('equalto', '')
+        | difference(webserver__vhosts.keys())
+        | map('regex_replace', '^', '/var/www/')
+      + __vhost_conf_files.files
+        | map(attribute='path')
+        | map('replace', '/etc/apache2/sites-available/', '')
+        | map('replace', '.conf', '')
+        | reject('equalto', 'default-ssl')
+        | reject('equalto', '000-default')
+        | difference(webserver__vhosts.keys() | list + [('00-' ~ webserver__server_name)])
+        | map('regex_replace', '^', '/etc/apache2/sites-available/')
+        | map('regex_replace', '$', '.conf')
+      + __vhost_conf_links.files
+        | map(attribute='path')
+        | map('replace', '/etc/apache2/sites-enabled/', '')
+        | map('replace', '.conf', '')
+        | difference(webserver__vhosts.keys() | list + [('00-' ~ webserver__server_name)])
+        | map('regex_replace', '^', '/etc/apache2/sites-enabled/')
+        | map('regex_replace', '$', '.conf')
+      | default([])
+    }}
+  notify: 'Reload Apache'

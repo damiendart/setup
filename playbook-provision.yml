@@ -18,7 +18,9 @@
     - 'letsencrypt'
     - 'livepatch'
     - 'monitoring'
-    - 'webserver'
+    - role: 'webserver'
+      vars:
+        webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'
 
 - hosts: 'development'
   become: true
@@ -26,4 +28,6 @@
     - 'base'
     - 'development'
     - 'docker'
-    - 'webserver'
+    - role: 'webserver'
+      vars:
+        webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'

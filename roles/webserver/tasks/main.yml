@@ -70,6 +70,7 @@
 
 - include: 'base-configure.yml'
 - include: 'vhosts.yml'
+- include: 'vhosts-cleanup.yml'
 - include: 'composer.yml'
 - include: 'xdebug.yml'
 
