@@ -10,13 +10,13 @@
     file: '{{ deploy_to_vhost__release_artifact_folder }}/release.yml'
     name: __release_metadata
 
-- name: 'Set virtual host base directory fact'
+- name: 'Set virtual host base directory variables'
   tags:
     - 'deploy-to-vhost:setup'
   ansible.builtin.set_fact:
     __vhost_base_directory: '/var/www/{{ deploy_to_vhost__site_domain }}'
 
-- name: 'Set release base directory fact'
+- name: 'Set release base directory variables'
   ansible.builtin.set_fact:
     __release_base_directory: '{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_timestamp }}'
 
