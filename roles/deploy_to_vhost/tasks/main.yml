@@ -167,13 +167,6 @@
   delegate_to: 'localhost'
   run_once: true
 
-- name: 'Clean up virtual host releases folder'
-  ansible.builtin.shell: 'set -eo pipefail; ls -1tr {{ __vhost_base_directory }}/releases | head -n -2 | xargs rm -rf'
-  args:
-    chdir: '{{ __vhost_base_directory }}/releases'
-    executable: '/bin/bash'
-  changed_when: true
-
 - name: 'Force all currently notified handlers to run'
   ansible.builtin.meta: 'flush_handlers'
 
@@ -215,6 +208,13 @@
     - name: 'Pretty-print any smoketest-related errors'
       ansible.builtin.debug:
         var: __smoketest_response
+
+- name: 'Clean up virtual host releases folder'
+  ansible.builtin.shell: 'set -eo pipefail; ls -1tr {{ __vhost_base_directory }}/releases | head -n -2 | xargs rm -rf'
+  args:
+    chdir: '{{ __vhost_base_directory }}/releases'
+    executable: '/bin/bash'
+  changed_when: true
 
 - name: 'Ensure the deployment lock file is removed'
   ansible.builtin.file:
