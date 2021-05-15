@@ -76,10 +76,9 @@
     chdir: '{{ __release_base_directory }}'
   changed_when: true
   loop:
-    - "find . -mindepth 1 -exec chown '{{ deploy_to_vhost__administrator_username }}:root' {} \\;"
+    - "find . -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
+    - "find . -type f -maxdepth 1 -exec chown '{{ deploy_to_vhost__administrator_username }}:root' {} \\;"
     - "find . -wholename './private*' -exec chown '{{ deploy_to_vhost__administrator_username }}:root' {} \\;"
-    - "find . -wholename './protected*' -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
-    - "find . -wholename './public*' -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
     - 'find . -type d -exec chmod 0750 {} \;'
     - 'find . -type f -exec chmod 0640 {} \;'
     - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
