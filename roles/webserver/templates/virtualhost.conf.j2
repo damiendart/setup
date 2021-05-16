@@ -73,7 +73,10 @@
       Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
     </IfModule>
 
-    {% if "monitoring" in ansible_play_role_names %}
+    {% if
+      item.key == webserver__server_name
+      and webserver__status_path_node_exporter is defined
+    %}
       <Location "/{{ webserver__status_path_node_exporter }}">
         AuthName "Authentication Required"
         AuthType Basic

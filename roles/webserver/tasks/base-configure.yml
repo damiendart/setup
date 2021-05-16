@@ -127,5 +127,5 @@
     owner: 'root'
     password: '{{ webserver__status_path_node_exporter_password }}'
     path: '/etc/apache2/node-exporter.htpasswd'
-  when: "'monitoring' in ansible_play_role_names"
+  when: webserver__status_path_node_exporter is defined
   notify: 'Reload Apache'
