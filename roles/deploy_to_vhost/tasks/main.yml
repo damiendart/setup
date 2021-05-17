@@ -131,38 +131,38 @@
   tags:
     - 'sentry'
   block:
-  - name: 'Make Sentry aware of release'
-    ansible.builtin.uri:
-      body: |
-        {
-          "projects": ["{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project }}"],
-          "refs": [
-            {
-              "commit": "{{ __release_metadata.release_git_sha }}",
-              "repository": "{{ __release_metadata.github_project }}"
-            }
-          ],
-          "version": "{{ __release_metadata.release_timestamp }}"
-        }
-      body_format: 'json'
-      headers:
-        Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
-      method: 'POST'
-      status_code: 201
-      url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/'
+    - name: 'Make Sentry aware of release'
+      ansible.builtin.uri:
+        body: |
+          {
+            "projects": ["{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project }}"],
+            "refs": [
+              {
+                "commit": "{{ __release_metadata.release_git_sha }}",
+                "repository": "{{ __release_metadata.github_project }}"
+              }
+            ],
+            "version": "{{ __release_metadata.release_timestamp }}"
+          }
+        body_format: 'json'
+        headers:
+          Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
+        method: 'POST'
+        status_code: 201
+        url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/'
 
-  - name: 'Make Sentry aware of deployment'
-    ansible.builtin.uri:
-      body: |
-        {
-          "environment": "{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars.APP_ENV }}"
-        }
-      body_format: 'json'
-      headers:
-        Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
-      method: 'POST'
-      status_code: 201
-      url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/{{ __release_metadata.release_timestamp }}/deploys/'
+    - name: 'Make Sentry aware of deployment'
+      ansible.builtin.uri:
+        body: |
+          {
+            "environment": "{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars.APP_ENV }}"
+          }
+        body_format: 'json'
+        headers:
+          Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
+        method: 'POST'
+        status_code: 201
+        url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/{{ __release_metadata.release_timestamp }}/deploys/'
   when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
   delegate_to: 'localhost'
   run_once: true
