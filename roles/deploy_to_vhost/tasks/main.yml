@@ -88,6 +88,19 @@
   loop: '{{ __release_metadata.writable_directories_shared }}'
   when: __release_metadata.writable_directories_shared is defined
 
+- name: 'Check for and run project-specific pre-installation tasks'
+  block:
+    - name: 'Get status of project-specific pre-installation tasks file'
+      ansible.builtin.stat:
+        path: '{{ deploy_to_vhost__release_artifact_folder }}/pre-install-tasks.yml'
+      changed_when: false
+      register: __pre_install_tasks_file
+
+    - name: 'Include project-specific pre-installation tasks file (if applicable)'
+      ansible.builtin.include_tasks:
+        file: '{{ deploy_to_vhost__release_artifact_folder }}/pre-install-tasks.yml'
+      when: __pre_install_tasks_file.stat.exists
+
 - name: 'Check for and install PHP dependencies with Composer'
   block:
     - name: 'Get status of "composer.json" in release directory'
