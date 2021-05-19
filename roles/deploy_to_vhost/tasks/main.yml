@@ -54,22 +54,6 @@
     dest: '{{ __release_base_directory }}'
   become: false
 
-- name: 'Check for and install PHP dependencies with Composer'
-  block:
-    - name: 'Get status of "composer.json" in release directory'
-      ansible.builtin.stat:
-        path: '{{ __release_base_directory }}/composer.json'
-      register: __composer_json_status
-
-    - name: 'Install PHP dependencies with Composer'
-      community.general.composer:
-        classmap_authoritative: true
-        command: 'install'
-        working_dir: '{{ __release_base_directory }}'
-      become: false
-      changed_when: true
-      when: __composer_json_status.stat.exists
-
 - name: 'Update owners and permissions of release directory contents'
   ansible.builtin.command: '{{ item }}'
   args:
@@ -103,6 +87,32 @@
     mode: '2750'
   loop: '{{ __release_metadata.writable_directories_shared }}'
   when: __release_metadata.writable_directories_shared is defined
+
+- name: 'Check for and install PHP dependencies with Composer'
+  block:
+    - name: 'Get status of "composer.json" in release directory'
+      ansible.builtin.stat:
+        path: '{{ __release_base_directory }}/composer.json'
+      register: __composer_json
+
+    - name: 'Install PHP dependencies with Composer'
+      community.general.composer:
+        classmap_authoritative: true
+        command: 'install'
+        working_dir: '{{ __release_base_directory }}'
+      become: false
+      changed_when: true
+      when: __composer_json.stat.exists
+
+    - name: 'Update owners and permissions of vendor directory'
+      ansible.builtin.command: '{{ item }}'
+      args:
+        chdir: "{{ __release_base_directory }}/{{ (lookup('file', __composer_json.stat.path) | from_json)['config']['vendor-dir'] | default('vendor') }}"
+      changed_when: true
+      loop:
+        - "find . -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
+        - 'find . -type d -exec chmod 0750 {} \;'
+        - 'find . -type f -exec chmod 0640 {} \;'
 
 - name: 'Update environment Apache configuration file'
   ansible.builtin.template:
