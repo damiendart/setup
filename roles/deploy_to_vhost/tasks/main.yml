@@ -108,6 +108,12 @@
         path: '{{ __release_base_directory }}/composer.json'
       register: __composer_json
 
+    - name: 'Slurp "composer.json" in release directory into a variable'
+      ansible.builtin.slurp:
+        src: '{{ __release_base_directory }}/composer.json'
+      register: __composer_json_slurp
+      when: __composer_json.stat.exists
+
     - name: 'Install PHP dependencies with Composer'
       community.general.composer:
         classmap_authoritative: true
@@ -120,12 +126,13 @@
     - name: 'Update owners and permissions of vendor directory'
       ansible.builtin.command: '{{ item }}'
       args:
-        chdir: "{{ __release_base_directory }}/{{ (lookup('file', __composer_json.stat.path) | from_json)['config']['vendor-dir'] | default('vendor') }}"
+        chdir: "{{ __release_base_directory }}/{{ (__composer_json_slurp['content'] | b64decode | from_json)['config']['vendor-dir'] | default('vendor') }}"
       changed_when: true
       loop:
         - "find . -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
         - 'find . -type d -exec chmod 0750 {} \;'
         - 'find . -type f -exec chmod 0640 {} \;'
+      when: __composer_json.stat.exists
 
 - name: 'Update environment Apache configuration file'
   ansible.builtin.template:
