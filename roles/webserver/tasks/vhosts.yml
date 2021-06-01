@@ -41,6 +41,7 @@
   loop_control:
     label: '{{ item.key }}'
   notify: 'Reload Apache'
+  no_log: true
 
 - name: 'Ensure Apache virtual hosts are active'
   ansible.builtin.command: 'a2ensite {{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'

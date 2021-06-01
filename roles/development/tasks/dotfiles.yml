@@ -21,7 +21,8 @@
       ansible.builtin.git:
         dest: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox'
         repo: 'git@github.com:damiendart/toolbox.git'
-        update: no
+        update: false
+        version: 'master'
 
     - name: 'Ensure the "toolbox" install script runs successfully'
       ansible.builtin.command: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox/install'

@@ -21,6 +21,7 @@
     state: 'present'
     update_password: 'on_create'
   register: __user
+  no_log: true
 
 - name: 'Prompt user to check SSH-public-key-related bits-and-pieces'
   block:

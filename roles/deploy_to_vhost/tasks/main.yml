@@ -34,6 +34,9 @@
 
 - name: 'Ensure a deployment lock file exists'
   ansible.builtin.file:
+    group: '{{ deploy_to_vhost__administrator_username }}'
+    mode: 0640
+    owner: '{{ deploy_to_vhost__administrator_username }}'
     path: '{{ __vhost_base_directory }}/deploy.lock'
     state: 'touch'
 
@@ -233,6 +236,7 @@
         (__release_metadata.release_timestamp | string not in __smoketest_response.x_release_timestamp)
       delegate_to: 'localhost'
       run_once: true
+      no_log: true
   rescue:
     # This pretty-prints any errors from the block above.
     - name: 'Pretty-print any smoketest-related errors'

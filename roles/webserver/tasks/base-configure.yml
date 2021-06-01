@@ -129,3 +129,4 @@
     path: '/etc/apache2/node-exporter.htpasswd'
   when: webserver__status_path_node_exporter is defined
   notify: 'Reload Apache'
+  no_log: true
