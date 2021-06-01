@@ -2,7 +2,7 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
-ansible==2.10.4
+ansible==2.10.7
 ansible-lint==4.3.7
 docker-compose==1.29.0
 flake8==3.8.4
