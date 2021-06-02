@@ -10,8 +10,13 @@ output: 'prefixed'
 tasks:
   default:
     deps:
+      - task: 'ci'
+
+  ci:
+    cmds:
       - task: 'dependencies'
       - task: 'lint'
+    desc: 'Run all CI-related tasks'
 
   dependencies:
     cmds:
