@@ -26,8 +26,5 @@ jobs:
       - name: 'Install Task'
         run: 'curl -sL https://taskfile.dev/install.sh | sh'
 
-      - name: 'Install project dependencies'
-        run: './bin/task dependencies'
-
-      - name: 'Run all linting-related tasks'
-        run: './bin/task lint'
+      - name: 'Install project dependencies and run all linting-related tasks'
+        run: './bin/task'

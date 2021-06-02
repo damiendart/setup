@@ -10,6 +10,7 @@ output: 'prefixed'
 tasks:
   default:
     deps:
+      - task: 'dependencies'
       - task: 'lint'
 
   dependencies:
