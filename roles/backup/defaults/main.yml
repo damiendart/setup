@@ -6,11 +6,11 @@
 # The following required role variables do not have default values and
 # must be defined in an inventory, playbook, or at runtime:
 
-# tarsnap__folders_to_backup:
+# backup__directories_to_backup:
 #   - '/etc/example'
 #   - '/var/example'
 
 # For more information on reduced-permission Tarsnap keys, please see
 # <https://www.tarsnap.com/tips.html#write-only-keys>.
-# tarsnap__write_only_key: |
+# backup__tarsnap_write_only_key: |
 #   BIG ASS WRITE-ONLY KEY

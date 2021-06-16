@@ -28,7 +28,7 @@
 # information, see <https://www.tarsnap.com/tips.html#write-only-keys>.
 - name: 'Ensure a write-only Tarsnap key is present'
   ansible.builtin.copy:
-    content: '{{ tarsnap__write_only_key }}'
+    content: '{{ backup__tarsnap_write_only_key }}'
     dest: '/root/tarsnap.key'
     group: 'root'
     mode: 0600
