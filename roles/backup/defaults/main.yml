@@ -1,0 +1,16 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# The following required role variables do not have default values and
+# must be defined in an inventory, playbook, or at runtime:
+
+# tarsnap__folders_to_backup:
+#   - '/etc/example'
+#   - '/var/example'
+
+# For more information on reduced-permission Tarsnap keys, please see
+# <https://www.tarsnap.com/tips.html#write-only-keys>.
+# tarsnap__write_only_key: |
+#   BIG ASS WRITE-ONLY KEY

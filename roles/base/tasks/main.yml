@@ -1,4 +1,4 @@
-# This role installs and configures the base environment.
+# This role installs and configures the base Ubuntu environment.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -12,7 +12,7 @@
 - name: 'Ensure an non-root administrator user account exists'
   ansible.builtin.user:
     append: true
-    generate_ssh_key: '{{ base__administrator_has_ssh_key | default(false) }}'
+    generate_ssh_key: '{{ base__administrator_has_ssh_key }}'
     groups:
       - 'sudo'
     name: '{{ base__administrator_username }}'

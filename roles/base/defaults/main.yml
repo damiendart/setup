@@ -4,3 +4,24 @@
 
 ---
 base__administrator_ssh_key_type: 'ed25519'
+
+# If set to true, this role will ensure that the administrator user has
+# a SSH key, generating one if required. If set to false, no new SSH
+# keys will be generated and any existing keys will remain unaffected.
+base__administrator_has_ssh_key: false
+
+# ----------------------------------------------------------------------
+# The following required role variables do not have default values and
+# must be defined in an inventory, playbook, or at runtime:
+
+# base__administrator_email: 'example@example.com'
+# base__administrator_password: 'hunter2'
+# base__administrator_username: 'damiendart'
+
+# A URL (e.g. https://github.com/username.keys) will also work here.
+# # base__authorised_keys: |
+#   ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+# base__mta_hostname: 'smtp.example.com'
+# base__mta_password: 'hunter2'
+# base__mta_username: 'damiendart'

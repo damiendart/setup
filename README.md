@@ -61,17 +61,23 @@ _.ansible-lint_, _.editorconfig_, _Taskfile.yml_, and _.yamllint_.
 
 For things that the above doesn't cover, the aim is to adhere to the
 [Ansible Best Practices guide][6] and the [WhiteCloud Ansible
-style guide][7] with the following amendments:
+style guide][7] with the following additions:
 
-  - Files should start, where appropriate, with
+  - Files should start, where appropriate, with:
     - a comment that includes a sentence explaining the file's purpose,
       any additional information, and the file's licence; and
     - a blank line, followed by `---`.
   - Variable names should be prefixed with:
-    - `{{ ROLENAME }}__` if the variable is defined and used in an role,
-    - `cli__` if the variable is meant to be set through the
-      command-line interface, or
-    - `__` if the variable is not meant to be overridden elsewhere.
+    - `{{ ROLE_NAME }}__` if the variable is defined in an role,
+    - `cli__` if the variable is defined in a playbook and should be
+      set through the command-line interface, or
+    - `__` if the variable is a registered during a play and is not
+      meant to be defined anywhere else.
+
+Using poor-man's variable namespacing makes it easier to search for
+role variables (as an example, running `rg -Io "webserver__[a-zA-Z_]*"
+roles/webserver | sort | uniq` will list all variables in the
+"webserver" role that can be overriden).
 
 [6]: <https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html>
 [7]: <https://github.com/whitecloud/ansible-styleguide>
