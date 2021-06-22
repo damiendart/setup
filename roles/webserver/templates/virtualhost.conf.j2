@@ -16,7 +16,7 @@
   CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
   {% if item.key == webserver__server_name %}
-    <Location "/{{ webserver__status_path_apache }}">
+    <Location "/server-status">
       <If "-R '127.0.0.1/8'">
         Require local
         SetHandler server-status
@@ -26,17 +26,7 @@
       </Else>
     </Location>
 
-    <LocationMatch "/({{ webserver__ping_path_php_fpm }}|{{ webserver__status_path_php_fpm }})">
-      <If "-R '127.0.0.1/8'">
-        Require local
-        SetHandler "proxy:unix:/run/php/php{{ webserver__php_version }}-fpm.sock|fcgi://localhost"
-      </If>
-      <Else>
-        Redirect permanent "/" "https://{{ item.key }}/"
-      </Else>
-    </LocationMatch>
-
-    <LocationMatch "/(?!{{ webserver__ping_path_php_fpm }}|{{ webserver__status_path_apache }}|{{ webserver__status_path_php_fpm }})">
+    <LocationMatch "/(?!server-status)">
       Redirect permanent "/" "https://{{ item.key }}/"
     </LocationMatch>
   {% else %}

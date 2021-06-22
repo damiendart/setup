@@ -10,5 +10,6 @@
 
 - name: 'Reload PHP-FPM'
   ansible.builtin.service:
-    name: 'php{{ webserver__php_version }}-fpm'
+    name: 'php{{ item }}-fpm'
     state: 'reloaded'
+  loop: '{{ webserver__php_versions }}'

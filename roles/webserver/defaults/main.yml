@@ -7,7 +7,23 @@ webserver__add_vhosts_to_etc_hosts: false
 webserver__composer_version: '2.0.13'
 webserver__composer_sha256: '116fdf07cc926af646635a6abc92d88aff7b02a5dc36538f81c50a7d27366dbf'
 webserver__install_xdebug: false
-webserver__php_version: '7.4'
+webserver__php_default_packages:
+  - 'cli'
+  - 'common'
+  - 'curl'
+  - 'fpm'
+  - 'gd'
+  - 'json'
+  - 'mbstring'
+  - 'opcache'
+  - 'readline'
+  - 'xml'
+  - 'zip'
+webserver__php_default_version: &php_default_version '7.4'
+webserver__php_packages_extra: []
+webserver__php_versions:
+  - *php_default_version
+
 # The following default PHP-FPM dynamic settings are tailored towards
 # use on the smallest available DigitalOcean droplet. For more
 # information on tweaking PHP-FPM's dynamic settings, see:
@@ -18,4 +34,5 @@ webserver__php_fpm_max_children: 12
 webserver__php_fpm_start_servers: 6
 webserver__php_fpm_min_spare_servers: 6
 webserver__php_fpm_max_spare_servers: 10
+
 webserver__static_caching: true

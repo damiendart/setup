@@ -10,15 +10,16 @@
   - name: 'Ensure Xdebug is installed'
     ansible.builtin.apt:
       force_apt_get: true
-      name: 'php{{ webserver__php_version }}-xdebug'
+      name: "{{ webserver__php_versions | map('regex_replace', '^(.*)$', 'php\\1-xdebug') }}"
       state: 'present'
 
   - name: 'Ensure custom Xdebug configuration file for PHP-FPM exists'
     ansible.builtin.template:
-      dest: '/etc/php/{{ webserver__php_version }}/fpm/conf.d/99-xdebug.ini'
+      dest: '/etc/php/{{ item }}/fpm/conf.d/99-xdebug.ini'
       group: 'root'
       mode: 0644
       owner: 'root'
       src: '99-xdebug.ini.j2'
+    loop: '{{ webserver__php_versions }}'
     notify: 'Reload PHP-FPM'
   when: webserver__install_xdebug
