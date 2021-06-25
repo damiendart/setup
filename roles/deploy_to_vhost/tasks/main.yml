@@ -183,6 +183,7 @@
         method: 'POST'
         status_code: 201
         url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/'
+      changed_when: true
 
     - name: 'Make Sentry aware of deployment'
       ansible.builtin.uri:
@@ -196,6 +197,7 @@
         method: 'POST'
         status_code: 201
         url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/{{ __release_metadata.release_timestamp }}/deploys/'
+      changed_when: true
   when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
   delegate_to: 'localhost'
   run_once: true
