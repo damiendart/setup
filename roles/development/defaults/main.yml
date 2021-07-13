@@ -5,14 +5,7 @@
 ---
 development__fzf_version: '0.27.0'
 development__go_version: '1.16.6'
-development__iosevka_archive_filename: '01-iosevka-3.0.0-alpha.2.zip'
-development__iosevka_archive_excludes:
-  - 'iosevka-regular.charmap'
-  - 'ttf-unhinted/*'
-  - 'webfont.css'
-  - 'woff/*'
-  - 'woff2/*'
-development__iosevka_version: 'v3.0.0-alpha.2'
+development__iosevka_version: '7.2.8'
 development__node_major_version: '14'
 development__packer_version: '1.7.3'
 development__projects_folder: 'Shed'

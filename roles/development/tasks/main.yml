@@ -101,17 +101,21 @@
         group: '{{ development__user_username }}'
         mode: 0700
         owner: '{{ development__user_username }}'
-        path: '/home/{{ development__user_username }}/.fonts/iosevka'
+        path: '/home/{{ development__user_username }}/.fonts'
         state: 'directory'
 
-    - name: 'Ensure the Iosevka font files are installed'
+    - name: 'Ensure any old Iosevka TTF files are removed'
+      ansible.builtin.file:
+        path: '/home/{{ development__user_username }}/.fonts/iosevka'
+        state: 'absent'
+
+    - name: 'Ensure the Iosevka Super TTC file is installed'
       ansible.builtin.unarchive:
-        dest: '/home/{{ administrator_username }}/.fonts/iosevka'
-        exclude: '{{ development__iosevka_archive_excludes }}'
+        dest: '/home/{{ administrator_username }}/.fonts'
         group: '{{ development__user_username }}'
         owner: '{{ development__user_username }}'
         remote_src: true
-        src: 'https://github.com/be5invis/Iosevka/releases/download/{{ development__iosevka_version }}/{{ development__iosevka_archive_filename }}'
+        src: 'https://github.com/be5invis/Iosevka/releases/download/v{{ development__iosevka_version }}/super-ttc-iosevka-{{ development__iosevka_version }}.zip'
   when: development__run_gui_tasks | bool
 
 - include: 'dotfiles.yml'
