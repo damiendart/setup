@@ -28,6 +28,7 @@
     - 'base'
     - 'development'
     - 'docker'
+    - 'tailscale'
     - role: 'webserver'
       vars:
         webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'
