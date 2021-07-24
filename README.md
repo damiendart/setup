@@ -30,7 +30,7 @@ _setup_ on a fresh install of Ubuntu 18.04 or 20.04:
      the current interactive shell session.
   6) Create a new Python virtual environment (`mkvirtualenv setup`).
      Once the new environment has been created it should be activated
-     automatically (otherwise, use the `workon` command to activate it).
+     automatically (if not, use the `workon` command to activate it).
   7) `cd` into the _setup_ directory and install Ansible and other
      Python dependencies with `python3 -m pip install -r
      requirements.txt`.
