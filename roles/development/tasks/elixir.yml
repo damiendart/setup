@@ -1,0 +1,22 @@
+# The following tasks install Erlang and Elixir.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the Erlang Solutions package signing key is present for APT'
+  ansible.builtin.apt_key:
+    state: 'present'
+    url: 'https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc'
+
+- name: 'Ensure Erlang Solutions repository is present in APT sources list'
+  ansible.builtin.apt_repository:
+    repo: 'deb https://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib'
+    state: 'present'
+
+- name: 'Ensure Elixir-related packages are installed'
+  ansible.builtin.apt:
+    force_apt_get: true
+    name: 'elixir'
+    state: 'present'
