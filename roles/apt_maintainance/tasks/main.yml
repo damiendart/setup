@@ -60,6 +60,4 @@
     - name: 'Ensure out-of-date and unused APT packages are removed'
       ansible.builtin.apt:
         autoremove: true
-      args:
-        warn: false
   when: __removals.0 is defined
