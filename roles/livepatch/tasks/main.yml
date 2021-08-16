@@ -10,15 +10,13 @@
     name: 'canonical-livepatch'
     state: 'present'
 
-- name: 'Check Canonical Livepatch status'
+- name: 'Get Canonical Livepatch status'
   ansible.builtin.command: 'canonical-livepatch status --verbose'
   changed_when: false
   ignore_errors: true
   register: __livepatch_status
 
-- name: 'Enable Canonical Livepatch'
+- name: 'Ensure Canonical Livepatch is enabled'
   ansible.builtin.command: 'canonical-livepatch enable {{ livepatch__key }}'
-  when: >
-    __livepatch_status is defined
-    and __livepatch_status.stdout is defined
-    and 'Machine is not enabled.' in __livepatch_status.stdout
+  no_log: true
+  when: "'Machine is not enabled.' in __livepatch_status.stdout"
