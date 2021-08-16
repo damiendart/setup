@@ -11,7 +11,7 @@ on:
       - 'master'
 
 jobs:
-  lint-yaml:
+  lint:
     name: 'Lint project'
     runs-on: 'ubuntu-20.04'
     steps:
