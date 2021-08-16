@@ -30,3 +30,15 @@
     enabled: true
     name: 'tailscaled'
     state: 'started'
+
+- name: 'Get Tailscale connection status'
+  ansible.builtin.command: 'tailscale status'
+  register: __tailscale_status
+  changed_when: false
+  ignore_errors: true
+
+- name: 'Ensure the host is logged in to Tailscale'
+  ansible.builtin.command: 'tailscale up --authkey={{ tailscale__auth_key }}'
+  no_log: true
+  notify: 'Notify user to check host Tailscale connection status'
+  when: tailscale__auth_key is defined and 'Logged out.' in __tailscale_status.stdout
