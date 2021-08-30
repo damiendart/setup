@@ -3,14 +3,14 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-development__fzf_version: '0.27.0'
-development__go_version: '1.16.6'
-development__iosevka_version: '10.0.0'
+development__fzf_version: '0.27.2'
+development__go_version: '1.17'
+development__iosevka_version: '10.1.1'
 development__node_major_version: '14'
-development__packer_version: '1.7.3'
+development__packer_version: '1.7.4'
 development__projects_folder: 'Shed'
 development__ripgrep_version: '13.0.0'
 development__shellcheck_version: '0.7.2'
-development__task_version: '3.6.0'
-development__terraform_version: '1.0.2'
+development__task_version: '3.7.0'
+development__terraform_version: '1.0.5'
 development__virtualbox_version: '6.1'
