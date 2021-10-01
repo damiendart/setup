@@ -117,6 +117,24 @@
         owner: '{{ development__user_username }}'
         remote_src: true
         src: 'https://github.com/be5invis/Iosevka/releases/download/v{{ development__iosevka_version }}/super-ttc-iosevka-{{ development__iosevka_version }}.zip'
+
+    - name: 'Ensure Obsidian is installed'
+      ansible.builtin.apt:
+        deb: 'https://github.com/obsidianmd/obsidian-releases/releases/download/v{{ development__obsidian_version }}/obsidian_{{ development__obsidian_version }}_amd64.deb'
+        state: 'present'
+
+    # The following task accounts for a bug where Obsidian's Debian
+    # package for v0.12.15 creates an incorrect symbolic link in
+    # "/usr/bin". For more information, please see
+    # <https://forum.obsidian.md/t/24227>.
+    - name: "Ensure an symbolic link to Obsidian exists in \"/usr/bin\""
+      ansible.builtin.file:
+        dest: '/usr/bin/obsidian'
+        group: 'root'
+        owner: 'root'
+        src: '/opt/Obsidian/obsidian'
+        state: 'link'
+
   when: development__run_gui_tasks | bool
 
 - include: 'dotfiles.yml'
