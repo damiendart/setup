@@ -1,0 +1,33 @@
+# This role installs Syncthing.
+#
+# For more information on Syncthing, see <https://syncthing.net/>.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the Syncthing package signing key is present for APT'
+  ansible.builtin.apt_key:
+    state: 'present'
+    url: 'https://syncthing.net/release-key.gpg'
+
+- name: 'Ensure the Syncthing repository is present in APT sources list'
+  ansible.builtin.apt_repository:
+    repo: 'deb https://apt.syncthing.net/ syncthing stable'
+    state: 'present'
+
+- name: 'Ensure Syncthing is installed'
+  ansible.builtin.apt:
+    force_apt_get: true
+    name: 'syncthing'
+    state: 'present'
+
+- name: 'Ensure Syncthing is running and set to start on user login'
+  ansible.builtin.systemd:
+    enabled: true
+    name: 'syncthing'
+    scope: 'user'
+    state: 'started'
+  become: true
+  become_user: '{{ syncthing__user_username }}'

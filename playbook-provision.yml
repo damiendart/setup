@@ -28,6 +28,7 @@
     - 'base'
     - 'development'
     - 'docker'
+    - 'syncthing'
     - 'tailscale'
     - role: 'webserver'
       vars:
