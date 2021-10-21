@@ -142,4 +142,4 @@
 - include: 'open-vm-tools.yml'
 - include: 'rust.yml'
 - include: 'go.yml'
-- include: 'elixir.yml'
+- include: 'erlang-and-elixir.yml'
