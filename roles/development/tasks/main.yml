@@ -49,6 +49,7 @@
       - 'COPYING'
       - 'doc'
       - 'LICENSE*'
+      - 'share'
       - 'UNLICENSE'
     extra_opts: '{{ item.extra_opts | default([]) }}'
     group: 'root'
@@ -61,6 +62,9 @@
       extra_opts:
         - '--strip-components=1'
     - src: 'https://github.com/go-task/task/releases/download/v{{ development__task_version }}/task_linux_amd64.tar.gz'
+    - src: 'https://github.com/jgm/pandoc/releases/download/{{ development__pandoc_version }}/pandoc-{{ development__pandoc_version }}-linux-amd64.tar.gz'
+      extra_opts:
+        - '--strip-components=2'
     - src: 'https://github.com/junegunn/fzf/releases/download/{{ development__fzf_version }}/fzf-{{ development__fzf_version }}-linux_amd64.tar.gz'
     - src: 'https://github.com/koalaman/shellcheck/releases/download/v{{ development__shellcheck_version }}/shellcheck-v{{ development__shellcheck_version }}.linux.x86_64.tar.xz' # noqa 204
       extra_opts:
