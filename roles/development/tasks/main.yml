@@ -139,6 +139,10 @@
         src: '/opt/Obsidian/obsidian'
         state: 'link'
 
+    - name: 'Ensure "xsel" is installed'
+      ansible.builtin.apt:
+        name: 'xsel'
+        state: 'present'
   when: development__run_gui_tasks | bool
 
 - include: 'dotfiles.yml'
