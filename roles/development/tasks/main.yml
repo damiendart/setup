@@ -131,7 +131,7 @@
     # package for v0.12.15 creates an incorrect symbolic link in
     # "/usr/bin". For more information, please see
     # <https://forum.obsidian.md/t/24227>.
-    - name: "Ensure an symbolic link to Obsidian exists in \"/usr/bin\""
+    - name: 'Ensure an symbolic link to Obsidian exists in "/usr/bin"'
       ansible.builtin.file:
         dest: '/usr/bin/obsidian'
         group: 'root'
