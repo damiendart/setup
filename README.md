@@ -1,10 +1,12 @@
 setup
 =====
 
-A mess of [Ansible][1] stuff that I use to provision and maintain a
-bunch of Ubuntu 18.04 and 20.04 installations, including personal
-development environments and a couple of servers where I host a few
-small websites.
+Stuff that I use to provision and maintain a bunch of machines and
+things for personal use, including development environments and a
+couple of servers where I host a few small websites.
+
+This project mainly consists of [Ansible][1] playbooks and roles, but
+there's also some TestInfra and Packer bits-and-pieces laying around.
 
 [1]: <https://docs.ansible.com/ansible/latest/index.html>
 

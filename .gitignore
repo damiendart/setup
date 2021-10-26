@@ -1,2 +1,4 @@
 __pycache__
 ansible.cfg
+packer_cache
+packer/output-*
