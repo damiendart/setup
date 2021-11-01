@@ -26,6 +26,7 @@ tasks:
   lint:
     cmds:
       - task: 'lint:ansible'
+      - task: 'lint:packer'
       - task: 'lint:python'
       - task: 'lint:shell'
       - task: 'lint:yaml'
@@ -37,6 +38,11 @@ tasks:
       - 'ansible-lint -p --nocolor playbook-package-maintainance.yml'
       - 'ansible-lint -p --nocolor playbook-provision.yml'
     desc: 'Lint Ansible-related files with Ansible Lint'
+
+  lint:packer:
+    cmds:
+      - 'packer validate packer/*.hcl'
+    desc: 'Lint Packer templates with Packer'
 
   lint:python:
     cmds:
