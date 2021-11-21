@@ -121,6 +121,7 @@
       community.general.composer:
         classmap_authoritative: true
         command: 'install'
+        executable: '/usr/bin/php{{ __release_metadata.php_version }}'
         working_dir: '{{ __release_base_directory }}'
       become: false
       changed_when: true

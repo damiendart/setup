@@ -14,6 +14,14 @@
   delegate_to: 'localhost'
   run_once: true
 
+- name: 'Check PHP version required for release is supported by host'
+  block:
+    - name: 'Check PHP version required for release is supported by host'
+      ansible.builtin.assert:
+        that:
+          - __release_metadata.php_version in deploy_to_vhost__php_versions
+  when: __release_metadata.php_version is defined
+
 - name: 'Check release timestamp is a non-empty string'
   ansible.builtin.assert:
     that:
