@@ -43,8 +43,10 @@
   ansible.builtin.unarchive:
     dest: '/usr/local/bin'
     exclude:
+      - '*.1'
       - '*.txt'
       - '*.md'
+      - 'autocomplete'
       - 'complete'
       - 'COPYING'
       - 'doc'
@@ -70,6 +72,10 @@
       extra_opts:
         - '--transform'
         - 's/^shellcheck-v{{ development__shellcheck_version }}\///'
+    - src: 'https://github.com/sharkdp/bat/releases/download/v0.18.3/bat-v0.18.3-x86_64-unknown-linux-gnu.tar.gz'
+      extra_opts:
+        - '--transform'
+        - 's/^bat-v0.18.3-x86_64-unknown-linux-gnu\///'
     - src: 'https://releases.hashicorp.com/packer/{{ development__packer_version }}/packer_{{ development__packer_version }}_linux_amd64.zip'
     - src: 'https://releases.hashicorp.com/terraform/{{ development__terraform_version }}/terraform_{{ development__terraform_version }}_linux_amd64.zip'
     - src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
