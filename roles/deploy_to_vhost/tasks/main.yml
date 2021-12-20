@@ -210,6 +210,21 @@
   tags:
     - 'smoketest'
   block:
+    - name: 'Check release is live'
+      ansible.builtin.uri:
+        http_agent: 'deploy-to-vhost-smoke-test'
+        url: 'https://{{ deploy_to_vhost__site_domain }}/'
+        url_password: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.password | default("") }}'
+        url_username: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.username | default("") }}'
+        validate_certs: false
+      register: __smoketest_response
+      failed_when: >
+        (__smoketest_response.x_release_timestamp is not defined) or
+        (__release_metadata.release_timestamp | string not in __smoketest_response.x_release_timestamp)
+      delegate_to: 'localhost'
+      run_once: true
+      no_log: true
+
     - name: 'Check release is running on host'
       ansible.builtin.command:
         # The "--resolve" option allows "/etc/hosts"-type functionality
@@ -226,21 +241,6 @@
       register: __smoketest_response
       changed_when: false
       loop: "{{ [ 'https://{{ deploy_to_vhost__site_domain }}' ] + deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].additional_smoketest_urls | default([]) }}"
-
-    - name: 'Check release is live'
-      ansible.builtin.uri:
-        http_agent: 'deploy-to-vhost-smoke-test'
-        url: 'https://{{ deploy_to_vhost__site_domain }}/'
-        url_password: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.password | default("") }}'
-        url_username: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.username | default("") }}'
-        validate_certs: false
-      register: __smoketest_response
-      failed_when: >
-        (__smoketest_response.x_release_timestamp is not defined) or
-        (__release_metadata.release_timestamp | string not in __smoketest_response.x_release_timestamp)
-      delegate_to: 'localhost'
-      run_once: true
-      no_log: true
   rescue:
     - name: 'Pretty-print any smoke-test-related errors'
       ansible.builtin.debug:
