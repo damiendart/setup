@@ -221,10 +221,11 @@
           --insecure
           --resolve '{{ deploy_to_vhost__site_domain }}:443:127.0.0.1'
           --user-agent 'deploy-to-vhost-smoke-test'
-          'https://{{ deploy_to_vhost__site_domain }}'
+          '{{ item }}'
         warn: false
       register: __smoketest_response
       changed_when: false
+      loop: "{{ [ 'https://{{ deploy_to_vhost__site_domain }}' ] + deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].additional_smoketest_urls | default([]) }}"
 
     - name: 'Check release is live'
       ansible.builtin.uri:
