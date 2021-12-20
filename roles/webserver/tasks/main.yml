@@ -23,7 +23,7 @@
     #     status from the command line. For more information, see
     #     <https://maxchadwick.xyz/blog/getting-the-php-fpm-status-from-the-command-line>.
     #   - As of PHP 8.0.0, the JSON extension is a core PHP extension
-    #     so a "php8.0-json" package doesn't exist.
+    #     and doesn't require installing a separate package.
     name: >
       {{
         ['apache2', 'imagemagick', 'libfcgi0ldbl', 'goaccess']
@@ -31,7 +31,7 @@
           | product(webserver__php_default_packages + webserver__php_packages_extra)
           | map('join', '-')
           | map('regex_replace', '^', 'php')
-          | reject('match', 'php8.0-json')
+          | reject('match', 'php8..-json')
       }}
     state: 'present'
 
