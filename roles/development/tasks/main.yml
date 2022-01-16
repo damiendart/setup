@@ -5,22 +5,11 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the NodeSource package signing key is present for APT'
-  ansible.builtin.apt_key:
-    state: 'present'
-    url: 'https://deb.nodesource.com/gpgkey/nodesource.gpg.key'
-
-- name: 'Ensure NodeSource repository is present in APT sources list'
-  ansible.builtin.apt_repository:
-    repo: 'deb https://deb.nodesource.com/node_{{ development__node_major_version }}.x {{ ansible_distribution_release }} main'
-    state: 'present'
-
 - name: 'Ensure development-related packages are installed'
   ansible.builtin.apt:
     force_apt_get: true
     name:
       - 'build-essential'
-      - 'nodejs'
       - 'python3-pip'
       - 'tig'
       - 'tmux'
@@ -157,3 +146,4 @@
 - include: 'rust.yml'
 - include: 'go.yml'
 - include: 'erlang-and-elixir.yml'
+- include: 'node.yml'
