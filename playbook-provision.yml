@@ -18,9 +18,7 @@
     - 'letsencrypt'
     - 'livepatch'
     - 'monitoring'
-    - role: 'webserver'
-      vars:
-        webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'
+    - 'webserver'
 
 - hosts: 'development'
   become: true
@@ -30,6 +28,4 @@
     - 'docker'
     - 'syncthing'
     - 'tailscale'
-    - role: 'webserver'
-      vars:
-        webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'
+    - 'webserver'
