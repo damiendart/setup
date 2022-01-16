@@ -1,22 +1,22 @@
-# This role installs and configures Canonical Livepatch.
+# This role installs and configures Ubuntu Livepatch.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure Canonical Livepatch is installed'
-  community.general.snap:
-    name: 'canonical-livepatch'
-    state: 'present'
-
-- name: 'Get Canonical Livepatch status'
+- name: 'Get Ubuntu Livepatch status'
   ansible.builtin.command: 'canonical-livepatch status --verbose'
   changed_when: false
   ignore_errors: true
   register: __livepatch_status
 
-- name: 'Ensure Canonical Livepatch is enabled'
-  ansible.builtin.command: 'canonical-livepatch enable {{ livepatch__key }}'
-  no_log: true
+- name: 'Ensure Ubuntu Livepatch is enabled'
+  block:
+    - name: 'Ensure Ubuntu Advantage subscription is active'
+      ansible.builtin.command: 'ua attach {{ livepatch__ubuntu_advantage_key }}'
+      no_log: true
+
+    - name: 'Ensure Ubuntu Livepatch is enabled'
+      ansible.builtin.command: 'ua enable livepatch'
   when: "'Machine is not enabled.' in __livepatch_status.stdout"
