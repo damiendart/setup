@@ -37,3 +37,9 @@
         remote_src: true
         src: 'https://golang.org/dl/go{{ development__go_version }}.linux-amd64.tar.gz'
   when: development__go_version not in __go_version
+
+- name: 'Ensure Go-related tools are installed'
+  ansible.builtin.command: '/usr/local/go/bin/go install {{ item }}'
+  become: true
+  become_user: '{{ development__user_username }}'
+  loop: '{{ development__go_installable_packages }}'

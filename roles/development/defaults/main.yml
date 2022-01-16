@@ -5,6 +5,9 @@
 ---
 development__fzf_version: '0.27.2'
 development__go_version: '1.17'
+development__go_installable_packages:
+  - 'golang.org/x/lint/golint@latest'
+  - 'honnef.co/go/tools/cmd/staticcheck@latest'
 development__iosevka_version: '10.1.1'
 development__node_version: '16.13.2'
 development__obsidian_version: '0.12.15'
