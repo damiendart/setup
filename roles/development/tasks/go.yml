@@ -1,4 +1,11 @@
-# The following tasks install Go.
+# The following tasks install Go via binary archive.
+#
+#   - If Go has been previously installed using a different method (e.g.
+#     a package manager), the following tasks will not delete that
+#     version and will need to be removed manually.
+#   - The following tasks will install Go in "/usr/local/go". You may
+#     need to update your PATH environment variable to include
+#     "/usr/local/go/bin" after running these tasks.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -17,7 +24,7 @@
 
 - name: 'Ensure Go is installed'
   block:
-    - name: 'Ensure any existing installations of Go are removed'
+    - name: 'Ensure existing Go installation is removed'
       ansible.builtin.file:
         path: '/usr/local/go'
         state: 'absent'

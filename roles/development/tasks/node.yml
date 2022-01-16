@@ -1,17 +1,24 @@
 # The following tasks install Node via binary archive.
 #
+#   - If Node has been previously installed using a different method
+#     (e.g. a package manager), the following tasks will not delete that
+#     version and will need to be removed manually.
+#   - The following tasks will install Node in "/usr/local/node". You
+#     may need to update your PATH environment variable to include
+#     "/usr/local/node/bin" after running these tasks.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Get status of currently-installed Node'
+- name: 'Get status of existing Node installation'
   ansible.builtin.stat:
     path: '/usr/local/node/bin/node'
   changed_when: false
   register: __node_binary
 
-- name: 'Get version of currently-installed Node'
+- name: 'Get version of existing Node installation'
   ansible.builtin.command: '/usr/local/node/bin/node --version'
   changed_when: false
   failed_when: false
