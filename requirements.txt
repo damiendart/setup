@@ -3,7 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ansible==4.6.0
-ansible-lint==5.2.0
+ansible-lint==5.3.2
 docker-compose==1.29.2
 flake8==3.9.2
 passlib==1.7.4
