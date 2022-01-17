@@ -42,4 +42,8 @@
   ansible.builtin.command: '/usr/local/go/bin/go install {{ item }}'
   become: true
   become_user: '{{ development__user_username }}'
+  # There currently isn't a nice way of determining if "go install"
+  # has changed anything; the redundant "changed_when" conditional is
+  # there to appease Ansible Lint.
+  changed_when: true
   loop: '{{ development__go_installable_packages }}'
