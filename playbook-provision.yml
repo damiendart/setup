@@ -19,6 +19,8 @@
     - 'livepatch'
     - 'monitoring'
     - 'webserver'
+  vars:
+    webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'
 
 - hosts: 'development'
   become: true
@@ -29,3 +31,5 @@
     - 'syncthing'
     - 'tailscale'
     - 'webserver'
+  vars:
+    webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'
