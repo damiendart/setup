@@ -12,12 +12,12 @@
 - name: 'Ensure an non-root administrator user account exists'
   ansible.builtin.user:
     append: true
-    generate_ssh_key: '{{ base__administrator_has_ssh_key }}'
+    generate_ssh_key: '{{ base__administrator_account_ssh_key }}'
     groups:
       - 'sudo'
-    name: '{{ base__administrator_username }}'
-    password: '{{ base__administrator_password | password_hash("sha512") }}'
-    ssh_key_type: '{{ base__administrator_ssh_key_type }}'
+    name: '{{ base__administrator_account_username }}'
+    password: '{{ base__administrator_account_password | password_hash("sha512") }}'
+    ssh_key_type: '{{ base__administrator_account_ssh_key_type }}'
     state: 'present'
     update_password: 'on_create'
   register: __user
@@ -42,8 +42,8 @@
 - name: 'Ensure non-root administrator user has authorised SSH keys'
   ansible.builtin.authorized_key:
     exclusive: true
-    user: '{{ base__administrator_username }}'
-    key: '{{ base__authorised_keys }}'
+    user: '{{ base__administrator_account_username }}'
+    key: '{{ base__administrator_account_authorised_keys }}'
     state: 'present'
 
 - name: 'Ensure base software is installed'
@@ -99,8 +99,8 @@
     - 'msmtprc'
     - 'msmtp.aliases'
 
-- name: 'Ensure cron "MAILTO" variable is set to the administrator email address'
+- name: "Ensure cron \"MAILTO\" variable is set to the non-root administrator's email address"
   ansible.builtin.cron:
     env: true
-    job: '{{ base__administrator_email }}'
+    job: '{{ base__administrator_account_email }}'
     name: 'MAILTO'

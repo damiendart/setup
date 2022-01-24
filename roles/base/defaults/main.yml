@@ -1,27 +1,41 @@
+# Default and requiried variables for the "base" role.
+#
+# Commented-out variables must be defined elsewhere (in an inventory,
+# playbook, or at runtime).
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-base__administrator_ssh_key_type: 'ed25519'
+# A boolean value that specifies whether the non-root administrator user
+# should have a SSH key, generating one if required. If set to false, no
+# new keys will be generated and existing keys will remain unaffected.
+base__administrator_account_ssh_key: false
 
-# If set to true, this role will ensure that the administrator user has
-# a SSH key, generating one if required. If set to false, no new SSH
-# keys will be generated and any existing keys will remain unaffected.
-base__administrator_has_ssh_key: false
+# A string that specifies the type of SSH key to generate.
+base__administrator_account_ssh_key_type: 'ed25519'
 
-# ----------------------------------------------------------------------
-# The following required role variables do not have default values and
-# must be defined in an inventory, playbook, or at runtime:
 
-# base__administrator_email: 'example@example.com'
-# base__administrator_password: 'hunter2'
-# base__administrator_username: 'damiendart'
+# A string containing the non-root administrator user's email address.
+# base__administrator_account_email: ''
 
-# A URL (e.g. https://github.com/username.keys) will also work here.
-# # base__authorised_keys: |
-#   ssh-ed25519 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+# A string containing the non-root administrator user's password.
+# base__administrator_account_password: ''
 
-# base__mta_hostname: 'smtp.example.com'
-# base__mta_password: 'hunter2'
-# base__mta_username: 'damiendart'
+# A string containing the non-root administrator user's username.
+# base__administrator_account_username: ''
+
+# A string containing a list of SSH public keys to be added to the
+# non-root administrator user's list of authorised keys. (A URL to a
+# list, e.g. <https://github.com/username.keys>, also works.)
+# base__administrator_account_authorised_keys: ''
+
+# A string containing the default SMTP server hostname for msmtp.
+# base__msmtp_default_hostname: ''
+
+# A string containing the default SMTP server user password for msmtp.
+# base__msmtp_default_password: ''
+
+# A string containing the default SMTP server user username for msmtp.
+# base__msmtp_default_username: ''

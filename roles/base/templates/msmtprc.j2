@@ -13,8 +13,8 @@ tls on
 tls_trust_file /etc/ssl/certs/ca-certificates.crt
 
 account default
-from {{ base__administrator_email }}
-host {{ base__mta_hostname }}
-password {{ base__mta_password }}
+from {{ base__administrator_account_email }}
+host {{ base__msmtp_default_hostname }}
+password {{ base__msmtp_default_password }}
 port 587
-user {{ base__mta_username }}
+user {{ base__msmtp_default_username }}
