@@ -10,7 +10,9 @@
     name: '{{ item }}'
     state: 'present'
   loop:
+    - 'brotli'
     - 'cgid'
+    - 'deflate'
     - 'expires'
     - 'headers'
     - 'http2'
@@ -60,12 +62,16 @@
   notify: 'Reload Apache'
 
 # Enabling "mod_status" brings along an unwanted configuration file
-# that's hard to override elsewhere, hence the nuclear option.
-- name: 'Ensure unwanted base "mod_status" Apache configuration file is removed'
+# that's hard to override elsewhere, while "mod_deflate" configuration
+# is handled elsewhere.
+- name: 'Ensure unwanted base Apache configuration files are disabled'
   ansible.builtin.file:
-    path: '/etc/apache2/mods-enabled/status.conf'
+    path: '/etc/apache2/mods-enabled/{{ item }}.conf'
     state: 'absent'
   notify: 'Reload Apache'
+  loop:
+    - 'status'
+    - 'deflate'
 
 - name: 'Ensure custom Apache configuration file exists'
   ansible.builtin.template:

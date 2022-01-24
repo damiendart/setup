@@ -62,3 +62,25 @@ Header always set X-XSS-Protection "1; mode=block"
   SSLStaplingCache "shmcb:${APACHE_RUN_DIR}/ssl_stapling(32768)"
   SSLUseStapling On
 </IfModule>
+
+<IfModule mod_brotli.c>
+  <IfModule mod_filter.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css
+    AddOutputFilterByType BROTLI_COMPRESS application/x-javascript application/javascript application/ecmascript text/javascript application/javascript application/json
+    AddOutputFilterByType BROTLI_COMPRESS application/rss+xml
+    AddOutputFilterByType BROTLI_COMPRESS application/xml
+    AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
+    AddOutputFilterByType BROTLI_COMPRESS application/x-font-ttf application/vnd.ms-fontobject image/x-icon
+  </IfModule>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  <IfModule mod_filter.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/x-javascript application/javascript application/ecmascript text/javascript application/javascript application/json
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE application/x-font-ttf application/vnd.ms-fontobject image/x-icon
+  </IfModule>
+</IfModule>
