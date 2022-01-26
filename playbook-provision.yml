@@ -10,6 +10,11 @@
     - 'docker'
     - 'kubernetes_playground'
 
+- hosts: 'playground'
+  become: true
+  roles:
+    - 'base'
+
 - hosts: 'production'
   become: true
   roles:

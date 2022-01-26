@@ -1,8 +1,35 @@
-# A Packer template to build a basic Ubuntu 20.04 VirtualBox VM.
+# A Packer template to build a test Ubuntu 20.04 VirtualBox VM.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
+
+variable "netplan_configuration" {
+  description = "A HCL-formatted netplan network configuration to apply to the virtual machine."
+  # The default netplan network configuration provided assumes that the
+  # virtual machine has two network adapters enabled: the default
+  # NAT-attached adapter and an adapter that is attached to a
+  # VirtualBox-managed host-only network with the DHCP server enabled
+  # (see <https://www.virtualbox.org/manual/ch06.html#network_hostonly>
+  # for more information).
+  default = {
+    ethernets = {
+      enp0s3 = {
+        dhcp4 = true
+      }
+      enp0s8 = {
+        dhcp4 = true
+      }
+    }
+    version = 2
+  }
+}
+
+variable "ssh_authorised_keys_file" {
+  type = string
+  description = "The filepath to an authorised SSH keys file to copy over to the virtual machine."
+  default = "${env("HOME")}/.ssh/authorized_keys"
+}
 
 source "virtualbox-iso" "ubuntu-server-virtualbox" {
   boot_command = [
@@ -28,7 +55,7 @@ source "virtualbox-iso" "ubuntu-server-virtualbox" {
               "systemctl stop ssh"
             ]
             identity = {
-              hostname = "ubuntu-test"
+              hostname = "playground-ubuntu"
               # Generated with "openssl passwd -6 -salt xyz ubuntu".
               password = "$6$xyz$lrzkz89JCrvzOPr56aXfFFqGZpBReOx5ndDu9m5CwVFWjZsEIhvVm.I5B4zMxJdcdTyAvncwjKT.dWcD/ZHIo."
               username = "ubuntu"
@@ -38,8 +65,10 @@ source "virtualbox-iso" "ubuntu-server-virtualbox" {
               variant = "uk"
             }
             locale = "en_GB.UTF-8"
+            network = var.netplan_configuration
             ssh = {
               allow-pw = true
+              authorized-keys: split("\n", file(var.ssh_authorised_keys_file))
               install-server = true
             }
             version: 1
