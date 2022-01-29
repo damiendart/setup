@@ -21,11 +21,9 @@
     name: 'tarsnap'
     state: 'present'
 
-# We use a key with reduced permissions to prevent any intruders from
-# deleting any existing archives, however they would still be able to
-# stop any future backups or add new archives with faulty data. A
-# write-only key can be created with "tarsnap-keymgmt". For more
-# information, see <https://www.tarsnap.com/tips.html#write-only-keys>.
+# Using a key with reduced permissions limits the damage intruders can
+# inflict on existing archives, however they would still be able to stop
+# future backups or add new archives with faulty data.
 - name: 'Ensure a write-only Tarsnap key is present'
   ansible.builtin.copy:
     content: '{{ backup__tarsnap_write_only_key }}'

@@ -1,16 +1,17 @@
+# Required variables for the "backup" role.
+#
+# Commented-out variables must be defined elsewhere (in an inventory,
+# playbook, or at runtime).
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-# The following required role variables do not have default values and
-# must be defined in an inventory, playbook, or at runtime:
+# A list of strings specifying the directories that Tarsnap will backup.
+# backup__directories_to_backup: []
 
-# backup__directories_to_backup:
-#   - '/etc/example'
-#   - '/var/example'
-
-# For more information on reduced-permission Tarsnap keys, please see
+# A string containing a write-only Tarsnap key. A write-only key can be
+# created with "tarsnap-keymgmt". For more information, please see
 # <https://www.tarsnap.com/tips.html#write-only-keys>.
-# backup__tarsnap_write_only_key: |
-#   BIG ASS WRITE-ONLY KEY
+# backup__tarsnap_write_only_key: ''
