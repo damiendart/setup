@@ -1,0 +1,14 @@
+# Requiried variables for the "livepatch" role.
+#
+# Commented-out variables must be defined elsewhere (in an inventory,
+# playbook, or at runtime).
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# A string containing the token for connecting an Ubuntu Advantage
+# support contract to the machine. For more information, please see
+# <https://ubuntu.com/advantage>.
+# livepatch__ubuntu_advantage_token: ''

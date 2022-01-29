@@ -1,4 +1,4 @@
-# This role installs and configures Ubuntu Livepatch.
+# This role installs and enables Ubuntu Advantage and Ubuntu Livepatch.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -14,7 +14,7 @@
 - name: 'Ensure Ubuntu Livepatch is enabled'
   block:
     - name: 'Ensure Ubuntu Advantage subscription is active'
-      ansible.builtin.command: 'ua attach {{ livepatch__ubuntu_advantage_key }}'
+      ansible.builtin.command: 'ua attach {{ livepatch__ubuntu_advantage_token }}'
       no_log: true
 
     - name: 'Ensure Ubuntu Livepatch is enabled'
