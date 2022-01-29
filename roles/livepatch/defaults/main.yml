@@ -1,4 +1,4 @@
-# Requiried variables for the "livepatch" role.
+# Required variables for the "livepatch" role.
 #
 # Commented-out variables must be defined elsewhere (in an inventory,
 # playbook, or at runtime).

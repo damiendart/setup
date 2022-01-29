@@ -1,4 +1,4 @@
-# Default and requiried variables for the "base" role.
+# Default and required variables for the "base" role.
 #
 # Commented-out variables must be defined elsewhere (in an inventory,
 # playbook, or at runtime).
