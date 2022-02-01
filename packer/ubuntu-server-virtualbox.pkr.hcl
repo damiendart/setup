@@ -68,7 +68,7 @@ source "virtualbox-iso" "ubuntu-server-virtualbox" {
             network = var.netplan_configuration
             ssh = {
               allow-pw = true
-              authorized-keys: split("\n", file(var.ssh_authorised_keys_file))
+              authorized-keys: fileexists(var.ssh_authorised_keys_file) ? split("\n", file(var.ssh_authorised_keys_file)) : [""]
               install-server = true
             }
             version: 1
