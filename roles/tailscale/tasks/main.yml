@@ -39,4 +39,4 @@
   ansible.builtin.command: 'tailscale up --authkey={{ tailscale__auth_key }}'
   no_log: true
   notify: 'Notify user to check host Tailscale connection status'
-  when: tailscale__auth_key is defined and 'Logged out.' in __tailscale_status.stdout
+  when: tailscale__auth_key is defined and ('Logged out' in __tailscale_status.stdout or 'NoState' in __tailscale_status.stdout)
