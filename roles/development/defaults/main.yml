@@ -4,7 +4,7 @@
 
 ---
 development__fzf_version: '0.27.2'
-development__go_version: '1.17'
+development__go_version: '1.18'
 development__go_installable_packages:
   - 'golang.org/x/lint/golint@latest'
   - 'honnef.co/go/tools/cmd/staticcheck@latest'
