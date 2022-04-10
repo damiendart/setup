@@ -14,7 +14,9 @@
       - 'tig'
       - 'tmux'
       - 'tree'
-      - 'vim'
+      # "vim-gtk3" includes features that may be useful when using a GUI
+      # (for example, copy-to-clipboard support).
+      - 'vim{{ "-gtk3" if development__run_gui_tasks }}'
     state: 'present'
 
 - name: 'Ensure development-related Python packages are installed in administrator home directory'

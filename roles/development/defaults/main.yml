@@ -15,6 +15,7 @@ development__packer_version: '1.7.4'
 development__pandoc_version: '2.14.2'
 development__projects_folder: 'Shed'
 development__ripgrep_version: '13.0.0'
+development__run_gui_tasks: false
 development__shellcheck_version: '0.7.2'
 development__task_version: '3.7.0'
 development__terraform_version: '1.0.5'
