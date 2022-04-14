@@ -4,8 +4,8 @@
 
 ---
 webserver__add_vhosts_to_etc_hosts: false
-webserver__composer_version: '2.2.1'
-webserver__composer_sha256: '1d2067cd8a4df546498b04817b0fa3827f291d564bcde29254e8d6d2db15f896'
+webserver__composer_version: '2.3.5'
+webserver__composer_sha256: '3b3b5a899c06a46aec280727bdf50aad14334f6bc40436ea76b07b650870d8f4'
 webserver__install_xdebug: false
 webserver__php_default_packages:
   - 'cli'
