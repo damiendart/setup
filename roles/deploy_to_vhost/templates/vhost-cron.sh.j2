@@ -11,5 +11,6 @@ set -e
 source "{{ __vhost_base_directory }}/deployment.conf.sh"
 
 if [[ -f "{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}" ]]; then
+  # shellcheck disable=SC2288
   "{{ __vhost_base_directory }}/releases/$RELEASE_TIMESTAMP/private/cron/cron-{{ item }}"
 fi
