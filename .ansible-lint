@@ -8,3 +8,5 @@ skip_list:
   # as the roles contained in this project are not intended to be
   # imported or used by Ansible Galaxy.
   - '701'
+warn_list:
+  - 'no-changed-when'

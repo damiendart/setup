@@ -8,11 +8,11 @@
   become: true
   pre_tasks:
     - name: 'End play for non-applicable hosts'
-      meta: 'end_host'
+      ansible.builtin.meta: 'end_host'
       when: deploy_to_vhost__vhosts[cli__site_domain] is not defined
 
     - name: 'Gather Facts'
-      setup:
+      ansible.builtin.setup:
 
   roles:
     - role: 'deploy_to_vhost'
