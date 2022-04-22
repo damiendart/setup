@@ -23,6 +23,8 @@
 
     - name: 'Ensure rustup and friends are installed'
       ansible.builtin.command: '/tmp/rustup-init --no-modify-path -y'
+      register: __rustup_init
+      changed_when: __rustup_init.stdout is search('installing')
       become: true
       become_user: '{{ development__user_username }}'
   always:
