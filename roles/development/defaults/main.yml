@@ -7,6 +7,7 @@ development__bat_version: '0.20.0'
 development__fzf_version: '0.30.0'
 development__go_version: '1.18.1'
 development__go_installable_packages:
+  - 'github.com/damiendart/pathshorten/cmd/pathshorten@latest'
   - 'golang.org/x/lint/golint@latest'
   - 'honnef.co/go/tools/cmd/staticcheck@latest'
 development__iosevka_version: '15.1.0'
