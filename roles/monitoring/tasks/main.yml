@@ -83,5 +83,8 @@
     - 'fail2ban'
     - 'monit'
 
-- include: 'backup.yml'
-- include: 'node-exporter.yml'
+- name: 'Include Tarsnap monitoring installation and configuration tasks'
+  ansible.builtin.include_tasks: 'backup.yml'
+
+- name: 'Include Prometheus Node Exporter installation and configuration tasks.'
+  ansible.builtin.include_tasks: 'node-exporter.yml'

@@ -142,10 +142,23 @@
         state: 'present'
   when: development__run_gui_tasks | bool
 
-- include: 'dotfiles.yml'
-- include: 'virtualbox.yml'
-- include: 'open-vm-tools.yml'
-- include: 'rust.yml'
-- include: 'go.yml'
-- include: 'erlang-and-elixir.yml'
-- include: 'node.yml'
+- name: 'Include dotfiles installation tasks'
+  ansible.builtin.include_tasks: 'dotfiles.yml'
+
+- name: 'Include VirtualBox installation tasks'
+  ansible.builtin.include_tasks: 'virtualbox.yml'
+
+- name: 'Include Open VM Tools installation tasks'
+  ansible.builtin.include_tasks: 'open-vm-tools.yml'
+
+- name: 'Include Rust installation tasks'
+  ansible.builtin.include_tasks: 'rust.yml'
+
+- name: 'Include Go installation tasks'
+  ansible.builtin.include_tasks: 'go.yml'
+
+- name: 'Include Erlang and Elixir installation tasks'
+  ansible.builtin.include_tasks: 'erlang-and-elixir.yml'
+
+- name: 'Include Node installation tasks'
+  ansible.builtin.include_tasks: 'node.yml'

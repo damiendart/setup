@@ -40,8 +40,11 @@
     path: '{{ __vhost_base_directory }}/deploy.lock'
     state: 'touch'
 
-- include: 'preflight.yml'
-- include: 'setup.yml'
+- name: 'Include "preflight checks" tasks'
+  ansible.builtin.include_tasks: 'preflight.yml'
+
+- name: 'Include pre-deployment setup tasks'
+  ansible.builtin.include_tasks: 'setup.yml'
 
 - name: 'Create release base directory'
   ansible.builtin.file:

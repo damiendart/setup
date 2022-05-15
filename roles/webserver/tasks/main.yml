@@ -70,11 +70,20 @@
     name: 'php'
     path: '/usr/bin/php{{ webserver__php_default_version }}'
 
-- include: 'base-configure.yml'
-- include: 'vhosts.yml'
-- include: 'vhosts-cleanup.yml'
-- include: 'composer.yml'
-- include: 'xdebug.yml'
+- name: 'Include basic Apache and PHP-FPM configuration tasks'
+  ansible.builtin.include_tasks: 'base-configure.yml'
+
+- name: 'Include Apache virtual host configuration tasks'
+  ansible.builtin.include_tasks: 'vhosts.yml'
+
+- name: 'Include tasks to clean up old and unused virtual-host-related stuff'
+  ansible.builtin.include_tasks: 'vhosts-cleanup.yml'
+
+- name: 'Include Composer installation and configuration tasks'
+  ansible.builtin.include_tasks: 'composer.yml'
+
+- name: 'Include XDebug installation and configuration tasks'
+  ansible.builtin.include_tasks: 'xdebug.yml'
 
 # We force any notified handlers to run in case there are any changes
 # that need to be applied before other roles that have this role as a
