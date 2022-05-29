@@ -19,25 +19,13 @@ jobs:
         uses: 'actions/checkout@v1'
 
       - name: 'Set up Python environment'
-        uses: 'actions/setup-python@v1'
+        uses: 'actions/setup-python@v3'
         with:
+          cache: 'pip'
           python-version: '3.8'
 
       - name: 'Install Task'
         run: 'curl -sL https://taskfile.dev/install.sh | sh'
-
-      - name: 'Get pip cache directory'
-        id: 'pip-cache'
-        run: |
-          echo "::set-output name=dir::$(pip3 cache dir)"
-
-      - name: 'Configure caching of project dependencies'
-        uses: 'actions/cache@v2'
-        with:
-          path: '${{ steps.pip-cache.outputs.dir }}'
-          key: "${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}"
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       - name: 'Install project dependencies and run all linting-related tasks'
         run: './bin/task'
