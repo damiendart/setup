@@ -142,6 +142,9 @@
         state: 'present'
   when: development__run_gui_tasks | bool
 
+- name: 'Include entr building and installation tasks'
+  ansible.builtin.include_tasks: 'entr.yml'
+
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
 

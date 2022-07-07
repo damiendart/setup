@@ -1,0 +1,69 @@
+# The following tasks compile and install entr.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+- name: 'Set entr version variable to an empty string'
+  ansible.builtin.set_fact:
+    __entr_version: ''
+
+- name: 'Get status of existing entr binary'
+  ansible.builtin.stat:
+    path: '/usr/local/bin/entr'
+  changed_when: false
+  register: __entr_binary
+
+- name: 'Get the version of entr that is currently installed (if available)'
+  block:
+    - name: 'Get entr usage output'
+      ansible.builtin.command:
+        cmd: '/usr/local/bin/entr'
+      changed_when: false
+      ignore_errors: true
+      register: __entr_output
+
+    - name: 'Get the version of entr that is currently installed (if available)'
+      ansible.builtin.set_fact:
+        __entr_version: "{{ __entr_output | regex_search('release: ([0-9.]*)', '\\1') | first | trim }}"
+  when: __entr_binary.stat.exists
+
+- name: 'Ensure entr is installed'
+  block:
+    - name: 'Create temporary folder'
+      ansible.builtin.tempfile:
+        state: 'directory'
+      register: __entr_temp_directory
+
+    - name: 'Download entr source code archive'
+      ansible.builtin.get_url:
+        checksum: 'sha256:{{ development__entr_sha256 }}'
+        group: 'root'
+        mode: 0755
+        owner: 'root'
+        dest: '{{ __entr_temp_directory.path }}/src.tar.gz'
+        url: 'https://github.com/eradman/entr/archive/refs/tags/{{ development__entr_version }}.tar.gz'
+
+    - name: 'Ensure entr source code exists'
+      ansible.builtin.unarchive:
+        dest: '{{ __entr_temp_directory.path }}'
+        group: 'root'
+        mode: 0755
+        owner: 'root'
+        src: '{{ __entr_temp_directory.path }}/src.tar.gz'
+        remote_src: true
+
+    - name: 'Ensure entr compiles and installs successfully'
+      ansible.builtin.shell:
+        chdir: '{{ __entr_temp_directory.path }}/entr-{{ development__entr_version }}'
+        cmd: |
+          ./configure
+          make test
+          make install
+      changed_when: true
+  always:
+    - name: 'Remove temporary folder'
+      ansible.builtin.file:
+        path: '{{ __entr_temp_directory.path }}'
+        state: 'absent'
+  when: development__entr_version not in __entr_version
