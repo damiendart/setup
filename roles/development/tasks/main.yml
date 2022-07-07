@@ -157,9 +157,6 @@
 - name: 'Include Rust installation tasks'
   ansible.builtin.include_tasks: 'rust.yml'
 
-- name: 'Include Go installation tasks'
-  ansible.builtin.include_tasks: 'go.yml'
-
 - name: 'Include Erlang and Elixir installation tasks'
   ansible.builtin.include_tasks: 'erlang-and-elixir.yml'
 

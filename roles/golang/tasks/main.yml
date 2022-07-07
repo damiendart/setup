@@ -1,0 +1,52 @@
+# The following role installs Go using a binary archive.
+#
+#   - If Go has been previously installed using a different method (e.g.
+#     a package manager), the following tasks will not delete that
+#     version and will need to be removed manually.
+#   - The following will install Go in "/usr/local/go".
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the download cache directory exists'
+  ansible.builtin.file:
+    path: '{{ golang__download_cache_directory }}'
+    group: 'root'
+    mode: '0777'
+    owner: 'root'
+    state: 'directory'
+
+- name: 'Ensure Go is installed'
+  block:
+    - name: 'Ensure existing Go installation is removed'
+      ansible.builtin.file:
+        path: '/usr/local/go'
+        state: 'absent'
+
+    - name: 'Ensure the Go binary archive is downloaded'
+      ansible.builtin.get_url:
+        checksum: '{{ golang__archive_checksum }}'
+        dest: '{{ golang__download_cache_directory }}/go{{ golang__version }}.linux-amd64.tar.gz'
+        group: 'root'
+        mode: 0755
+        owner: 'root'
+        url: 'https://golang.org/dl/go{{ golang__version }}.linux-amd64.tar.gz'
+
+    - name: 'Ensure Go is installed'
+      ansible.builtin.unarchive:
+        dest: '/usr/local'
+        group: 'root'
+        owner: 'root'
+        remote_src: true
+        src: '{{ golang__download_cache_directory }}/go{{ golang__version }}.linux-amd64.tar.gz'
+  when: "golang__version not in lookup('ansible.builtin.file', '/usr/local/go/VERSION', errors='ignore') | default('')"
+
+- name: 'Ensure Go-related tools are installed'
+  ansible.builtin.command: '/usr/local/go/bin/go install {{ item }}'
+  become: true
+  become_user: '{{ golang__user_username }}'
+  register: __go_install
+  changed_when: __go_install.stderr is search('downloading')
+  loop: '{{ golang__installable_packages }}'
