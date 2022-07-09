@@ -159,6 +159,3 @@
 
 - name: 'Include Erlang and Elixir installation tasks'
   ansible.builtin.include_tasks: 'erlang-and-elixir.yml'
-
-- name: 'Include Node installation tasks'
-  ansible.builtin.include_tasks: 'node.yml'

@@ -1,0 +1,66 @@
+# The following role installs Node.js using a binary archive.
+#
+#   - If Node.js has been previously installed using a different method
+#     (e.g. a package manager), the following tasks will not delete that
+#     version and will need to be removed manually.
+#   - The following tasks will install Node.js in "/usr/local/node".
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the download cache directory exists'
+  ansible.builtin.file:
+    path: '{{ nodejs__download_cache_directory }}'
+    group: 'root'
+    mode: '0777'
+    owner: 'root'
+    state: 'directory'
+
+- name: 'Get status of existing Node.js installation'
+  ansible.builtin.stat:
+    path: '/usr/local/node/bin/node'
+  changed_when: false
+  register: __node_binary
+
+- name: 'Get version of existing Node.js installation'
+  ansible.builtin.command: '/usr/local/node/bin/node --version'
+  changed_when: false
+  failed_when: false
+  register: __node_version
+  when: __node_binary.stat.exists
+
+- name: 'Ensure Node.js is installed'
+  block:
+    - name: 'Ensure existing Node.js installation is removed'
+      ansible.builtin.file:
+        path: '/usr/local/node'
+        state: 'absent'
+
+    - name: 'Ensure the Node.js binary archive is downloaded'
+      ansible.builtin.get_url:
+        checksum: '{{ nodejs__archive_checksum }}'
+        dest: '{{ nodejs__download_cache_directory }}/node-v{{ nodejs__version }}-linux-x64.tar.xz'
+        group: 'root'
+        mode: 0755
+        owner: 'root'
+        url: 'https://nodejs.org/dist/v{{ nodejs__version }}/node-v{{ nodejs__version }}-linux-x64.tar.xz'
+
+    - name: 'Ensure base Node.js directory is present'
+      ansible.builtin.file:
+        group: 'root'
+        mode: '0755'
+        owner: 'root'
+        path: '/usr/local/node'
+        state: 'directory'
+
+    - name: 'Ensure Node.js is installed'
+      ansible.builtin.unarchive:
+        dest: '/usr/local/node'
+        extra_opts:
+          - '--strip-components=1'
+        group: 'root'
+        owner: 'root'
+        src: '{{ nodejs__download_cache_directory }}/node-v{{ nodejs__version }}-linux-x64.tar.xz'
+  when: nodejs__version not in (__node_version.stdout | default('') | trim)
