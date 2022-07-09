@@ -1,4 +1,4 @@
-# The following tasks install Rust-related bits and pieces with rustup.
+# The following role installs Rust-related bits and pieces with rustup.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -7,7 +7,7 @@
 ---
 - name: 'Get status of rustup'
   ansible.builtin.stat:
-    path: '/home/{{ development__user_username }}/.cargo/bin/rustup'
+    path: '/home/{{ rust__user_username }}/.cargo/bin/rustup'
   changed_when: false
   register: __rustup_binary
 
@@ -16,9 +16,9 @@
     - name: 'Download "rustup-init"'
       ansible.builtin.get_url:
         dest: '/tmp/rustup-init'
-        group: '{{ development__user_username }}'
+        group: '{{ rust__user_username }}'
         mode: 0755
-        owner: '{{ development__user_username }}'
+        owner: '{{ rust__user_username }}'
         url: 'https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init'
 
     - name: 'Ensure rustup and friends are installed'
@@ -26,7 +26,7 @@
       register: __rustup_init
       changed_when: __rustup_init.stdout is search('installing')
       become: true
-      become_user: '{{ development__user_username }}'
+      become_user: '{{ rust__user_username }}'
   always:
     - name: 'Remove "rustup-init"'
       ansible.builtin.file:
@@ -35,8 +35,8 @@
   when: not __rustup_binary.stat.exists
 
 - name: 'Ensure rustup and friends are up-to-date'
-  ansible.builtin.command: '/home/{{ development__user_username }}/.cargo/bin/rustup update'
+  ansible.builtin.command: '/home/{{ rust__user_username }}/.cargo/bin/rustup update'
   register: __rustup_update
   changed_when: __rustup_update.stdout | regex_search('install(ed|ing)')
   become: true
-  become_user: '{{ development__user_username }}'
+  become_user: '{{ rust__user_username }}'

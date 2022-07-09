@@ -36,6 +36,7 @@
     - 'erlang_and_elixir'
     - 'golang'
     - 'nodejs'
+    - 'rust'
     - 'syncthing'
     - 'tailscale'
     - 'webserver'

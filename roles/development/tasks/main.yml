@@ -153,6 +153,3 @@
 
 - name: 'Include Open VM Tools installation tasks'
   ansible.builtin.include_tasks: 'open-vm-tools.yml'
-
-- name: 'Include Rust installation tasks'
-  ansible.builtin.include_tasks: 'rust.yml'

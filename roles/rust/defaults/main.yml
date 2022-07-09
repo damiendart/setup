@@ -1,0 +1,13 @@
+# Default and required variables for the "rust" role.
+#
+# Commented-out variables must be defined elsewhere (in an inventory,
+# playbook, or at runtime).
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# A string specifying the username of the account whose home directory
+# will have Rust and friends installed into.
+# rust__user_username: ''
