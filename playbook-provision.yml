@@ -33,6 +33,7 @@
     - 'base'
     - 'development'
     - 'docker'
+    - 'erlang_and_elixir'
     - 'golang'
     - 'nodejs'
     - 'syncthing'

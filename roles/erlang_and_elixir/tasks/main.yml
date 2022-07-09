@@ -1,4 +1,4 @@
-# The following tasks install Erlang and Elixir.
+# The following role installs Erlang and Elixir.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
