@@ -4,6 +4,15 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
+- name: 'Ensure the Prometheus Node Exporter binary archive is downloaded'
+  ansible.builtin.get_url:
+    checksum: '{{ monitoring__node_exporter_archive_checksum }}'
+    dest: '{{ monitoring__download_cache_directory }}/node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64.tar.gz'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    url: 'https://github.com/prometheus/node_exporter/releases/download/v{{ monitoring__node_exporter_version }}/node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64.tar.gz' # noqa 204
+
 - name: 'Ensure the Prometheus Node Exporter binary is installed'
   ansible.builtin.unarchive:
     dest: '/usr/local/bin'
@@ -17,7 +26,8 @@
     mode: 0755
     owner: 'root'
     remote_src: true
-    src: 'https://github.com/prometheus/node_exporter/releases/download/v{{ monitoring__node_exporter_version }}/node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64.tar.gz' # noqa 204
+    src: '{{ monitoring__download_cache_directory }}/node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64.tar.gz'
+  notify: 'Restart Prometheus Node Exporter'
 
 - name: 'Ensure a "node_exporter" group exists'
   ansible.builtin.group:

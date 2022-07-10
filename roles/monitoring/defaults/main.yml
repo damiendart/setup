@@ -1,7 +1,53 @@
+# Default and required variables for the "monitoring" role.
+#
+# Commented-out variables must be defined elsewhere (in an inventory,
+# playbook, or at runtime).
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+# A boolean value that specifies whether Monit should monitor Apache.
 monitoring__monit_apache: false
+
+# A string containing a checksum used to verify the integrity the Node
+# Exporter binary archive download. For valid checksum formats, see
+# <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html#parameter-checksum>.
+monitoring__node_exporter_archive_checksum: 'sha256:68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949'
+
+# A string containing the version of Node Exporter to install.
 monitoring__node_exporter_version: '1.3.1'
+
+
+# A string containing the administrator user's email address, used when
+# sending monitoring-related emails.
+# monitoring__administrator_email: ''
+
+# A string containing the administrator user's full name, used when
+# sending monitoring-related emails.
+# monitoring__administrator_full_name: ''
+
+# A string containing the directory where downloads are stored to
+# prevent unnecessary redownloading when tasks are rerun.
+# monitoring__download_cache_directory: ''
+
+# A string containing the hostname of the SMTP server used to send
+# monitoring-related notifications.
+# monitoring__mta_hostname: ''
+
+# A string containing the password for the SMTP server used to send
+# monitoring-related notifications.
+# monitoring__mta_password: ''
+
+# A string containing the username for the SMTP server used to send
+# monitoring-related notifications.
+# monitoring__mta_username: ''
+
+# A string containing a Pushover API token, used to send
+# monitoring-related notifications.
+# monitoring__pushover_api_token: ''
+
+# A string containing a Pushover user key, used to send
+# monitoring-related notifications.
+# monitoring__pushover_user_key: ''
