@@ -5,6 +5,14 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+- name: 'Ensure the download cache directory exists'
+  ansible.builtin.file:
+    path: '{{ development__download_cache_directory }}'
+    group: 'root'
+    mode: '0777'
+    owner: 'root'
+    state: 'directory'
+
 - name: 'Ensure development-related packages are installed'
   ansible.builtin.apt:
     force_apt_get: true
@@ -94,59 +102,15 @@
     path: '/home/{{ development__user_username }}/{{ development__projects_folder }}'
     state: 'directory'
 
-- name: 'Run GUI-based development tasks'
-  tags:
-    - 'gui'
-  block:
-    - name: 'Ensure fonts directory exists in administrator home directory'
-      ansible.builtin.file:
-        group: '{{ development__user_username }}'
-        mode: 0700
-        owner: '{{ development__user_username }}'
-        path: '/home/{{ development__user_username }}/.fonts'
-        state: 'directory'
-
-    - name: 'Ensure any old Iosevka TTF files are removed'
-      ansible.builtin.file:
-        path: '/home/{{ development__user_username }}/.fonts/iosevka'
-        state: 'absent'
-
-    - name: 'Ensure the Iosevka Super TTC file is installed'
-      ansible.builtin.unarchive:
-        dest: '/home/{{ administrator_username }}/.fonts'
-        group: '{{ development__user_username }}'
-        owner: '{{ development__user_username }}'
-        remote_src: true
-        src: 'https://github.com/be5invis/Iosevka/releases/download/v{{ development__iosevka_version }}/super-ttc-iosevka-{{ development__iosevka_version }}.zip'
-
-    - name: 'Ensure Obsidian is installed'
-      ansible.builtin.apt:
-        deb: 'https://github.com/obsidianmd/obsidian-releases/releases/download/v{{ development__obsidian_version }}/obsidian_{{ development__obsidian_version }}_amd64.deb'
-        state: 'present'
-
-    # The following task accounts for a bug where Obsidian's Debian
-    # package for v0.12.15 creates an incorrect symbolic link in
-    # "/usr/bin". For more information, please see
-    # <https://forum.obsidian.md/t/24227>.
-    - name: 'Ensure an symbolic link to Obsidian exists in "/usr/bin"'
-      ansible.builtin.file:
-        dest: '/usr/bin/obsidian'
-        group: 'root'
-        owner: 'root'
-        src: '/opt/Obsidian/obsidian'
-        state: 'link'
-
-    - name: 'Ensure "xsel" is installed'
-      ansible.builtin.apt:
-        name: 'xsel'
-        state: 'present'
-  when: development__run_gui_tasks | bool
-
 - name: 'Include entr building and installation tasks'
   ansible.builtin.include_tasks: 'entr.yml'
 
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
+
+- name: 'Include tasks for hosts with GUIs'
+  ansible.builtin.include_tasks: 'gui.yml'
+  when: development__run_gui_tasks | bool
 
 - name: 'Include VirtualBox installation tasks'
   ansible.builtin.include_tasks: 'virtualbox.yml'

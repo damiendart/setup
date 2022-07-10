@@ -7,8 +7,13 @@ development__bat_version: '0.21.0'
 development__entr_version: '5.2'
 development__entr_sha256: '237e309d46b075210c0e4cb789bfd0c9c777eddf6cb30341c3fe3dbcc658c380'
 development__fzf_version: '0.30.0'
+
+development__iosevka_archive_checksum: 'sha256:135eae0ac10a4a81f04cd52912ad153baff31fed6710bfa3a96f901fba23b5b4'
 development__iosevka_version: '15.5.2'
+
+development__obsidian_package_checksum: 'sha256:6ed39e39078ba1a4b0780d1c5bc0a8e4436fa9042858348adfb9e31cb76119f4'
 development__obsidian_version: '0.14.15'
+
 development__packer_version: '1.8.2'
 development__pandoc_version: '2.18'
 development__projects_folder: 'Shed'
@@ -18,3 +23,7 @@ development__shellcheck_version: '0.8.0'
 development__task_version: '3.13.0'
 development__terraform_version: '1.2.3'
 development__virtualbox_version: '6.1'
+#
+# A string containing the directory where various downloads are stored
+# to prevent unnecessary redownloading when tasks are rerun.
+# development__download_cache_directory: ''
