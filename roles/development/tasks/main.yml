@@ -1,11 +1,13 @@
-# This role installs and configures my development-specific stuff.
+# This role installs and configures development environment stuff.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the download cache directory exists'
+# This role stores downloaded files that have been verified by file
+# checksums to prevent unnecessary redownloading when tasks are rerun.
+- name: "Ensure download cache directory exists"
   ansible.builtin.file:
     path: '{{ development__download_cache_directory }}'
     group: 'root'
@@ -13,7 +15,17 @@
     owner: 'root'
     state: 'directory'
 
-- name: 'Ensure development-related packages are installed'
+- name: 'Ensure personal projects directory exists in administrator home directory'
+  ansible.builtin.file:
+    group: '{{ development__user_username }}'
+    # The personal projects directory has relaxed permissions to allow
+    # Apache access to directories within it.
+    mode: 0755
+    owner: '{{ development__user_username }}'
+    path: '/home/{{ development__user_username }}/{{ development__projects_folder }}'
+    state: 'directory'
+
+- name: 'Ensure base development-related packages are installed'
   ansible.builtin.apt:
     force_apt_get: true
     name:
@@ -27,7 +39,7 @@
       - 'vim{{ "-gtk3" if development__run_gui_tasks }}'
     state: 'present'
 
-- name: 'Ensure development-related Python packages are installed in administrator home directory'
+- name: 'Ensure base development-related Python packages are installed in administrator home directory'
   ansible.builtin.pip:
     executable: '/usr/bin/pip3'
     extra_args: '--user'
@@ -38,75 +50,45 @@
   become: true
   become_user: '{{ development__user_username }}'
 
-- name: 'Ensure development-related binaries from archives are installed'
+- name: 'Ensure base development-related binary archives and Debian packages are downloaded'
+  ansible.builtin.get_url:
+    checksum: '{{ item.checksum }}'
+    dest: '{{ development__download_cache_directory }}/{{ item.filename | default(item.url | basename) }}'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    url: '{{ item.url }}'
+  loop: '{{ development__binary_archives + development__debian_packages }}'
+  loop_control:
+    label: '{{ item.url }}'
+
+- name: 'Ensure base development-related Debian packages are installed'
+  ansible.builtin.apt:
+    deb: '{{ development__download_cache_directory }}/{{ item.url | basename }}'
+    state: 'present'
+  loop: '{{ development__debian_packages }}'
+  loop_control:
+    label: '{{ item.url | basename }}'
+
+- name: 'Ensure base development-related binaries from archives are installed'
   ansible.builtin.unarchive:
     dest: '/usr/local/bin'
-    exclude:
-      - '*.1'
-      - '*.txt'
-      - '*.md'
-      - 'autocomplete'
-      - 'complete'
-      - 'COPYING'
-      - 'doc'
-      - 'LICENSE*'
-      - 'share'
-      - 'UNLICENSE'
     extra_opts: '{{ item.extra_opts | default([]) }}'
     group: 'root'
+    include: '{{ item.binaries | default([]) }}'
     mode: 0755
     owner: 'root'
     remote_src: true
-    src: '{{ item.src }}'
-  loop:
-    - src: 'https://github.com/BurntSushi/ripgrep/releases/download/{{ development__ripgrep_version }}/ripgrep-{{ development__ripgrep_version }}-x86_64-unknown-linux-musl.tar.gz' # noqa 204
-      extra_opts:
-        - '--strip-components=1'
-    - src: 'https://github.com/go-task/task/releases/download/v{{ development__task_version }}/task_linux_amd64.tar.gz'
-    - src: 'https://github.com/jgm/pandoc/releases/download/{{ development__pandoc_version }}/pandoc-{{ development__pandoc_version }}-linux-amd64.tar.gz'
-      extra_opts:
-        - '--strip-components=2'
-    - src: 'https://github.com/junegunn/fzf/releases/download/{{ development__fzf_version }}/fzf-{{ development__fzf_version }}-linux_amd64.tar.gz'
-    - src: 'https://github.com/koalaman/shellcheck/releases/download/v{{ development__shellcheck_version }}/shellcheck-v{{ development__shellcheck_version }}.linux.x86_64.tar.xz' # noqa 204
-      extra_opts:
-        - '--transform'
-        - 's/^shellcheck-v{{ development__shellcheck_version }}\///'
-    - src: 'https://github.com/sharkdp/bat/releases/download/v{{ development__bat_version }}/bat-v{{ development__bat_version }}-x86_64-unknown-linux-gnu.tar.gz'
-      extra_opts:
-        - '--transform'
-        - 's/^bat-v{{ development__bat_version }}-x86_64-unknown-linux-gnu\///'
-    - src: 'https://releases.hashicorp.com/packer/{{ development__packer_version }}/packer_{{ development__packer_version }}_linux_amd64.zip'
-    - src: 'https://releases.hashicorp.com/terraform/{{ development__terraform_version }}/terraform_{{ development__terraform_version }}_linux_amd64.zip'
-    - src: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
+    src: '{{ development__download_cache_directory }}/{{ item.filename | default(item.url | basename) }}'
+  loop: '{{ development__binary_archives }}'
   loop_control:
-    label: '{{ item.src }}'
-
-- name: 'Ensure fzf supplimentary files are installed'
-  ansible.builtin.get_url:
-    dest: '/usr/local/etc/fzf-{{ item }}'
-    group: 'root'
-    mode: 0755
-    owner: 'root'
-    url: 'https://raw.githubusercontent.com/junegunn/fzf/{{ development__fzf_version }}/shell/{{ item }}'
-  loop:
-    - 'completion.bash'
-    - 'key-bindings.bash'
-
-- name: 'Ensure personal projects directory exists in administrator home directory'
-  ansible.builtin.file:
-    group: '{{ development__user_username }}'
-    # The personal projects directory has relaxed permissions to allow
-    # Apache access to directories within it.
-    mode: 0755
-    owner: '{{ development__user_username }}'
-    path: '/home/{{ development__user_username }}/{{ development__projects_folder }}'
-    state: 'directory'
-
-- name: 'Include entr building and installation tasks'
-  ansible.builtin.include_tasks: 'entr.yml'
+    label: '{{ item.filename | default(item.url | basename) }}'
 
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
+
+- name: 'Include entr building and installation tasks'
+  ansible.builtin.include_tasks: 'entr.yml'
 
 - name: 'Include tasks for hosts with GUIs'
   ansible.builtin.include_tasks: 'gui.yml'

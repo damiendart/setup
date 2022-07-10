@@ -3,27 +3,58 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-development__bat_version: '0.21.0'
+development__binary_archives:
+  - binaries: 'BrowserStackLocal'
+    checksum: 'sha256:715bdbcaceed948e889385a7e9447bae4f663f4a2e05e28f754ee5f2d7fc9f3b'
+    url: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
+
+  - binaries: 'fzf'
+    checksum: 'sha256:53b136e0566a1b3ab57c28dffadb3d0392ad0968a714e65862cf4497152674e5'
+    url: 'https://github.com/junegunn/fzf/releases/download/0.30.0/fzf-0.30.0-linux_amd64.tar.gz'
+
+  - binaries: 'packer'
+    checksum: 'sha256:675bd82561a2e49f89747e092141c7ce79c2e2a9105e6a2ebd49a26df849a468'
+    url: 'https://releases.hashicorp.com/packer/1.8.2/packer_1.8.2_linux_amd64.zip'
+
+  # Ansible gets funny about trying to extract individual files from
+  # "tar.xz" archives using the "include" parameter. One workaround is
+  # to awkwardly recreate the "include" functionality with "extra_opts".
+  - checksum: 'sha256:ab6ee1b178f014d1b86d1e24da20d1139656c8b0ed34d2867fbb834dad02bf0a'
+    extra_opts:
+      - '--exclude=LICENSE.txt'
+      - '--exclude=README.txt'
+      - '--transform'
+      - 's/^shellcheck-v0.8.0\///'
+    url: 'https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz'
+
+  - binaries: 'terraform'
+    checksum: 'sha256:705ea62a44a0081594dad6b2b093eefefb12d54fa5a20a66562f9e082b00414c'
+    url: 'https://releases.hashicorp.com/terraform/1.2.4/terraform_1.2.4_linux_amd64.zip'
+
+development__debian_packages:
+  - checksum: 'sha256:f411bf675177cad093b2bc990b4349a5831756e8f597f05e4e83f14eb71d3eac'
+    url: 'https://github.com/sharkdp/bat/releases/download/v0.21.0/bat_0.21.0_amd64.deb'
+
+  - checksum: 'sha256:bc6e8e401720d7cec28c230a0cb6f8bcf3ffb502155e7c9372ca15fbf9509aed'
+    url: 'https://github.com/jgm/pandoc/releases/download/2.18/pandoc-2.18-1-amd64.deb'
+
+  - checksum: 'sha256:6d78bed13722019cb4f9d0cf366715e2dcd589f4cf91897efb28216a6bb319f1'
+    url: 'https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb'
+
+  - checksum: 'sha256:2713d38c35166b94e74410be50e27b4565682671c4d7c1000888e23ddf6b532e'
+    url: 'https://github.com/go-task/task/releases/download/v3.14.0/task_linux_amd64.deb'
+
 development__entr_version: '5.2'
 development__entr_sha256: '237e309d46b075210c0e4cb789bfd0c9c777eddf6cb30341c3fe3dbcc658c380'
-development__fzf_version: '0.30.0'
-
 development__iosevka_archive_checksum: 'sha256:135eae0ac10a4a81f04cd52912ad153baff31fed6710bfa3a96f901fba23b5b4'
 development__iosevka_version: '15.5.2'
-
 development__obsidian_package_checksum: 'sha256:6ed39e39078ba1a4b0780d1c5bc0a8e4436fa9042858348adfb9e31cb76119f4'
 development__obsidian_version: '0.14.15'
-
-development__packer_version: '1.8.2'
-development__pandoc_version: '2.18'
 development__projects_folder: 'Shed'
-development__ripgrep_version: '13.0.0'
 development__run_gui_tasks: false
-development__shellcheck_version: '0.8.0'
-development__task_version: '3.13.0'
-development__terraform_version: '1.2.3'
 development__virtualbox_version: '6.1'
-#
+
+
 # A string containing the directory where various downloads are stored
 # to prevent unnecessary redownloading when tasks are rerun.
 # development__download_cache_directory: ''
