@@ -8,9 +8,6 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-# A boolean value that specifies whether Monit should monitor Apache.
-monitoring__monit_apache: false
-
 # A string containing a checksum used to verify the integrity the Node
 # Exporter binary archive download. For valid checksum formats, see
 # <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html#parameter-checksum>.

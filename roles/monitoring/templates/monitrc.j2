@@ -17,7 +17,7 @@ set mailserver {{ monitoring__mta_hostname }} port 587
   username "{{ monitoring__mta_username }}" password "{{ monitoring__mta_password }}"
   using TLSV1 with timeout 30 seconds
 
-{% if monitoring__monit_apache %}
+{% if 'webserver' in ansible_play_role_names %}
   check process apache with pidfile /var/run/apache2/apache2.pid
     group www
     group apache
