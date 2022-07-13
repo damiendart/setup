@@ -17,10 +17,10 @@ golang__installable_packages:
 # A string containing a checksum used to verify the integrity the Go
 # binary archive download. For valid checksum formats, please see
 # <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html#parameter-checksum>.
-golang__archive_checksum: 'sha256:956f8507b302ab0bb747613695cdae10af99bbd39a90cae522b7c0302cc27245'
+golang__archive_checksum: 'sha256:c9b099b68d93f5c5c8a8844a89f8db07eaa58270e3a1e01804f17f4cf8df02f5'
 
 # A string containing the version of Go to install.
-golang__version: '1.18.3'
+golang__version: '1.18.4'
 
 
 # A string containing the directory where Go binary archives are stored
