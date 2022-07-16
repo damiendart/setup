@@ -1,9 +1,4 @@
-# The following role installs Go using a binary archive.
-#
-#   - If Go has been previously installed using a different method (e.g.
-#     a package manager), the following tasks will not delete that
-#     version and will need to be removed manually.
-#   - The following will install Go in "/usr/local/go".
+# Installs Go using a binary archive.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For

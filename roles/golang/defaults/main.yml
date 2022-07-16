@@ -1,7 +1,4 @@
-# Default and required variables for the "golang" role.
-#
-# Commented-out variables must be defined elsewhere (in an inventory,
-# playbook, or at runtime).
+# "golang" Ansible role variables.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -21,12 +18,3 @@ golang__archive_checksum: 'sha256:c9b099b68d93f5c5c8a8844a89f8db07eaa58270e3a1e0
 
 # A string containing the version of Go to install.
 golang__version: '1.18.4'
-
-
-# A string containing the directory where Go binary archives are stored
-# to prevent unnecessary downloading when tasks are rerun.
-# golang__download_cache_directory: ''
-
-# A string specifying the account username that will "go install" the
-# packages listed in "golang__installable_packages".
-# golang__user_username: ''
