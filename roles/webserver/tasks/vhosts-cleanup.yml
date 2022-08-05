@@ -1,34 +1,55 @@
-# The following tasks clean up any virtual-host-related detritus.
+# Cleans up any virtual-host-related and website deployment detritus.
+#
+# There is some gnarly Jinja filter usage here, so as a precaution
+# changes will only be made when the "webserver__vhosts_cleanup"
+# variable is set to a truthy value; that way you can use the dry-run to
+# review what gets deleted.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Get all virtual hosts directories'
+- name: 'Get all virtual host directories'
   ansible.builtin.find:
     excludes: '^\.\.?$'
     file_type: 'directory'
     paths: '/var/www'
   register: __vhost_directories
 
-- name: 'Get all virtual hosts configuration files'
+- name: 'Get all virtual host configuration files'
   ansible.builtin.find:
     excludes: '^\.\.?$'
     paths: '/etc/apache2/sites-available'
   register: __vhost_conf_files
 
-- name: 'Get all active virtual hosts configuration files'
+- name: 'Get configuration files for active virtual hosts'
   ansible.builtin.find:
     excludes: '^\.\.?$'
     file_type: 'link'
     paths: '/etc/apache2/sites-enabled'
   register: __vhost_conf_links
 
-# This task uses an unholy mess of Jinja filters and is a little
-# fragile, so as a precaution this task will only make changes if the
-# "webserver__vhosts_cleanup" variable is set to a truthy value; that
-# way you can review what gets deleted beforehand.
+- name: 'Get configuration files for active virtual hosts'
+  ansible.builtin.find:
+    excludes: '^\.\.?$'
+    file_type: 'link'
+    paths: '/etc/apache2/sites-enabled'
+  register: __vhost_conf_links
+
+# The "deploy_to_vhost" role installs scheduled task helper scripts
+# when deploying a release to a virtual host.
+- name: 'Get all scheduled task helper scripts'
+  ansible.builtin.find:
+    paths:
+      - '/etc/cron.hourly'
+      - '/etc/cron.daily'
+      - '/etc/cron.weekly'
+      - '/etc/cron.monthly'
+    patterns:
+      - '^vhost-.*'
+  register: __cron_scripts
+
 - name: 'Ensure virtual-host-related detritus no longer exists'
   ansible.builtin.file:
     path: '{{ item }}'
@@ -61,3 +82,24 @@
       | default([])
     }}
   notify: 'Reload Apache'
+
+- name: 'Ensure scheduled-task-related detritus no longer exists'
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: 'absent'
+  when: webserver__vhosts_cleanup | default(False)
+  loop: >
+    {{
+      __cron_scripts.files
+        | map(attribute='path')
+        | difference(
+          [
+            '/etc/cron.hourly',
+            '/etc/cron.daily',
+            '/etc/cron.weekly',
+            '/etc/cron.monthly',
+          ]
+            | product(webserver__vhosts.keys() | map('replace', '.', '-'))
+            | map('join', '/vhost-')
+        )
+    }}
