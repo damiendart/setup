@@ -37,6 +37,6 @@
 - name: 'Ensure rustup and friends are up-to-date'
   ansible.builtin.command: '/home/{{ rust__user_username }}/.cargo/bin/rustup update'
   register: __rustup_update
-  changed_when: __rustup_update.stdout | regex_search('install(ed|ing)')
+  changed_when: __rustup_update.stdout | regex_search('(installed|updated)')
   become: true
   become_user: '{{ rust__user_username }}'
