@@ -42,3 +42,12 @@
     - 'webserver'
   vars:
     webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'
+
+# For work-related machines, we only need to provision a small subset of
+# personal stuff (dotfiles, utilities, etc) as everything else is
+# provisioned by other means. Go is required for a few utilities.
+- hosts: 'development-work'
+  become: true
+  roles:
+    - 'development'
+    - 'golang'
