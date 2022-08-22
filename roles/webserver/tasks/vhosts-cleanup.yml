@@ -48,6 +48,7 @@
       - '/etc/cron.monthly'
     patterns:
       - '^vhost-.*'
+    use_regex: true
   register: __cron_scripts
 
 - name: 'Ensure virtual-host-related detritus no longer exists'
