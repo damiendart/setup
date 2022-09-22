@@ -29,7 +29,7 @@
 
     - name: 'Stop current deployment if a deployment is already in progress'
       ansible.builtin.fail:
-        msg: 'A deployment is already in progress'
+        msg: 'A deployment is already in progress (lock file: "{{ __vhost_base_directory }}/deploy.lock")'
       when: __deploy_lock_status.stat.exists
 
 - name: 'Ensure a deployment lock file exists'
