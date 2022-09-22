@@ -234,7 +234,7 @@
         # without having to edit system-wide configuration files.
         # Ansible's 'uri' module has no similar functionality.
         cmd: >
-          curl -IsS
+          curl -sS
           --fail
           --insecure
           --resolve '{{ deploy_to_vhost__site_domain }}:443:127.0.0.1'
