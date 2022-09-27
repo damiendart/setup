@@ -30,13 +30,6 @@
     paths: '/etc/apache2/sites-enabled'
   register: __vhost_conf_links
 
-- name: 'Get configuration files for active virtual hosts'
-  ansible.builtin.find:
-    excludes: '^\.\.?$'
-    file_type: 'link'
-    paths: '/etc/apache2/sites-enabled'
-  register: __vhost_conf_links
-
 # Crontab files are created when deploying a website.
 - name: 'Get all website crontab files'
   ansible.builtin.find:
