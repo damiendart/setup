@@ -99,6 +99,7 @@
       ansible.builtin.stat:
         path: '{{ deploy_to_vhost__release_artifact_folder }}/pre-install-tasks.yml'
       changed_when: false
+      delegate_to: 'localhost'
       register: __pre_install_tasks_file
 
     - name: 'Include project-specific pre-installation tasks file (if applicable)'
