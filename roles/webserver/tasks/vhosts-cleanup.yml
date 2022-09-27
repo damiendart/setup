@@ -37,19 +37,15 @@
     paths: '/etc/apache2/sites-enabled'
   register: __vhost_conf_links
 
-# The "deploy_to_vhost" role installs scheduled task helper scripts
-# when deploying a release to a virtual host.
-- name: 'Get all scheduled task helper scripts'
+# Crontab files are created when deploying a website.
+- name: 'Get all website crontab files'
   ansible.builtin.find:
     paths:
-      - '/etc/cron.hourly'
-      - '/etc/cron.daily'
-      - '/etc/cron.weekly'
-      - '/etc/cron.monthly'
+      - '/etc/cron.d'
     patterns:
-      - '^vhost-.*'
+      - '^website-.*'
     use_regex: true
-  register: __cron_scripts
+  register: __crontabs
 
 - name: 'Ensure virtual-host-related detritus no longer exists'
   ansible.builtin.file:
@@ -84,23 +80,17 @@
     }}
   notify: 'Reload Apache'
 
-- name: 'Ensure scheduled-task-related detritus no longer exists'
+- name: 'Ensure crontab-related detritus no longer exists'
   ansible.builtin.file:
     path: '{{ item }}'
     state: 'absent'
   when: webserver__vhosts_cleanup | default(False)
   loop: >
     {{
-      __cron_scripts.files
+      __crontabs.files
         | map(attribute='path')
-        | difference(
-          [
-            '/etc/cron.hourly',
-            '/etc/cron.daily',
-            '/etc/cron.weekly',
-            '/etc/cron.monthly',
-          ]
-            | product(webserver__vhosts.keys() | map('replace', '.', '-'))
-            | map('join', '/vhost-')
-        )
+        | map('replace', '/etc/cron.d/website-', '')
+        | difference(webserver__vhosts.keys() | map('replace', '.', '-'))
+        | map('regex_replace', '^', '/etc/cron.d/website-')
+      | default([])
     }}

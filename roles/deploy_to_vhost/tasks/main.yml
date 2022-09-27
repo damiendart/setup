@@ -72,7 +72,6 @@
     - 'find . -type d -exec chmod 0750 {} \;'
     - 'find . -type f -exec chmod 0640 {} \;'
     - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
-    - "find . -type f -wholename './private/cron/*' -exec chmod 0750 {} \\;"
 
 - name: 'Add web-server-writable directories to release directory'
   ansible.builtin.file:
@@ -163,6 +162,20 @@
     owner: '{{ deploy_to_vhost__administrator_username }}'
     mode: 0640
     src: 'deployment.conf.sh.j2'
+
+- name: 'Run any post-installation tasks'
+  block:
+    - name: 'Get status of post-installation tasks file'
+      ansible.builtin.stat:
+        path: '{{ deploy_to_vhost__release_artifact_folder }}/post-install-tasks.yml'
+      changed_when: false
+      delegate_to: 'localhost'
+      register: __post_install_tasks_file
+
+    - name: 'Include post-installation tasks file (if applicable)'
+      ansible.builtin.include_tasks:
+        file: '{{ deploy_to_vhost__release_artifact_folder }}/post-install-tasks.yml'
+      when: __post_install_tasks_file.stat.exists
 
 - name: 'Make Sentry aware of deployment'
   tags:

@@ -41,19 +41,28 @@
     path: '{{ __vhost_base_directory }}/shared/protected'
     state: 'directory'
 
-- name: 'Ensure release scheduled task helper scripts exist'
+- name: 'Ensure website crontab file exists'
   tags:
     - 'deploy-to-vhost:setup'
-  ansible.builtin.template:
-    # By default, "run-parts" ignores executable files that have
-    # periods in their names.
-    dest: '/etc/cron.{{ item }}/vhost-{{ deploy_to_vhost__site_domain | replace(".","-") }}'
-    group: 'root'
-    mode: 0755
-    owner: 'root'
-    src: 'vhost-cron.sh.j2'
-  loop:
-    - 'hourly'
-    - 'daily'
-    - 'weekly'
-    - 'monthly'
+  block:
+    - name: 'Ensure existing website crontab file is cleared'
+      ansible.builtin.file:
+        path: '/etc/cron.d/website-{{ deploy_to_vhost__site_domain | replace(".","-") }}'
+        state: 'absent'
+
+    - name: 'Ensure base website crontab file exists'
+      ansible.builtin.cron:
+        cron_file: 'website-{{ deploy_to_vhost__site_domain | replace(".","-") }}'
+        env: true
+        job: '{{ item.job }}'
+        name: '{{ item.name }}'
+        user: 'root'
+      loop:
+        - job: '{{ __vhost_base_directory }}/deployment.conf.sh'
+          name: 'BASH_ENV'
+        - job: '{{ deploy_to_vhost__administrator_email }}'
+          name: 'MAILTO'
+
+    - name: 'Set release crontab file name variable'
+      ansible.builtin.set_fact:
+        __release_crontab: 'website-{{ deploy_to_vhost__site_domain | replace(".","-") }}'
