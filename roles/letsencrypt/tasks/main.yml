@@ -10,17 +10,36 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the Certbot PPA is present in APT sources list'
-  ansible.builtin.apt_repository:
-    repo: 'ppa:certbot/certbot'
+- name: 'Ensure Certbot is installed'
+  community.general.snap:
+    classic: true
+    name: 'certbot'
     state: 'present'
 
-- name: 'Ensure Certbot is installed'
-  ansible.builtin.apt:
-    force_apt_get: true
-    name: 'python-certbot-apache'
-    state: 'present'
-  register: __apt_install_python_certbot_apache
+- name: 'Get Certbot account status'
+  ansible.builtin.command: 'certbot show_account'
+  register: __certbot_show_account
+  changed_when: false
+  ignore_errors: true
+
+# The previous task will have created "/etc/letsencrypt" and a few other
+# directories inside it for us already.
+- name: 'Ensure Certbot global configuration file exists'
+  ansible.builtin.template:
+    dest: '/etc/letsencrypt/cli.ini'
+    group: 'root'
+    mode: 0644
+    owner: 'root'
+    src: 'cli.ini.j2'
+
+- name: 'Ensure custom logrotate configuration file for certbot logs exists'
+  ansible.builtin.template:
+    dest: '/etc/logrotate.d/certbot'
+    group: 'root'
+    mode: 0644
+    owner: 'root'
+    src: 'certbot.j2'
+  when: '"monitoring" in ansible_play_role_names'
 
 - name: "Ensure a Let's Encrypt ACME account has been registered"
   ansible.builtin.command:
@@ -30,7 +49,7 @@
       --agree-tos
       --no-eff-email
       --email '{{ letsencrypt__administrator_email }}'
-  when: __apt_install_python_certbot_apache.changed # noqa 503
+  when: letsencrypt__administrator_email not in __certbot_show_account.stdout
 
 - name: "Ensure valid Let's Encrypt certificates for sites exist"
   ansible.builtin.script: 'certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(" ") }}'
@@ -45,8 +64,19 @@
   notify:
     'Reload Apache'
 
-- name: 'Ensure the Certbot scheduled task plays nicely with Apache'
-  ansible.builtin.replace:
-    path: '/etc/cron.d/certbot'
-    regexp: 'certbot -q renew$'
-    replace: "certbot -q renew --webroot --webroot-path /var/www/html --deploy-hook 'service apache2 graceful'"
+# This hook is not installed if logrotate is installed as Apache is
+# already gracefully reloaded daily as part of log rotation gubbins.
+- name: 'Ensure post-certificate-renewal Certbot hook exists'
+  ansible.builtin.file:
+    content: |
+      #!/bin/bash
+      # Ansible managed
+      #
+      # This file was written by Damien Dart, <damiendart@pobox.com>. This is
+      # free and unencumbered software released into the public domain. For
+      # more information, please refer to the accompanying "UNLICENCE" file.
+
+      service apache2 graceful
+    dest: '/etc/letsencrypt/renewal-hooks/post/reload-apache'
+    mode: 0744
+  when: '"monitoring" not in ansible_play_role_names'

@@ -13,7 +13,7 @@ import sys
 def main():
     domains = sys.argv[1:]
     output = subprocess.run(
-        ['/usr/bin/certbot', 'certificates'],
+        ['/snap/bin/certbot', 'certificates'],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     )
@@ -21,7 +21,7 @@ def main():
     output.check_returncode()
 
     groups = re.search(
-        r'Certificate Name: %s\n.*Domains: (?P<domains>.*)$' % sys.argv[1],
+        r'Certificate Name: %s\n.*\n.*\n.*Domains: (?P<domains>.*)$' % sys.argv[1],  # noqa: E501
         output.stdout.decode('utf8'),
         re.MULTILINE
     )
@@ -29,7 +29,7 @@ def main():
     if groups is None:
         output = subprocess.run(
             [
-                '/usr/bin/certbot',
+                '/snap/bin/certbot',
                 'certonly',
                 '--webroot',
                 '-w',
@@ -47,7 +47,7 @@ def main():
     elif Counter(re.split(r',? ', groups['domains'])) != Counter(domains):
         output = subprocess.run(
             [
-                '/usr/bin/certbot',
+                '/snap/bin/certbot',
                 'certonly',
                 '--cert-name',
                 domains[0],
