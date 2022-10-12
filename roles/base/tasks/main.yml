@@ -52,6 +52,7 @@
     name:
       - 'curl'
       - 'git'
+      - 'htop'
       - 'msmtp-mta'
       # Ansible requires Passlib for certain functions.
       - 'python3-passlib'
