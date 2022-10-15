@@ -32,6 +32,9 @@ development__binary_archives:
     url: 'https://releases.hashicorp.com/terraform/1.2.4/terraform_1.2.4_linux_amd64.zip'
 
 development__debian_packages:
+  - checksum: 'sha256:215c88e8cf3fefcd02ef45dc8cdad563e1c601faeddca41565b6b852fceb26b5'
+    url: 'https://github.com/neovim/neovim/releases/download/v0.8.0/nvim-linux64.deb'
+
   - checksum: 'sha256:f411bf675177cad093b2bc990b4349a5831756e8f597f05e4e83f14eb71d3eac'
     url: 'https://github.com/sharkdp/bat/releases/download/v0.21.0/bat_0.21.0_amd64.deb'
 
