@@ -80,3 +80,6 @@
     dest: '/etc/letsencrypt/renewal-hooks/post/reload-apache'
     mode: 0744
   when: '"monitoring" not in ansible_play_role_names'
+
+- name: 'Include tasks to clean up old and unused certificates'
+  ansible.builtin.include_tasks: 'certificate-cleanup.yml'
