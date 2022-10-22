@@ -48,8 +48,8 @@
       register
       --agree-tos
       --no-eff-email
-      --email '{{ letsencrypt__administrator_email }}'
-  when: letsencrypt__administrator_email not in __certbot_show_account.stdout
+      --email '{{ certbot__administrator_email }}'
+  when: certbot__administrator_email not in __certbot_show_account.stdout
 
 - name: "Ensure valid Let's Encrypt certificates for sites exist"
   ansible.builtin.script: 'certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(" ") }}'
@@ -58,7 +58,7 @@
   register: certbot_update
   changed_when: certbot_update.stdout is search('Certificate')
   ignore_errors: true
-  loop: '{{ letsencrypt__sites | dict2items }}'
+  loop: '{{ certbot__certificates | dict2items }}'
   loop_control:
     label: '{{ item.key }}'
   notify:

@@ -1,7 +1,7 @@
 # Cleans up any certificate detritus.
 #
 # There is some gnarly Jinja filter usage here, so as a precaution
-# changes will only be made when the "letsencrypt__certificate_cleanup"
+# changes will only be made when the "certbot__certificate_cleanup"
 # variable is set to a truthy value; that way you can use the dry-run to
 # review what gets deleted.
 #
@@ -18,12 +18,12 @@
 
 - name: 'Ensure old and unused certificates no longer exist'
   ansible.builtin.command: 'certbot delete --cert-name {{ item }}'
-  when: letsencrypt__certificate_cleanup | default(False)
+  when: certbot__certificate_cleanup | default(False)
   loop: >
     {{
       __certbot_certificates.stdout_lines
         | select('match', '^\s+Certificate Name:')
         | map('regex_replace', '^\s+Certificate Name:\s+')
-        | difference(letsencrypt__sites.keys())
+        | difference(certbot__certificates.keys())
       | default([])
     }}

@@ -45,10 +45,10 @@
   roles:
     - 'backup'
     - 'base'
-    - 'letsencrypt'
+    - 'certbot'
     - 'livepatch'
     - 'monitoring'
     - 'webserver'
   vars:
-    letsencrypt__certificate_cleanup: '{{ cli__website_cleanup | default(False) }}'
+    certbot__certificate_cleanup: '{{ cli__website_cleanup | default(False) }}'
     webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'

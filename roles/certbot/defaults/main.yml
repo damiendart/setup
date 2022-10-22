@@ -1,4 +1,4 @@
-# Default and required variables for the "letsencrypt" role.
+# Default and required variables for the "certbot" role.
 #
 # Commented-out variables must be defined elsewhere (in an inventory,
 # playbook, or at runtime).
@@ -15,11 +15,11 @@
 #   - "aliases": A list of additional domain names to include when
 #     obtaining a certificate.
 
-letsencrypt__sites: {}
+certbot__certificates: {}
 
 
 # A string containing the email address associated with a Let's Encrypt
 # ACME account. An account will be created if the email address hasn't
 # been previously registered.
 
-# letsencrypt__administrator_email: ''
+# certbot__administrator_email: ''
