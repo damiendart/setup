@@ -6,9 +6,11 @@ things for personal use, including development environments and a couple
 of servers where I host a few small websites.
 
 This project mainly consists of [Ansible][] playbooks and roles, but
-there’s also some [TestInfra][] and [Packer][] bits-and-pieces around.
+there’s also some [Docker Compose][], [TestInfra][], and [Packer][]
+bits-and-pieces hanging around.
 
   [Ansible]: <https://docs.ansible.com/ansible/latest/index.html>
+  [Docker Compose]: <https://docs.docker.com/compose/>
   [TestInfra]: <https://testinfra.readthedocs.io/en/latest/>
   [Packer]: <https://www.packer.io/>
 

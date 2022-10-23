@@ -1,0 +1,40 @@
+# A Docker Compose file for running stuff on a Synology DiskStation.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+services:
+  syncthing:
+    image: 'syncthing/syncthing'
+    container_name: 'syncthing'
+    hostname: 'diskstation'
+    environment:
+      - 'PGID=${SYNCTHING_PGID:?err}'
+      - 'PUID=${SYNCTHING_PUID:?err}'
+      - 'TZ=Europe/London'
+    volumes:
+      - '${SYNCTHING_DIRECTORY:?err}:/var/syncthing'
+    ports:
+      - '8384:8384'
+      - '22000:22000/tcp'
+      - '22000:22000/udp'
+    restart: 'unless-stopped'
+
+  prometheus:
+    command: >
+      --web.enable-lifecycle
+      --config.file=/etc/prometheus/prometheus.yml
+    container_name: 'prometheus'
+    hostname: 'diskstation'
+    image: 'prom/prometheus'
+    ports:
+      - '9090:9090'
+    volumes:
+      - './prometheus:/etc/prometheus'
+      - 'prometheus:/prometheus'
+    restart: 'unless-stopped'
+
+volumes:
+  prometheus:
