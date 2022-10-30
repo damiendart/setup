@@ -11,10 +11,10 @@
 # A string containing a checksum used to verify the integrity the
 # Node.js binary archive download. For valid checksum formats, see
 # <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html#parameter-checksum>.
-nodejs__archive_checksum: 'sha256:edcb6e9bb049ae365611aa209fc03c4bfc7e0295dbcc5b2f1e710ac70384a8ec'
+nodejs__archive_checksum: 'sha256:9429e26d9a35cb079897f0a22622fe89ff597976259a8fcb38b7d08b154789dc'
 
 # A string containing the version of Node.js to install.
-nodejs__version: '16.16.0'
+nodejs__version: '18.12.0'
 
 
 # A string containing the directory where Node.js binary archives are
