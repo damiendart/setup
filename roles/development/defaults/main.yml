@@ -27,6 +27,13 @@ development__binary_archives:
       - 's/^shellcheck-v0.8.0\///'
     url: 'https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz'
 
+  # The checksum provided on the SQLite website is a SHA3-256 hash,
+  # which Ansible doesn't support. The following SHA-256 hash has been
+  # manually generated after verifying the binary archive using the
+  # provided SHA3-256 hash and "openssl dgst -sha3-256 [FILE-PATH]".
+  - checksum: 'sha256:8f13f3eece0100519b94c0bf9053edfbb3471e72bdec20f03cad3c2b35380e68'
+    url: 'https://sqlite.org/2022/sqlite-tools-linux-x86-3390400.zip'
+
   - binaries: 'terraform'
     checksum: 'sha256:705ea62a44a0081594dad6b2b093eefefb12d54fa5a20a66562f9e082b00414c'
     url: 'https://releases.hashicorp.com/terraform/1.2.4/terraform_1.2.4_linux_amd64.zip'

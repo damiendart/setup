@@ -80,9 +80,37 @@
     owner: 'root'
     remote_src: true
     src: '{{ development__download_cache_directory }}/{{ item.filename | default(item.url | basename) }}'
-  loop: '{{ development__binary_archives }}'
+  loop: "{{ development__binary_archives | rejectattr('url', 'regex', '.*sqlite.*') }}"
   loop_control:
     label: '{{ item.filename | default(item.url | basename) }}'
+
+# The binary archive for the SQLite command-line tools has to be treated
+# different because Ansible has a fit if you try and use the "unzip"
+# path-junking functionality (via the "extra_opts" paramater).
+- name: 'Ensure SQLite command-line tools are installed'
+  block:
+    - name: 'Ensure SQLite command-line tools have been extracted into a temporary location'
+      ansible.builtin.unarchive:
+        dest: '{{ development__download_cache_directory }}'
+        group: 'root'
+        list_files: true
+        mode: 0755
+        owner: 'root'
+        remote_src: true
+        src: "{{ development__download_cache_directory }}/{{ (development__binary_archives | selectattr('url', 'regex', '.*sqlite.*') | first).url | basename }}"
+      register: __sqlite_tools_unarchive
+
+    - name: 'Ensure SQLite command-line tools are installed'
+      ansible.builtin.copy:
+        dest: '/usr/local/bin/{{ item | basename }}'
+        group: 'root'
+        mode: 0755
+        owner: 'root'
+        remote_src: true
+        src: '{{ development__download_cache_directory }}/{{ item }}'
+      loop: "{{ __sqlite_tools_unarchive.files | reject('regex', '\/$') }}"
+      loop_control:
+        label: "{{ item | basename }}"
 
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
