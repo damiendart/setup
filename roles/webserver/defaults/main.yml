@@ -36,3 +36,4 @@ webserver__php_fpm_min_spare_servers: 6
 webserver__php_fpm_max_spare_servers: 10
 
 webserver__static_caching: true
+webserver__xdebug_versions: []
