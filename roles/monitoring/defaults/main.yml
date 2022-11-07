@@ -9,12 +9,11 @@
 
 ---
 # A string containing a checksum used to verify the integrity the Node
-# Exporter binary archive download. For valid checksum formats, see
-# <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html#parameter-checksum>.
-monitoring__node_exporter_archive_checksum: 'sha256:68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949'
+# Exporter binary archive "node_exporter-1.4.0.linux-amd64.tar.gz".
+monitoring__node_exporter_archive_checksum: 'sha256:e77ff1b0a824a4e13f82a35d98595fe526849c09e3480d0789a56b72242d2abc'
 
 # A string containing the version of Node Exporter to install.
-monitoring__node_exporter_version: '1.3.1'
+monitoring__node_exporter_version: '1.4.0'
 
 
 # A string containing the administrator user's email address, used when

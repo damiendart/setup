@@ -12,9 +12,8 @@ golang__installable_packages:
   - 'honnef.co/go/tools/cmd/staticcheck@latest'
 
 # A string containing a checksum used to verify the integrity the Go
-# binary archive download. For valid checksum formats, please see
-# <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html#parameter-checksum>.
-golang__archive_checksum: 'sha256:5e8c5a74fe6470dd7e055a461acda8bb4050ead8c2df70f227e3ff7d8eb7eeb6'
+# binary archive download "go1.19.3.linux-amd64.tar.gz".
+golang__archive_checksum: 'sha256:74b9640724fd4e6bb0ed2a1bc44ae813a03f1e72a4c76253e2d5c015494430ba'
 
 # A string containing the version of Go to install.
-golang__version: '1.19.2'
+golang__version: '1.19.3'
