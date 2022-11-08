@@ -4,7 +4,6 @@
 
 ansible==5.6.0
 ansible-lint==6.0.2
-docker-compose==1.29.2
 flake8==4.0.1
 passlib==1.7.4
 pytest-testinfra==6.7.0
