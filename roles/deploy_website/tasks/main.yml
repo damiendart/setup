@@ -7,14 +7,14 @@
 ---
 - name: 'Load variables from release artifact metadata YAML document'
   ansible.builtin.include_vars:
-    file: '{{ deploy_to_vhost__release_artifact_folder }}/release.yml'
+    file: '{{ deploy_website__release_artifact_folder }}/release.yml'
     name: __release_metadata
 
 - name: 'Set virtual host base directory variable'
   tags:
-    - 'deploy-to-vhost:setup'
+    - 'deploy-website:setup'
   ansible.builtin.set_fact:
-    __vhost_base_directory: '/var/www/{{ deploy_to_vhost__site_domain }}'
+    __vhost_base_directory: '/var/www/{{ deploy_website__site_domain }}'
 
 - name: 'Set release base directory variable'
   ansible.builtin.set_fact:
@@ -34,9 +34,9 @@
 
 - name: 'Ensure a deployment lock file exists'
   ansible.builtin.file:
-    group: '{{ deploy_to_vhost__administrator_username }}'
+    group: '{{ deploy_website__administrator_username }}'
     mode: 0640
-    owner: '{{ deploy_to_vhost__administrator_username }}'
+    owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __vhost_base_directory }}/deploy.lock'
     state: 'touch'
 
@@ -50,13 +50,13 @@
   ansible.builtin.file:
     group: 'www-data'
     mode: 0750
-    owner: '{{ deploy_to_vhost__administrator_username }}'
+    owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __release_base_directory }}'
     state: 'directory'
 
 - name: 'Unarchive release artifact archive into release base directory'
   ansible.builtin.unarchive:
-    src: '{{ deploy_to_vhost__release_artifact_folder }}/release.tgz'
+    src: '{{ deploy_website__release_artifact_folder }}/release.tgz'
     dest: '{{ __release_base_directory }}'
   become: false
 
@@ -66,9 +66,9 @@
     chdir: '{{ __release_base_directory }}'
   changed_when: true
   loop:
-    - "find . -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
-    - "find . -type f -maxdepth 1 -exec chown '{{ deploy_to_vhost__administrator_username }}:root' {} \\;"
-    - "find . -wholename './private*' -exec chown '{{ deploy_to_vhost__administrator_username }}:root' {} \\;"
+    - "find . -exec chown '{{ deploy_website__administrator_username }}:www-data' {} \\;"
+    - "find . -type f -maxdepth 1 -exec chown '{{ deploy_website__administrator_username }}:root' {} \\;"
+    - "find . -wholename './private*' -exec chown '{{ deploy_website__administrator_username }}:root' {} \\;"
     - 'find . -type d -exec chmod 0750 {} \;'
     - 'find . -type f -exec chmod 0640 {} \;'
     - "find . -type f -wholename './private/bin/*' -exec chmod 0750 {} \\;"
@@ -97,14 +97,14 @@
   block:
     - name: 'Get status of project-specific pre-installation tasks file'
       ansible.builtin.stat:
-        path: '{{ deploy_to_vhost__release_artifact_folder }}/pre-install-tasks.yml'
+        path: '{{ deploy_website__release_artifact_folder }}/pre-install-tasks.yml'
       changed_when: false
       delegate_to: 'localhost'
       register: __pre_install_tasks_file
 
     - name: 'Include project-specific pre-installation tasks file (if applicable)'
       ansible.builtin.include_tasks:
-        file: '{{ deploy_to_vhost__release_artifact_folder }}/pre-install-tasks.yml'
+        file: '{{ deploy_website__release_artifact_folder }}/pre-install-tasks.yml'
       when: __pre_install_tasks_file.stat.exists
 
 - name: 'Check for and install PHP dependencies with Composer'
@@ -136,7 +136,7 @@
         chdir: "{{ __release_base_directory }}/{{ (__composer_json_slurp['content'] | b64decode | from_json)['config']['vendor-dir'] | default('vendor') }}"
       changed_when: true
       loop:
-        - "find . -exec chown '{{ deploy_to_vhost__administrator_username }}:www-data' {} \\;"
+        - "find . -exec chown '{{ deploy_website__administrator_username }}:www-data' {} \\;"
         - 'find . -type d -exec chmod 0750 {} \;'
         - 'find . -type f -exec chmod 0640 {} \;'
       when: __composer_json.stat.exists
@@ -146,7 +146,7 @@
     dest: '{{ __vhost_base_directory }}/deployment.apache2.conf'
     group: 'root'
     mode: 0640
-    owner: '{{ deploy_to_vhost__administrator_username }}'
+    owner: '{{ deploy_website__administrator_username }}'
     src: 'deployment.apache2.conf.j2'
   notify:
     - 'Reload Apache'
@@ -160,7 +160,7 @@
     block_start_string: '#%'
     dest: '{{ __vhost_base_directory }}/deployment.conf.sh'
     group: 'root'
-    owner: '{{ deploy_to_vhost__administrator_username }}'
+    owner: '{{ deploy_website__administrator_username }}'
     mode: 0640
     src: 'deployment.conf.sh.j2'
 
@@ -168,14 +168,14 @@
   block:
     - name: 'Get status of post-installation tasks file'
       ansible.builtin.stat:
-        path: '{{ deploy_to_vhost__release_artifact_folder }}/post-install-tasks.yml'
+        path: '{{ deploy_website__release_artifact_folder }}/post-install-tasks.yml'
       changed_when: false
       delegate_to: 'localhost'
       register: __post_install_tasks_file
 
     - name: 'Include post-installation tasks file (if applicable)'
       ansible.builtin.include_tasks:
-        file: '{{ deploy_to_vhost__release_artifact_folder }}/post-install-tasks.yml'
+        file: '{{ deploy_website__release_artifact_folder }}/post-install-tasks.yml'
       when: __post_install_tasks_file.stat.exists
 
 - name: 'Make Sentry aware of deployment'
@@ -186,7 +186,7 @@
       ansible.builtin.uri:
         body: |
           {
-            "projects": ["{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project }}"],
+            "projects": ["{{ deploy_website__vhosts[deploy_website__site_domain].sentry_project }}"],
             "refs": [
               {
                 "commit": "{{ __release_metadata.release_git_sha }}",
@@ -197,26 +197,26 @@
           }
         body_format: 'json'
         headers:
-          Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
+          Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
         method: 'POST'
         status_code: 201
-        url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/'
+        url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/releases/'
       changed_when: true
 
     - name: 'Make Sentry aware of deployment'
       ansible.builtin.uri:
         body: |
           {
-            "environment": "{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars.APP_ENV }}"
+            "environment": "{{ deploy_website__vhosts[deploy_website__site_domain].env_vars.APP_ENV }}"
           }
         body_format: 'json'
         headers:
-          Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
+          Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
         method: 'POST'
         status_code: 201
-        url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/releases/{{ __release_metadata.release_timestamp }}/deploys/'
+        url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/releases/{{ __release_metadata.release_timestamp }}/deploys/'
       changed_when: true
-  when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
+  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
   delegate_to: 'localhost'
   run_once: true
 
@@ -229,10 +229,10 @@
   block:
     - name: 'Check release is live'
       ansible.builtin.uri:
-        http_agent: 'deploy-to-vhost-smoke-test'
-        url: 'https://{{ deploy_to_vhost__site_domain }}/'
-        url_password: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.password | default("") }}'
-        url_username: '{{ deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].auth.username | default("") }}'
+        http_agent: 'deploy-website-smoke-test'
+        url: 'https://{{ deploy_website__site_domain }}/'
+        url_password: '{{ deploy_website__vhosts[deploy_website__site_domain].auth.password | default("") }}'
+        url_username: '{{ deploy_website__vhosts[deploy_website__site_domain].auth.username | default("") }}'
         validate_certs: false
       register: __smoketest_response
       failed_when: >
@@ -251,13 +251,13 @@
           curl -sS
           --fail
           --insecure
-          --resolve '{{ deploy_to_vhost__site_domain }}:443:127.0.0.1'
-          --user-agent 'deploy-to-vhost-smoke-test'
+          --resolve '{{ deploy_website__site_domain }}:443:127.0.0.1'
+          --user-agent 'deploy-website-smoke-test'
           '{{ item }}'
         warn: false
       register: __smoketest_response
       changed_when: false
-      loop: "{{ [ 'https://{{ deploy_to_vhost__site_domain }}' ] + deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].additional_smoketest_urls | default([]) }}"
+      loop: "{{ [ 'https://{{ deploy_website__site_domain }}' ] + deploy_website__vhosts[deploy_website__site_domain].additional_smoketest_urls | default([]) }}"
   rescue:
     - name: 'Pretty-print any smoke-test-related errors'
       ansible.builtin.debug:

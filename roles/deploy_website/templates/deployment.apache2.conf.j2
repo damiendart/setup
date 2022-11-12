@@ -13,14 +13,14 @@ SetEnv RELEASE_TIMESTAMP "${RELEASE_TIMESTAMP}"
 SetEnv RELEASE_GIT_SHA "{{ __release_metadata.release_git_sha }}"
 SetEnv SHARED_ROOT "${SHARED_ROOT}"
 
-{% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
-  {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
+{% if deploy_website__vhosts[deploy_website__site_domain].env_vars is defined %}
+  {% for i in deploy_website__vhosts[deploy_website__site_domain].env_vars | dict2items %}
     Define {{ i.key }} "{{ i.value | string }}"
     SetEnv {{ i.key }} "{{ i.value | string }}"
   {% endfor %}
 {% endif %}
 
-<If "%{HTTP_USER_AGENT} == 'deploy-to-vhost-smoke-test'">
+<If "%{HTTP_USER_AGENT} == 'deploy-website-smoke-test'">
   header set "X-Release-Timestamp" "${RELEASE_TIMESTAMP}"
 </If>
 
@@ -31,7 +31,7 @@ DocumentRoot "${RELEASE_ROOT}/public"
 <Directory ${RELEASE_ROOT}/public>
   <IfFile "${VHOST_ROOT}/.htpasswd">
     AuthType Basic
-    AuthName "{{ deploy_to_vhost__site_domain }}"
+    AuthName "{{ deploy_website__site_domain }}"
     AuthBasicProvider file
     AuthUserFile "${VHOST_ROOT}/.htpasswd"
     Require local
@@ -75,8 +75,8 @@ UnDefine RELEASE_ROOT
 UnDefine RELEASE_TIMESTAMP
 UnDefine VHOST_ROOT
 
-{% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %}
-  {% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %}
+{% if deploy_website__vhosts[deploy_website__site_domain].env_vars is defined %}
+  {% for i in deploy_website__vhosts[deploy_website__site_domain].env_vars | dict2items %}
     UnDefine {{ i.key }}
   {% endfor %}
 {% endif %}

@@ -9,13 +9,13 @@
   pre_tasks:
     - name: 'End play for non-applicable hosts'
       ansible.builtin.meta: 'end_host'
-      when: deploy_to_vhost__vhosts[cli__site_domain] is not defined
+      when: deploy_website__vhosts[cli__site_domain] is not defined
 
     - name: 'Gather Facts'
       ansible.builtin.setup:
 
   roles:
-    - role: 'deploy_to_vhost'
+    - role: 'deploy_website'
       vars:
-        deploy_to_vhost__release_artifact_folder: '{{ cli__release_artifact_folder }}'
-        deploy_to_vhost__site_domain: '{{ cli__site_domain }}'
+        deploy_website__release_artifact_folder: '{{ cli__release_artifact_folder }}'
+        deploy_website__site_domain: '{{ cli__site_domain }}'

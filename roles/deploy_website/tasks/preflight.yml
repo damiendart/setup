@@ -8,7 +8,7 @@
 # A "public" directory is required for Apache to serve files from.
 - name: 'Check release archive for "public" directory'
   ansible.builtin.command:
-    cmd: 'tar -tvf {{ deploy_to_vhost__release_artifact_folder }}/release.tgz "./public/"'
+    cmd: 'tar -tvf {{ deploy_website__release_artifact_folder }}/release.tgz "./public/"'
     warn: false
   changed_when: false
   delegate_to: 'localhost'
@@ -19,7 +19,7 @@
     - name: 'Check PHP version required for release is supported by host'
       ansible.builtin.assert:
         that:
-          - __release_metadata.php_version in deploy_to_vhost__php_versions
+          - __release_metadata.php_version in deploy_website__php_versions
   when: __release_metadata.php_version is defined
 
 - name: 'Check release timestamp is a non-empty string'
@@ -43,10 +43,10 @@
     - 'sentry'
   ansible.builtin.uri:
     headers:
-      Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
+      Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
     status_code: 200
-    url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/'
-  when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
+    url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/'
+  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
   delegate_to: 'localhost'
   run_once: true
 
@@ -55,10 +55,10 @@
     - 'sentry'
   ansible.builtin.uri:
     headers:
-      Authorization: 'Bearer {{ deploy_to_vhost__sentry_auth_token }}'
+      Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
     status_code: 200
-    url: 'https://sentry.io/api/0/organizations/{{ deploy_to_vhost__sentry_organisation }}/repos/'
-  when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
+    url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/repos/'
+  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
   failed_when: __sentry_organisation_repositories.json | selectattr('name', 'equalto', __release_metadata.github_project) | count == 0
   delegate_to: 'localhost'
   register: __sentry_organisation_repositories
@@ -72,9 +72,9 @@
     - 'sentry'
   ansible.builtin.uri:
     headers:
-      Authorization: 'Token {{ deploy_to_vhost__github_auth_token }}'
+      Authorization: 'Token {{ deploy_website__github_auth_token }}'
     status_code: 200
     url: 'https://api.github.com/repos/{{ __release_metadata.github_project }}/git/commits/{{ __release_metadata.release_git_sha }}'
-  when: deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].sentry_project is defined
+  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
   delegate_to: 'localhost'
   run_once: true

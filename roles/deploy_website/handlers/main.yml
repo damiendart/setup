@@ -12,4 +12,4 @@
   ansible.builtin.service:
     name: 'php{{ item }}-fpm'
     state: 'reloaded'
-  loop: '{{ deploy_to_vhost__php_versions }}'
+  loop: '{{ deploy_website__php_versions }}'

@@ -84,7 +84,7 @@
     # deployments. Instead, it should be defined in a
     # "deployment.apache2.conf" configuration file in the virtual host
     # root directory that is managed by the deployment tool of choice.
-    # For an example, please see the "deploy-to-vhost" Ansible role.
+    # For an example, please see the "deploy-website" Ansible role.
     <IfFile "/var/www/{{ item.key }}/deployment.apache2.conf">
       Include "/var/www/{{ item.key }}/deployment.apache2.conf"
     </IfFile>

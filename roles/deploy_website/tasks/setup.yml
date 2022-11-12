@@ -9,11 +9,11 @@
 # Capistrano and similar deployment tools.
 - name: 'Ensure base deployment-related directories exist'
   tags:
-    - 'deploy-to-vhost:setup'
+    - 'deploy-website:setup'
   ansible.builtin.file:
     group: 'www-data'
     mode: 0750
-    owner: '{{ deploy_to_vhost__administrator_username }}'
+    owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __vhost_base_directory }}/{{ item }}'
     state: 'directory'
   loop:
@@ -22,37 +22,37 @@
 
 - name: 'Ensure "private" shared-data directory exists'
   tags:
-    - 'deploy-to-vhost:setup'
+    - 'deploy-website:setup'
   ansible.builtin.file:
     group: 'root'
     mode: 0750
-    owner: '{{ deploy_to_vhost__administrator_username }}'
+    owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __vhost_base_directory }}/shared/private'
     state: 'directory'
 
 - name: 'Ensure "protected" shared-data directory exists'
   tags:
-    - 'deploy-to-vhost:setup'
+    - 'deploy-website:setup'
   ansible.builtin.file:
     group: 'www-data'
     # Octal file permissions must contain a leading zero or be a string.
     mode: '2750'
-    owner: '{{ deploy_to_vhost__administrator_username }}'
+    owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __vhost_base_directory }}/shared/protected'
     state: 'directory'
 
 - name: 'Ensure website crontab file exists'
   tags:
-    - 'deploy-to-vhost:setup'
+    - 'deploy-website:setup'
   block:
     - name: 'Ensure existing website crontab file is cleared'
       ansible.builtin.file:
-        path: '/etc/cron.d/website-{{ deploy_to_vhost__site_domain | replace(".","-") }}'
+        path: '/etc/cron.d/website-{{ deploy_website__site_domain | replace(".","-") }}'
         state: 'absent'
 
     - name: 'Ensure base website crontab file exists'
       ansible.builtin.cron:
-        cron_file: 'website-{{ deploy_to_vhost__site_domain | replace(".","-") }}'
+        cron_file: 'website-{{ deploy_website__site_domain | replace(".","-") }}'
         env: true
         job: '{{ item.job }}'
         name: '{{ item.name }}'
@@ -60,9 +60,9 @@
       loop:
         - job: '{{ __vhost_base_directory }}/deployment.conf.sh'
           name: 'BASH_ENV'
-        - job: '{{ deploy_to_vhost__administrator_email }}'
+        - job: '{{ deploy_website__administrator_email }}'
           name: 'MAILTO'
 
     - name: 'Set release crontab file name variable'
       ansible.builtin.set_fact:
-        __release_crontab: 'website-{{ deploy_to_vhost__site_domain | replace(".","-") }}'
+        __release_crontab: 'website-{{ deploy_website__site_domain | replace(".","-") }}'

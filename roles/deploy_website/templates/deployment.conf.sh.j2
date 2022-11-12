@@ -11,8 +11,8 @@ export SHARED_ROOT="{{ __vhost_base_directory ~ '/shared' }}"
 
 # Override Jinja control structure syntax so that it doesn't
 # cause issues with ShellCheck.
-#% if deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars is defined %#
-  #% for i in deploy_to_vhost__vhosts[deploy_to_vhost__site_domain].env_vars | dict2items %#
+#% if deploy_website__vhosts[deploy_website__site_domain].env_vars is defined %#
+  #% for i in deploy_website__vhosts[deploy_website__site_domain].env_vars | dict2items %#
     # shellcheck disable=SC1083,SC2154
     export {{ i.key }}="{{ i.value | string }}"
   #% endfor %#
