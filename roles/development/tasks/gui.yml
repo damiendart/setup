@@ -36,7 +36,7 @@
 
 - name: 'Ensure the Iosevka Super TTC file is installed'
   ansible.builtin.unarchive:
-    dest: '/home/{{ administrator_username }}/.fonts'
+    dest: '/home/{{ development__user_username }}/.fonts'
     group: '{{ development__user_username }}'
     owner: '{{ development__user_username }}'
     src: '{{ development__download_cache_directory }}/super-ttc-iosevka-{{ development__iosevka_version }}.zip'
