@@ -15,6 +15,19 @@
     owner: 'root'
     state: 'directory'
 
+# For Apache to be able to serve files, it must also be able to search
+# the containing directories as well as all parent directories up to
+# the root of the filesystem. For more information, please see
+# <https://cwiki.apache.org/confluence/display/httpd/13PermissionDenied>.
+- name: 'Ensure Apache can search the administrator home directory'
+  ansible.posix.acl:
+    entity: 'www-data'
+    etype: 'group'
+    path: '/home/{{ development__user_username }}'
+    permissions: 'x'
+    state: 'present'
+  when: '"webserver" in ansible_play_role_names'
+
 - name: 'Ensure personal projects directory exists in administrator home directory'
   ansible.builtin.file:
     group: '{{ development__user_username }}'
