@@ -43,7 +43,7 @@ See also [my notes on setting up a personal development environment][].
 
   [Generate an SSH key]: <https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key>
   [my dotfiles]: <https://www.robotinaponcho.net/git/#toolbox>
-  [my notes on setting up a personal development environment]: <https://www.robotinaponcho.net/notes/development-environment>
+  [my notes on setting up a personal development environment]: <https://www.robotinaponcho.net/notes/ubuntu-desktop-setup>
 
 
 ## Testing server state
