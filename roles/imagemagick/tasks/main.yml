@@ -1,0 +1,29 @@
+# This role installs and configures ImageMagick.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure ImageMagick 6 is installed'
+  ansible.builtin.apt:
+    force_apt_get: true
+    name:
+      - 'imagemagick'
+    state: 'present'
+
+- name: 'Get status of ImageMagick 6 policy configuration file'
+  ansible.builtin.stat:
+    path: '/etc/ImageMagick-6/policy.xml'
+  register: __imagemagick_six_policy
+
+- name: 'Ensure ImageMagick 6 resource limits are adjusted for low-resource environments'
+  ansible.builtin.lineinfile:
+    dest: '/etc/ImageMagick-6/policy.xml'
+    regexp: "{{ item.regex }}"
+    line: "{{ item.line }}"
+    state: 'present'
+  loop:
+    - regex: 'name="memory"'
+      line: '  <policy domain="resource" name="memory" value="32MiB"/>'
+  when: imagemagick__reduce_resource_limits

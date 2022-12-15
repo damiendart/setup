@@ -16,8 +16,6 @@
 - name: 'Ensure webserver-related packages are installed'
   ansible.builtin.apt:
     force_apt_get: true
-    #   - Some PHP applications use the ImageMagick command-line tools
-    #     instead of the native Imagick PHP extension.
     #   - The "libfcgi0ldbl" package provides "cgi-fcgi", a command-line
     #     tool that, amongst other things, will allow getting PHP-FPM
     #     status from the command line. For more information, see
@@ -26,7 +24,7 @@
     #     and doesn't require installing a separate package.
     name: >
       {{
-        ['apache2', 'imagemagick', 'libfcgi0ldbl', 'goaccess']
+        ['apache2', 'libfcgi0ldbl', 'goaccess']
         + webserver__php_versions
           | product(webserver__php_default_packages + webserver__php_packages_extra)
           | map('join', '-')

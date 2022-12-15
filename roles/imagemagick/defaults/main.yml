@@ -1,0 +1,9 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# A boolean value that specifies whether the ImageMagick 6 policy
+# configuration file is updated to reduce resource limits for
+# low-resource environments.
+imagemagick__reduce_resource_limits: false
