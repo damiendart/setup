@@ -24,7 +24,7 @@
     #     and doesn't require installing a separate package.
     name: >
       {{
-        ['apache2', 'libfcgi0ldbl', 'goaccess']
+        ['apache2', 'libfcgi0ldbl']
         + webserver__php_versions
           | product(webserver__php_default_packages + webserver__php_packages_extra)
           | map('join', '-')
