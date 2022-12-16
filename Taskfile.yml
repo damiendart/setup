@@ -41,7 +41,7 @@ tasks:
 
   lint:packer:
     cmds:
-      - 'packer validate packer/*.hcl'
+      - 'packer validate misc/packer/*.hcl'
     desc: 'Lint Packer templates with Packer'
 
   lint:python:
