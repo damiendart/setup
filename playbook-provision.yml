@@ -18,7 +18,7 @@
     - 'tailscale'
     - 'webserver'
   vars:
-    webserver__vhosts_cleanup: '{{ cli__vhosts_cleanup | default(False) }}'
+    webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
 
 # For work-related machines, we only need to provision a small subset of
 # personal stuff (dotfiles, utilities, etc) as everything else is
