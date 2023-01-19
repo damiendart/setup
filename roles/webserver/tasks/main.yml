@@ -77,9 +77,6 @@
 - name: 'Include tasks to clean up old and unused virtual-host-related stuff'
   ansible.builtin.include_tasks: 'vhosts-cleanup.yml'
 
-- name: 'Include Composer installation and configuration tasks'
-  ansible.builtin.include_tasks: 'composer.yml'
-
 - name: 'Include XDebug installation and configuration tasks'
   ansible.builtin.include_tasks: 'xdebug.yml'
 

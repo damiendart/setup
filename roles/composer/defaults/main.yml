@@ -1,0 +1,13 @@
+# "composer" Ansible role variables.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# A string containing the version of Composer to install.
+composer__composer_version: '2.4.4'
+
+# A string containing a checksum used to verify the integrity of the
+# Composer PHP archive download.
+composer__composer_checksum: 'sha256:c252c2a2219956f88089ffc242b42c8cb9300a368fd3890d63940e4fc9652345'

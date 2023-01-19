@@ -1,0 +1,40 @@
+# Installs and configures Composer.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the Composer executable exists'
+  ansible.builtin.get_url:
+    checksum: '{{ composer__composer_checksum }}'
+    dest: '/usr/local/bin/composer'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    url: 'https://getcomposer.org/download/{{ composer__composer_version }}/composer.phar'
+
+- name: 'Ensure a Composer configuration folder exists'
+  ansible.builtin.file:
+    group: '{{ composer__user_username }}'
+    mode: 0755
+    owner: '{{ composer__user_username }}'
+    path: '/home/{{ composer__user_username }}/.config/composer'
+    state: 'directory'
+
+- name: 'Ensure the Composer "auth.json" exists'
+  ansible.builtin.copy:
+    content: |
+      {
+        "bitbucket-oauth": {},
+        "github-oauth": {
+          "github.com": "{{ composer__composer_github_oauth_token }}"
+        },
+        "gitlab-oauth": {},
+        "gitlab-token": {},
+        "http-basic": {}
+      }
+    dest: '/home/{{ composer__user_username }}/.config/composer/auth.json'
+    group: '{{ composer__user_username }}'
+    mode: 0644
+    owner: '{{ composer__user_username }}'
