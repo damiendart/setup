@@ -107,40 +107,6 @@
         file: '{{ deploy_website__release_artifact_folder }}/pre-install-tasks.yml'
       when: __pre_install_tasks_file.stat.exists
 
-- name: 'Check for and install PHP dependencies with Composer'
-  block:
-    - name: 'Get status of "composer.json" in release directory'
-      ansible.builtin.stat:
-        path: '{{ __release_base_directory }}/composer.json'
-      register: __composer_json
-
-    - name: 'Slurp "composer.json" in release directory into a variable'
-      ansible.builtin.slurp:
-        src: '{{ __release_base_directory }}/composer.json'
-      register: __composer_json_slurp
-      when: __composer_json.stat.exists
-
-    - name: 'Install PHP dependencies with Composer'
-      community.general.composer:
-        classmap_authoritative: true
-        command: 'install'
-        executable: '/usr/bin/php{{ __release_metadata.php_version }}'
-        working_dir: '{{ __release_base_directory }}'
-      become: false
-      changed_when: true
-      when: __composer_json.stat.exists
-
-    - name: 'Update owners and permissions of vendor directory'
-      ansible.builtin.command: '{{ item }}'
-      args:
-        chdir: "{{ __release_base_directory }}/{{ (__composer_json_slurp['content'] | b64decode | from_json)['config']['vendor-dir'] | default('vendor') }}"
-      changed_when: true
-      loop:
-        - "find . -exec chown '{{ deploy_website__administrator_username }}:www-data' {} \\;"
-        - 'find . -type d -exec chmod 0750 {} \;'
-        - 'find . -type f -exec chmod 0640 {} \;'
-      when: __composer_json.stat.exists
-
 - name: 'Update environment Apache configuration file'
   ansible.builtin.template:
     dest: '{{ __vhost_base_directory }}/deployment.apache2.conf'
