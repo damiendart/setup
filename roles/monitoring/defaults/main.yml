@@ -9,11 +9,11 @@
 
 ---
 # A string containing a checksum used to verify the integrity the Node
-# Exporter binary archive "node_exporter-1.4.0.linux-amd64.tar.gz".
-monitoring__node_exporter_archive_checksum: 'sha256:e77ff1b0a824a4e13f82a35d98595fe526849c09e3480d0789a56b72242d2abc'
+# Exporter binary archive "node_exporter-1.5.0.linux-amd64.tar.gz".
+monitoring__node_exporter_archive_checksum: 'sha256:af999fd31ab54ed3a34b9f0b10c28e9acee9ef5ac5a5d5edfdde85437db7acbb'
 
 # A string containing the version of Node Exporter to install.
-monitoring__node_exporter_version: '1.4.0'
+monitoring__node_exporter_version: '1.5.0'
 
 
 # A string containing the administrator user's email address, used when

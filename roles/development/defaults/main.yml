@@ -9,54 +9,54 @@ development__binary_archives:
     url: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
 
   - binaries: 'fzf'
-    checksum: 'sha256:312739b4774b0edbe1b83c971e3c6bb902b90773d3331553753e3eba34c684c9'
-    url: 'https://github.com/junegunn/fzf/releases/download/0.34.0/fzf-0.34.0-linux_amd64.tar.gz'
+    checksum: 'sha256:7e6271c7935ba0e92fc04eca346a2b2320561ca862b6bc76301376b70b3558b3'
+    url: 'https://github.com/junegunn/fzf/releases/download/0.36.0/fzf-0.36.0-linux_amd64.tar.gz'
 
   - binaries: 'packer'
-    checksum: 'sha256:ba25b84cc4d3541e9a1dcc0b8e1c7c693f1b39a5d129149194eb6b6050ae56c3'
-    url: 'https://releases.hashicorp.com/packer/1.8.4/packer_1.8.4_linux_amd64.zip'
+    checksum: 'sha256:1f17a724e5ccc696010c842e6d2bb2c2749ab18ce7bf06482012d3ddb9edeef2'
+    url: 'https://releases.hashicorp.com/packer/1.8.5/packer_1.8.5_linux_amd64.zip'
 
   # Ansible gets funny about trying to extract individual files from
   # "tar.xz" archives using the "include" parameter. One workaround is
   # to awkwardly recreate the "include" functionality with "extra_opts".
-  - checksum: 'sha256:ab6ee1b178f014d1b86d1e24da20d1139656c8b0ed34d2867fbb834dad02bf0a'
+  - checksum: 'sha256:700324c6dd0ebea0117591c6cc9d7350d9c7c5c287acbad7630fa17b1d4d9e2f'
     extra_opts:
       - '--exclude=LICENSE.txt'
       - '--exclude=README.txt'
       - '--transform'
       - 's/^shellcheck-v0.8.0\///'
-    url: 'https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz'
+    url: 'https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.xz'
 
   - binaries: 'terraform'
-    checksum: 'sha256:b24210f28191fa2a08efe69f54e3db2e87a63369ac4f5dcaf9f34dc9318eb1a8'
-    url: 'https://releases.hashicorp.com/terraform/1.3.4/terraform_1.3.4_linux_amd64.zip'
+    checksum: 'sha256:b8cf184dee15dfa89713fe56085313ab23db22e17284a9a27c0999c67ce3021e'
+    url: 'https://releases.hashicorp.com/terraform/1.3.7/terraform_1.3.7_linux_amd64.zip'
 
 development__debian_packages:
-  - checksum: 'sha256:215c88e8cf3fefcd02ef45dc8cdad563e1c601faeddca41565b6b852fceb26b5'
-    url: 'https://github.com/neovim/neovim/releases/download/v0.8.0/nvim-linux64.deb'
+  - checksum: 'sha256:a2d82dd169a11408921db90060c93cafdec43507898fbb36bc9e88e483ee3dfa'
+    url: 'https://github.com/neovim/neovim/releases/download/v0.8.2/nvim-linux64.deb'
 
   - checksum: 'sha256:1d1b629247ac23d870cfde9f8eebbb4af7468f5c7c0914d9246c50bf0c72c1fd'
     url: 'https://github.com/sharkdp/bat/releases/download/v0.22.1/bat_0.22.1_amd64.deb'
 
-  - checksum: 'sha256:e5276b8ec6f2f25d85caa7f529a09117dcd346e04a8a5dcca755c58043b4a6f9'
-    url: 'https://github.com/jgm/pandoc/releases/download/2.19.2/pandoc-2.19.2-1-amd64.deb'
+  - checksum: 'sha256:4fc5d51fe7100ab5b0e85d33efabf75ed70dc2e6da554311606a11af1f29d605'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.0/pandoc-3.0-1-amd64.deb'
 
   - checksum: 'sha256:6d78bed13722019cb4f9d0cf366715e2dcd589f4cf91897efb28216a6bb319f1'
     url: 'https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb'
 
-  - checksum: 'sha256:d0ec15ca8c687046b708b8c247818137757d5916c4f1fbc28e5a9048e3f282d4'
-    url: 'https://github.com/go-task/task/releases/download/v3.17.0/task_linux_amd64.deb'
+  - checksum: 'sha256:75cd08890ff18f6036255c7630aa17f9ea81bd6b6166747a3913bbb1cff1357c'
+    url: 'https://github.com/go-task/task/releases/download/v3.20.0/task_linux_amd64.deb'
 
-development__entr_version: '5.2'
-development__entr_sha256: '237e309d46b075210c0e4cb789bfd0c9c777eddf6cb30341c3fe3dbcc658c380'
+development__entr_version: '5.3'
+development__entr_sha256: 'd70b44a23136b87c89bb0079452121e6afdecf6b8f4178c19f2caac3dec3662f'
 
-# The following checksum is for "super-ttc-iosevka-16.3.6.zip".
-development__iosevka_archive_checksum: 'sha256:df2171db590d3c2b8af3f6602a957091004599e734d0b7764e1edb0fa0b89d9f'
-development__iosevka_version: '16.3.6'
+# The following checksum is for "super-ttc-iosevka-17.0.4.zip".
+development__iosevka_archive_checksum: 'sha256:4b0f7821dbf18fd76ca28311b0b3508c481f94cea6539b5c37890dee23e00caa'
+development__iosevka_version: '17.0.4'
 
-# The following checksum is for "obsidian_1.0.3_amd64.deb".
-development__obsidian_package_checksum: 'sha256:97c9bb31287e06411fce70d624b6c312a4126d3f576de9798cd84e1b03bba14c'
-development__obsidian_version: '1.0.3'
+# The following checksum is for "obsidian_1.1.9_amd64.deb".
+development__obsidian_package_checksum: 'sha256:2b39a582456357d536cfd4d281573ef744ccd1d3a5aadf486c13ebfbb3853451'
+development__obsidian_version: '1.1.9'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false

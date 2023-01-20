@@ -6,8 +6,8 @@
 
 ---
 # A string containing the version of Composer to install.
-composer__composer_version: '2.4.4'
+composer__composer_version: '2.5.1'
 
 # A string containing a checksum used to verify the integrity of the
 # Composer PHP archive download.
-composer__composer_checksum: 'sha256:c252c2a2219956f88089ffc242b42c8cb9300a368fd3890d63940e4fc9652345'
+composer__composer_checksum: 'sha256:f1b94fee11a5bd6a1aae5d77c8da269df27c705fcc806ebf4c8c2e6fa8645c20'
