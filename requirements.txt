@@ -2,7 +2,7 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
-ansible==5.6.0
+ansible==7.0.0
 ansible-lint==6.0.2
 flake8==4.0.1
 passlib==1.7.4
