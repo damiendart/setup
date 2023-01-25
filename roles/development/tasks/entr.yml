@@ -56,9 +56,11 @@
     - name: 'Ensure entr compiles and installs successfully'
       ansible.builtin.shell:
         chdir: '{{ __entr_temp_directory.path }}/entr-{{ development__entr_version }}'
+        # entr's README suggests running "make test" before installing,
+        # but something about the test suite causes Ansible to make the
+        # command-line all screwy afterwards.
         cmd: |
           ./configure
-          make test
           make install
       changed_when: true
   always:
