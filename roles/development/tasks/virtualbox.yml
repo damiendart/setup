@@ -24,4 +24,14 @@
         force_apt_get: true
         name: 'virtualbox-{{ development__virtualbox_version }}'
         state: 'present'
+
+    # To access USB devices from VirtualBox guests, the host user must
+    # be a member of the "vboxusers" group. For more information, see
+    # <https://www.virtualbox.org/manual/ch02.html#install-linux-vboxusers>.
+    - name: 'Ensure administrator user has access to USB devices in VirtualBox'
+      ansible.builtin.user:
+        name: '{{ development__user_username }}'
+        groups: 'vboxusers'
+        append: true
+      notify: 'Notify user about "vboxusers" group membership update'
   when: development__run_virtualbox_tasks | bool

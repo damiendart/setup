@@ -60,7 +60,7 @@ development__obsidian_version: '1.1.9'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
-development__virtualbox_version: '6.1'
+development__virtualbox_version: '7.0'
 
 
 # A string containing the directory where various downloads are stored
