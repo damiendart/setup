@@ -1,9 +1,4 @@
-# This role installs and configures Certbot.
-#
-# The following tasks effectively accomplishes the same thing as the
-# "acme_certficate" Ansible module. However, using Certbot to manage
-# certificates is a lot easier and Certbot also allows us to
-# automatically renew certificates without any intervention.
+# Installs and configures Certbot.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For

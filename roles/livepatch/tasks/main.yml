@@ -1,4 +1,4 @@
-# This role installs and enables Ubuntu Advantage and Ubuntu Livepatch.
+# Installs and enables Ubuntu Advantage and Ubuntu Livepatch.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For

@@ -1,13 +1,12 @@
-# This role installs and configures development environment stuff.
+# Installs and configures development environment bits-and-pieces.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-# This role stores downloaded files that have been verified by file
-# checksums to prevent unnecessary redownloading when tasks are rerun.
-- name: "Ensure download cache directory exists"
+# Store verified downloads to prevent unnecessary redownloading.
+- name: 'Ensure download cache directory exists'
   ansible.builtin.file:
     path: '{{ development__download_cache_directory }}'
     group: 'root'

@@ -1,8 +1,8 @@
 apt\_maintainance
 =================
 
-This role performs maintainance tasks on packages installed and managed
-by APT, including the removal of any out-of-date and unused packages.
+Performs maintainance tasks on packages installed and managed by APT,
+including the removal of any out-of-date and unused packages.
 
 Before any changes are made, a list of affected packages is displayed
 and the user is given the option of continuing or exiting, so this role

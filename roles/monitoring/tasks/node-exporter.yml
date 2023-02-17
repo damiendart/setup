@@ -1,4 +1,4 @@
-# This roles installs and configurates the Prometheus Node Exporter.
+# Installs and configures the Prometheus Node Exporter.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For

@@ -1,8 +1,4 @@
-# This role installs Kubernetes-related bits and pieces.
-#
-# This role is a result of futzing around with setting up a single
-# Kubernetes cluster within a single system for learning purposes, so
-# adjust your expectations accordingly.
+# Installs Kubernetes-related bits and pieces for learning purposes.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For

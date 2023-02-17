@@ -1,4 +1,4 @@
-# This role installs and configures Tarsnap to perform daily backups.
+# Installs and configures Tarsnap to perform daily backups.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For

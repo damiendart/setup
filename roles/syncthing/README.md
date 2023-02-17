@@ -1,5 +1,5 @@
-base
-====
+syncthing
+=========
 
 This role installs Syncthing.
 

@@ -1,4 +1,4 @@
-# This role installs and configures the base Ubuntu environment.
+# Installs and configures bits-and-pieces for a base Ubuntu environment.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
