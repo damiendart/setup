@@ -79,12 +79,18 @@
 - name: 'Ensure security-related OpenSSH Server options are configured'
   ansible.builtin.lineinfile:
     dest: '/etc/ssh/sshd_config'
-    line: '{{ item }} no'
-    regexp: '^{{ item }}'
+    line: '{{ item.line }}'
+    regexp: '{{ item.regexp }}'
     state: 'present'
   loop:
-    - 'PasswordAuthentication'
-    - 'PermitRootLogin'
+    - line: 'MaxAuthTries 3'
+      regexp: '^MaxAuthTries'
+    - line: 'PasswordAuthentication no'
+      regexp: '^PasswordAuthentication'
+    - line: 'PermitRootLogin no'
+      regexp: '^PermitRootLogin'
+    - line: 'X11Forwarding no'
+      regexp: '^X11Forwarding'
   notify: 'Restart OpenSSH Server'
 
 - name: 'Ensure custom msmtp configuration files exist'
