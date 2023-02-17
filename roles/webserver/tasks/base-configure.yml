@@ -120,7 +120,7 @@
   loop: '{{ webserver__php_versions }}'
   notify: 'Reload PHP-FPM'
 
-- name: 'Ensure Node Exporter password file exists (if required)'
+- name: 'Ensure Node Exporter password file exists'
   community.general.htpasswd:
     group: 'www-data'
     mode: 0640
