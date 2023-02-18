@@ -1,7 +1,8 @@
 imagemagick
 ===========
 
-Installs ImageMagick 6 via package manager and optionally configures it.
+Installs ImageMagick 6 using Ubuntu APT repositories and optionally
+configures it to reduce resource limits for low-resource environments.
 
 
 ## Configuration and usage
