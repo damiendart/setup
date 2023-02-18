@@ -5,11 +5,16 @@ Performs maintainance tasks on packages installed and managed by APT,
 including the removal of any out-of-date and unused packages.
 
 Before any changes are made, a list of affected packages is displayed
-and the user is given the option of continuing or exiting, so this role
-isn't suitable for playbooks intended to be run unattended.
+and the user is given the option of continuing or exiting. Therefore
+this role isn't suitable for playbooks intended to be run unattended.
 
-There are no role variables. For example usage, see the
-"playbook-package-maintainance.yml" playbook at the project root.
+
+## Configuration and usage
+
+There are no role variables.
+
+For example usage, see the "playbook-package-maintainance.yml" playbook
+at the project root.
 
 
 ## Notes
