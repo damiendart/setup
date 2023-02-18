@@ -1,5 +1,3 @@
-# Installs and configures Tailscale.
-#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
@@ -35,8 +33,7 @@
   changed_when: false
   ignore_errors: true
 
-- name: 'Ensure the host is logged in to Tailscale'
+- name: 'Ensure the host is connected to Tailscale'
   ansible.builtin.command: 'tailscale up --authkey={{ tailscale__auth_key }}'
-  no_log: true
   notify: 'Notify user to check host Tailscale connection status'
-  when: tailscale__auth_key is defined and ('Logged out' in __tailscale_status.stdout or 'NoState' in __tailscale_status.stdout)
+  when: "'Logged out' in __tailscale_status.stdout or 'NoState' in __tailscale_status.stdout"
