@@ -30,13 +30,6 @@
     - 'development'
     - 'golang'
 
-- hosts: 'kubernetes_playground'
-  become: true
-  roles:
-    - 'base'
-    - 'docker'
-    - 'kubernetes_playground'
-
 - hosts: 'playground'
   become: true
   roles:
