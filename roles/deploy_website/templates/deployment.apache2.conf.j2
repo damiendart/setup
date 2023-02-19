@@ -38,31 +38,6 @@ DocumentRoot "${RELEASE_ROOT}/public"
     Require valid-user
   </IfFile>
 
-  <IfModule mod_rewrite.c>
-    RewriteEngine on
-    RewriteBase /
-
-    # Remove groups of slashes.
-    RewriteCond %{THE_REQUEST} //
-    RewriteRule ^.*$ $0 [L,NE,R=permanent]
-
-    # Remove "index.html" and "index.php" from URLs.
-    RewriteCond %{REQUEST_FILENAME} -f
-    RewriteCond %{THE_REQUEST} ^.*/index\.(html|php)
-    RewriteRule ^(.*)index\.(html|php)$ $1 [L,NE,R=permanent]
-
-    # Remove file extensions from some URLs.
-    RewriteCond %{REQUEST_FILENAME} -f
-    # TODO: Use negative lookahead to combine the two conditions?
-    RewriteCond %{THE_REQUEST} !^.*/index\.(html|php)
-    RewriteCond %{THE_REQUEST} ^.*\.(html|php)
-    RewriteRule ^(.*).(html|php)$ $1 [L,NE,R=permanent]
-    RewriteCond %{REQUEST_FILENAME}\.html -f
-    RewriteRule ^([^\.]+)$ $1.html [L,NC]
-    RewriteCond %{REQUEST_FILENAME}\.php -f
-    RewriteRule ^([^\.]+)$ $1.php [L,NC]
-  </IfModule>
-
   IncludeOptional "${RELEASE_ROOT}/private/apache2/directory.con[f]"
 </Directory>
 
