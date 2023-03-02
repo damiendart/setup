@@ -4,4 +4,4 @@
 
 ---
 dependencies:
-  - base
+  - 'base'

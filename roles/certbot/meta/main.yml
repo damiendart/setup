@@ -4,4 +4,4 @@
 
 ---
 dependencies:
-   - webserver
+  - 'webserver'
