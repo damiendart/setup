@@ -1,7 +1,4 @@
-# Default and required variables for the "certbot" role.
-#
-# Commented-out variables must be defined elsewhere (in an inventory,
-# playbook, or at runtime).
+# "certbot" Ansible role variables.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -9,17 +6,19 @@
 
 ---
 # A dictionary where keys are domain names to obtain certificates for.
-# Each key can have an optional value consisting of a dictionary with
-# the following key-value pairs:
+# Each key can have an optional value consisting of another dictionary
+# with the following key-value pairs:
 #
-#   - "aliases": A list of additional domain names to include when
-#     obtaining a certificate.
-
+# - "aliases": A list of additional domain names to include when
+#   obtaining a certificate.
 certbot__certificates: {}
 
+
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
 
 # A string containing the email address associated with a Let's Encrypt
 # ACME account. An account will be created if the email address hasn't
 # been previously registered.
-
-# certbot__administrator_email: ''
+certbot__administrator_email: '{{ undef() }}'

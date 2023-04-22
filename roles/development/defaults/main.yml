@@ -1,3 +1,5 @@
+# "development" Ansible role variables.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
@@ -63,6 +65,10 @@ development__run_gui_tasks: false
 development__virtualbox_version: '7.0'
 
 
-# A string containing the directory where various downloads are stored
-# to prevent unnecessary redownloading when tasks are rerun.
-# development__download_cache_directory: ''
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
+
+# A string containing the directory where downloaded files are stored to
+# prevent unnecessary downloading when tasks are rerun.
+development__download_cache_directory: '{{ undef() }}'

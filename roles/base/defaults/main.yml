@@ -1,7 +1,4 @@
-# Default and required variables for the "base" role.
-#
-# Commented-out variables must be defined elsewhere (in an inventory,
-# playbook, or at runtime).
+# "base" Ansible role variables.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -9,33 +6,40 @@
 
 ---
 # A boolean value that specifies whether the non-root administrator user
-# should have a SSH key, generating one if required. If set to false, no
-# new keys will be generated and existing keys will remain unaffected.
+# should have a SSH key, generating a new key if required. If set to
+# false, any existing SSH keys will remain unaffected.
 base__administrator_account_ssh_key: false
 
 # A string that specifies the type of SSH key to generate.
 base__administrator_account_ssh_key_type: 'ed25519'
 
 
-# A string containing the non-root administrator user's email address.
-# base__administrator_account_email: ''
-
-# A string containing the non-root administrator user's password.
-# base__administrator_account_password: ''
-
-# A string containing the non-root administrator user's username.
-# base__administrator_account_username: ''
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
 
 # A string containing a list of SSH public keys to be added to the
 # non-root administrator user's list of authorised keys. (A URL to a
-# list, e.g. <https://github.com/username.keys>, also works.)
-# base__administrator_account_authorised_keys: ''
+# list, for example <https://github.com/username.keys>, also works.)
+base__administrator_account_authorised_keys: '{{ undef() }}'
 
-# A string containing the default SMTP server hostname for msmtp.
-# base__msmtp_default_hostname: ''
+# A string containing the non-root administrator user's email address.
+base__administrator_account_email: '{{ undef() }}'
 
-# A string containing the default SMTP server user password for msmtp.
-# base__msmtp_default_password: ''
+# A string containing the non-root administrator user's password.
+base__administrator_account_password: '{{ undef() }}'
 
-# A string containing the default SMTP server user username for msmtp.
-# base__msmtp_default_username: ''
+# A string containing the non-root administrator user's username.
+base__administrator_account_username: '{{ undef() }}'
+
+# A string containing the SMTP server hostname for msmtp to use for its
+# default profile.
+base__msmtp_default_hostname: '{{ undef() }}'
+
+# A string containing the SMTP server user password for msmtp to use for
+# its default profile.
+base__msmtp_default_password: '{{ undef() }}'
+
+# A string containing the SMTP server user username for msmtp to use for
+# its default profile.
+base__msmtp_default_username: '{{ undef() }}'

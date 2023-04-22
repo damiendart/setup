@@ -1,7 +1,4 @@
-# Default and required variables for the "monitoring" role.
-#
-# Commented-out variables must be defined elsewhere (in an inventory,
-# playbook, or at runtime).
+# "monitoring" Ansible role variables.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -16,34 +13,38 @@ monitoring__node_exporter_archive_checksum: 'sha256:af999fd31ab54ed3a34b9f0b10c2
 monitoring__node_exporter_version: '1.5.0'
 
 
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
+
 # A string containing the administrator user's email address, used when
 # sending monitoring-related emails.
-# monitoring__administrator_email: ''
+monitoring__administrator_email: '{{ undef() }}'
 
 # A string containing the administrator user's full name, used when
 # sending monitoring-related emails.
-# monitoring__administrator_full_name: ''
+monitoring__administrator_full_name: '{{ undef() }}'
 
-# A string containing the directory where downloads are stored to
-# prevent unnecessary redownloading when tasks are rerun.
-# monitoring__download_cache_directory: ''
+# A string containing the directory where downloaded files are stored to
+# prevent unnecessary downloading when tasks are rerun.
+monitoring__download_cache_directory: '{{ undef() }}'
 
 # A string containing the hostname of the SMTP server used to send
 # monitoring-related notifications.
-# monitoring__mta_hostname: ''
+monitoring__mta_hostname: '{{ undef() }}'
 
 # A string containing the password for the SMTP server used to send
-# monitoring-related notifications.
-# monitoring__mta_password: ''
+# monitoring-related notification emails.
+monitoring__mta_password: '{{ undef() }}'
 
 # A string containing the username for the SMTP server used to send
-# monitoring-related notifications.
-# monitoring__mta_username: ''
+# monitoring-related notification emails.
+monitoring__mta_username: '{{ undef() }}'
 
 # A string containing a Pushover API token, used to send
 # monitoring-related notifications.
-# monitoring__pushover_api_token: ''
+monitoring__pushover_api_token: '{{ undef() }}'
 
 # A string containing a Pushover user key, used to send
 # monitoring-related notifications.
-# monitoring__pushover_user_key: ''
+monitoring__pushover_user_key: '{{ undef() }}'
