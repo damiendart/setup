@@ -1,0 +1,40 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+---
+
+version: '3'
+
+output: 'prefixed'
+
+env:
+  RELEASE_TIMESTAMP:
+    sh: 'date +%Y%m%d%H%M%S'
+
+tasks:
+  clean:
+    cmds:
+      - 'rm -fr release'
+    desc: 'Delete all buildable files'
+
+  release:
+    cmds:
+      - cmd: |
+          {{ if .GIT_STATUS }}
+            echo 'Working directory is dirty! Aborting.'
+            exit 1
+          {{ end }}
+        silent: true
+
+      # This where you project-building tasks would go.
+
+      - 'mkdir -p release'
+      - 'tar -cf release/release.tgz ./public/'
+      - 'envsubst < deployment/metadata.yml > release/release.yml'
+    desc: 'Create release artifacts for deployment'
+    env:
+      RELEASE_GIT_SHA:
+        sh: 'git log -n 1 --format=%H'
+    vars:
+      GIT_STATUS:
+        sh: 'git status --porcelain'
