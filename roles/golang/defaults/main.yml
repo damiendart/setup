@@ -5,15 +5,29 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+# A string containing a checksum used to verify the integrity the Go
+# binary archive download "go1.20.1.linux-amd64.tar.gz". See also
+# "golang__version".
+golang__archive_checksum: 'sha256:000a5b1fca4f75895f78befeb2eecf10bfff3c428597f3f1e69133b63b911b02'
+
 # A list of strings of Go package import paths to install.
 golang__installable_packages:
   - 'github.com/damiendart/pathshorten/cmd/pathshorten@latest'
   - 'golang.org/x/lint/golint@latest'
   - 'honnef.co/go/tools/cmd/staticcheck@latest'
 
-# A string containing a checksum used to verify the integrity the Go
-# binary archive download "go1.20.1.linux-amd64.tar.gz".
-golang__archive_checksum: 'sha256:000a5b1fca4f75895f78befeb2eecf10bfff3c428597f3f1e69133b63b911b02'
-
 # A string containing the version of Go to install.
 golang__version: '1.20.1'
+
+
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
+
+# A string containing the directory where downloaded files are stored to
+# prevent unnecessary downloading when tasks are rerun.
+golang__download_cache_directory: '{{ undef() }}'
+
+# A string specifying the host account username that will "go install"
+# the packages listed in "golang__installable_packages".
+golang__user_username: '{{ undef() }}'

@@ -5,9 +5,25 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+# A string containing a checksum used to verify the integrity of the
+# Composer PHP archive download "composer.phar". See also
+# "composer__composer_version".
+composer__composer_checksum: 'sha256:f1b94fee11a5bd6a1aae5d77c8da269df27c705fcc806ebf4c8c2e6fa8645c20'
+
 # A string containing the version of Composer to install.
 composer__composer_version: '2.5.1'
 
-# A string containing a checksum used to verify the integrity of the
-# Composer PHP archive download.
-composer__composer_checksum: 'sha256:f1b94fee11a5bd6a1aae5d77c8da269df27c705fcc806ebf4c8c2e6fa8645c20'
+
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
+
+# A string specifying the OAuth token allowing Composer to access
+# private repositories on GitHub and to circumvent the low IP-based rate
+# limiting of their API. For more information, please see
+# <https://getcomposer.org/doc/06-config.md#github-oauth>.
+composer__composer_github_oauth_token: '{{ undef() }}'
+
+# A string specifying the host account username to run Composer
+# configuration tasks for.
+composer__user_username: '{{ undef() }}'
