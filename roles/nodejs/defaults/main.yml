@@ -1,7 +1,4 @@
-# Default and required variables for the "nodejs" role.
-#
-# Commented-out variables must be defined elsewhere (in an inventory,
-# playbook, or at runtime).
+# "nodejs" Ansible role variables.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -9,13 +6,17 @@
 
 ---
 # A string containing a checksum used to verify the integrity the
-# Node.js binary archive "node-v18.13.0-linux-x64.tar.xz".
-nodejs__archive_checksum: 'sha256:7f5d6922a91986ef059ba8a4396aa435440adacfe6fc6fab60a857c8f2cf5e7a'
+# Node.js binary archive "node-v18.16.0-linux-x64.tar.xz".
+nodejs__archive_checksum: 'sha256:44d93d9b4627fe5ae343012d855491d62c7381b236c347f7666a7ad070f26548'
 
 # A string containing the version of Node.js to install.
-nodejs__version: '18.13.0'
+nodejs__version: '18.16.0'
 
 
-# A string containing the directory where Node.js binary archives are
-# stored to prevent unnecessary downloading when tasks are rerun.
-# nodejs__download_cache_directory: ''
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
+
+# A string containing the directory where downloaded files are stored to
+# prevent unnecessary downloading when tasks are rerun.
+nodejs__download_cache_directory: '{{ undef() }}'
