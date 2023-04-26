@@ -4,7 +4,6 @@
 
 ---
 webserver__add_vhosts_to_etc_hosts: false
-webserver__install_xdebug: false
 webserver__php_default_packages:
   - 'cli'
   - 'common'
