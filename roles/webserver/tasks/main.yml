@@ -42,8 +42,9 @@
     - 'apache2'
     - "{{ webserver__php_versions | map('regex_replace', '^(.*)$', 'php\\1-fpm') }}"
 
-# The Apache package from "deb.sury.org" does not provide an UFW profile
-# out-of-the-box; the following is taken from a fresh Ubuntu install.
+# The Apache package from "deb.sury.org" does not provide an UFW
+# profile. The following profile is based on the one Debian/Ubuntu
+# includes with its Apache package.
 - name: 'Ensure an Apache UFW profile exists'
   ansible.builtin.copy:
     content: |
@@ -81,7 +82,7 @@
   ansible.builtin.include_tasks: 'xdebug.yml'
 
 # We force any notified handlers to run in case there are any changes
-# that need to be applied before other roles that have this role as a
-# dependency are executed.
+# that need to be applied before running additional roles that require
+# a functioning webserver.
 - name: 'Force all currently notified handlers to run'
   ansible.builtin.meta: 'flush_handlers'

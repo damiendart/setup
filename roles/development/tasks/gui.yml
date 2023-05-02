@@ -1,4 +1,4 @@
-# The following tasks installs and configures GUI-related stuff.
+# Installs and configures GUI-related stuff.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -53,8 +53,8 @@
     deb: '{{ development__download_cache_directory }}/obsidian_{{ development__obsidian_version }}_amd64.deb'
     state: 'present'
 
-# The following task accounts for a bug where Obsidian's Debian package
-# for v0.12.15 creates an incorrect symbolic link in "/usr/bin".
+# Account for a bug where Obsidian's Debian package for v0.12.15 creates
+# an incorrect symbolic link in "/usr/bin".
 - name: 'Ensure a symbolic link to Obsidian exists in "/usr/bin"'
   ansible.builtin.file:
     dest: '/usr/bin/obsidian'

@@ -1,4 +1,4 @@
-# The following tasks perform any necessary pre-deployment setup.
+# Performs pre-deployment setup.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -6,7 +6,7 @@
 
 ---
 # The following directory structure is similar to the one used by
-# Capistrano and similar deployment tools.
+# Capistrano and other similar deployment tools.
 - name: 'Ensure base deployment-related directories exist'
   tags:
     - 'deploy-website:setup'

@@ -1,4 +1,4 @@
-# The following tasks install Open Virtual Machine Tools (if needed).
+# Installs Open Virtual Machine Tools, if required.
 #
 # The Open Virtual Machine Tools is an open-source implementation of
 # VMware Tools. For more information, please see
