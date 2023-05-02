@@ -3,7 +3,6 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-webserver__add_vhosts_to_etc_hosts: false
 webserver__php_default_packages:
   - 'cli'
   - 'common'

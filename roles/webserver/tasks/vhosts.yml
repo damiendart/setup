@@ -62,11 +62,29 @@
   notify:
     - 'Reload Apache'
 
-- name: 'Ensure "/etc/hosts" contains entries for virtual hosts'
+# Test hostnames use any of the reserved TLDs defined in RFC 6761. See
+# <https://en.wikipedia.org/wiki/Top-level_domain#Reserved_domains> for
+# more information on reserved TLDs.
+- name: 'Set test hostname list variable'
+  ansible.builtin.set_fact:
+    __test_hostnames: >
+      {{
+        (
+          webserver__vhosts.keys() | list
+          + webserver__vhosts.values()
+            | selectattr('aliases', 'defined')
+            | map(attribute='aliases')
+        )
+          | list
+          | select('regex', '\.(example|invalid|localhost|test)$')
+          | sort
+      }}
+
+- name: 'Ensure hosts file contains loopback entries for test hostnames used by Apache virtual hosts'
   ansible.builtin.blockinfile:
     block: |
-      {% for hostname in webserver__vhosts.keys() %}
+      {% for hostname in __test_hostnames %}
         127.0.0.1 {{ hostname }}
       {% endfor %}
     path: '/etc/hosts'
-  when: webserver__add_vhosts_to_etc_hosts
+  when: __test_hostnames | length > 0
