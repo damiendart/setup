@@ -1,0 +1,26 @@
+# "python" Ansible role variables.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# A string containing a checksum used to verify the integrity the
+# Python binary archive download. See also "python__archive_url" and
+# "python__version".
+python__archive_checksum: 'sha256:a7b538f35630a17ea8b5e1703b38906da189b2d6054297b571c7f5e81fc953a0'
+
+# A string containing the URL to the binary archive.
+python__archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20230116/cpython-3.11.1+20230116-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
+
+# A string containing the version of Python to install.
+python__version: '3.11.1'
+
+
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
+
+# A string containing the directory where downloaded files are stored to
+# prevent unnecessary downloading when tasks are rerun.
+python__download_cache_directory: '{{ undef() }}'

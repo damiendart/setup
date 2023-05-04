@@ -42,7 +42,6 @@
     force_apt_get: true
     name:
       - 'build-essential'
-      - 'python3-pip'
       - 'tig'
       - 'tmux'
       - 'tree'
@@ -50,16 +49,6 @@
       # (for example, copy-to-clipboard support).
       - 'vim{{ "-gtk3" if development__run_gui_tasks }}'
     state: 'present'
-
-- name: 'Ensure base development-related Python packages are installed in administrator home directory'
-  ansible.builtin.pip:
-    executable: '/usr/bin/pip3'
-    extra_args: '--user'
-    name:
-      - 'virtualenv'
-      - 'virtualenvwrapper'
-  become: true
-  become_user: '{{ development__user_username }}'
 
 - name: 'Ensure base development-related binary archives and Debian packages are downloaded'
   ansible.builtin.get_url:
