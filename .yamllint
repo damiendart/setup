@@ -5,6 +5,9 @@
 ---
 extends: default
 
+ignore: |
+  .venv
+
 # The following rules play nicely with Ansible Lint.
 rules:
   braces:
