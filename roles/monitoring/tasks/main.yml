@@ -5,7 +5,6 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-# Store verified downloaded files to prevent unnecessary redownloading.
 - name: 'Ensure download cache directory exists'
   ansible.builtin.file:
     path: '{{ monitoring__download_cache_directory }}'
