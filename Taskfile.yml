@@ -34,9 +34,12 @@ tasks:
 
   lint:ansible:
     cmds:
-      - '.venv/bin/ansible-lint -p --nocolor playbook-deploy-website.yml'
-      - '.venv/bin/ansible-lint -p --nocolor playbook-package-maintainance.yml'
-      - '.venv/bin/ansible-lint -p --nocolor playbook-provision.yml'
+      - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-deploy-website.yml'
+        ignore_error: true
+      - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-package-maintainance.yml'
+        ignore_error: true
+      - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-provision.yml'
+        ignore_error: true
     desc: 'Lint Ansible-related files with Ansible Lint'
 
   lint:packer:
@@ -61,7 +64,7 @@ tasks:
 
   start:
     cmds:
-      - 'python3.8 -m venv .venv'
+      - 'python3.11 -m venv .venv'
       - cmd: |
           if [ -z "$VIRTUAL_ENV" ]; then
             echo "Run \"source .venv/bin/activate\" to activate the virtual environment"

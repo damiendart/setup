@@ -220,7 +220,6 @@
           --resolve '{{ deploy_website__site_domain }}:443:127.0.0.1'
           --user-agent 'deploy-website-smoke-test'
           '{{ item }}'
-        warn: false
       register: __smoketest_response
       changed_when: false
       loop: "{{ [ 'https://{{ deploy_website__site_domain }}' ] + deploy_website__vhosts[deploy_website__site_domain].additional_smoketest_urls | default([]) }}"

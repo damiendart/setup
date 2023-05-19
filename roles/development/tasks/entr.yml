@@ -25,7 +25,7 @@
 
     - name: 'Get the version of entr that is currently installed (if available)'
       ansible.builtin.set_fact:
-        __entr_version: "{{ __entr_output | regex_search('release: ([0-9.]*)', '\\1') | first | trim }}"
+        __entr_version: "{{ __entr_output.stderr | regex_search('release: ([0-9.]*)', '\\1') | first | trim }}"
   when: __entr_binary.stat.exists
 
 - name: 'Ensure entr is installed'

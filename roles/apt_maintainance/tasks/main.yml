@@ -10,8 +10,6 @@
 
 - name: 'Perform dry-run of "apt-get dist-upgrade"'
   ansible.builtin.command: 'apt-get --simulate dist-upgrade'
-  args:
-    warn: false
   register: __apt_update_dry_run
   changed_when: false
 
@@ -22,8 +20,6 @@
 
 - name: 'Perform dry-run of "apt-get autoremove"'
   ansible.builtin.command: 'apt-get --simulate autoremove'
-  args:
-    warn: false
   register: __apt_removal_dry_run
   changed_when: false
 

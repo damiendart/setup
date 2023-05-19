@@ -9,7 +9,6 @@
 - name: 'Check release archive for "public" directory'
   ansible.builtin.command:
     cmd: 'tar -tvf {{ deploy_website__release_artifact_folder }}/release.tgz "./public/"'
-    warn: false
   changed_when: false
   delegate_to: 'localhost'
   run_once: true
