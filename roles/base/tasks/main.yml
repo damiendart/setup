@@ -6,7 +6,7 @@
 
 ---
 - name: 'Ensure the timezone is set correctly'
-  ansible.builtin.timezone:
+  community.general.timezone:
     name: 'Europe/London'
 
 - name: 'Ensure an non-root administrator user account exists'
@@ -24,6 +24,7 @@
   no_log: true
 
 - name: 'Prompt user to check SSH-public-key-related bits-and-pieces'
+  when: __user.ssh_public_key is defined
   block:
     - name: 'Show SSH public key for non-root administrator user'
       ansible.builtin.debug:
@@ -37,10 +38,9 @@
 
     - name: 'Wait for user confirmation to proceed'
       ansible.builtin.pause:
-  when: __user.ssh_public_key is defined
 
 - name: 'Ensure non-root administrator user has authorised SSH keys'
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     exclusive: true
     user: '{{ base__administrator_account_username }}'
     key: '{{ base__administrator_account_authorised_keys }}'
@@ -71,7 +71,7 @@
     - 'ufw'
 
 - name: 'Ensure the OpenSSH Server UFW profile is active'
-  ansible.builtin.ufw:
+  community.general.ufw:
     name: 'OpenSSH'
     rule: 'limit'
   notify: 'Restart UFW'

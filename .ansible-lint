@@ -4,9 +4,11 @@
 
 ---
 skip_list:
-  # Skip checking the "meta/main.yml should contain relevant info" rule
-  # as the roles contained in this project are not intended to be
-  # imported or used by Ansible Galaxy.
-  - '701'
+  # Skip checking role metadata as the roles contained in this project
+  # are not intended to be imported elsewhere or used by Ansible Galaxy.
+  - 'meta-incorrect'
+
+  - 'var-naming[no-role-prefix]'
+
 warn_list:
   - 'no-changed-when'

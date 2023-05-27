@@ -34,7 +34,8 @@
   register: __python_version
   when: __python_binary.stat.exists
 
-- name: 'Ensure Python {{ python__version }} is installed'
+- name: 'Ensure Python {{ python__version }} is installed' # noqa: name[template]
+  when: python__version not in (__python_version.stdout | default('') | trim)
   block:
     - name: 'Ensure existing Python installation is removed'
       ansible.builtin.file:
@@ -58,7 +59,7 @@
         path: '/usr/local/python'
         state: 'directory'
 
-    - name: 'Ensure Python {{ python__version }} is installed'
+    - name: 'Ensure Python {{ python__version }} is installed' # noqa: name[template]
       ansible.builtin.unarchive:
         dest: '/usr/local/python'
         extra_opts:
@@ -66,4 +67,3 @@
         group: 'root'
         owner: 'root'
         src: '{{ python__download_cache_directory }}/{{ python__archive_url | basename }}'
-  when: python__version not in (__python_version.stdout | default('') | trim)

@@ -8,6 +8,7 @@
 - name: 'Run VirtualBox-related tasks'
   tags:
     - 'virtualbox'
+  when: development__run_virtualbox_tasks | bool
   block:
     - name: 'Ensure the VirtualBox package signing key is present for APT'
       ansible.builtin.apt_key:
@@ -34,4 +35,3 @@
         groups: 'vboxusers'
         append: true
       notify: 'Notify user about "vboxusers" group membership update'
-  when: development__run_virtualbox_tasks | bool

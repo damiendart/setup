@@ -35,11 +35,8 @@ tasks:
   lint:ansible:
     cmds:
       - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-deploy-website.yml'
-        ignore_error: true
       - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-package-maintainance.yml'
-        ignore_error: true
       - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-provision.yml'
-        ignore_error: true
     desc: 'Lint Ansible-related files with Ansible Lint'
 
   lint:packer:

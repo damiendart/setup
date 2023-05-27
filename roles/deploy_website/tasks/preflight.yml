@@ -8,18 +8,18 @@
 # A "public" directory is required for Apache to serve files from.
 - name: 'Check release archive for "public" directory'
   ansible.builtin.command:
-    cmd: 'tar -tvf {{ deploy_website__release_artifact_folder }}/release.tgz "./public/"'
+    cmd: 'tar -tvf {{ deploy_website__release_artifact_folder }}/release.tgz "./public/"' # noqa: command-instead-of-module
   changed_when: false
   delegate_to: 'localhost'
   run_once: true
 
 - name: 'Check PHP version required for release is supported by host'
+  when: __release_metadata.php_version is defined
   block:
     - name: 'Check PHP version required for release is supported by host'
       ansible.builtin.assert:
         that:
           - __release_metadata.php_version in deploy_website__php_versions
-  when: __release_metadata.php_version is defined
 
 - name: 'Check release timestamp is a non-empty string'
   ansible.builtin.assert:

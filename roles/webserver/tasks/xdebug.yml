@@ -6,6 +6,7 @@
 
 ---
 - name: 'Run Xdebug-related tasks'
+  when: webserver__xdebug_versions | length > 0
   block:
   - name: 'Ensure Xdebug is installed'
     ansible.builtin.apt:
@@ -22,4 +23,3 @@
       src: '99-xdebug.ini.j2'
     loop: '{{ webserver__xdebug_versions }}'
     notify: 'Reload PHP-FPM'
-  when: webserver__xdebug_versions | length > 0

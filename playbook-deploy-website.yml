@@ -3,7 +3,8 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- hosts: 'all'
+- name: 'Deploy a website'
+  hosts: 'all'
   gather_facts: false
   become: true
   pre_tasks:

@@ -3,7 +3,8 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- hosts: 'all'
+- name: 'Perform package maintenance'
+  hosts: 'all'
   become: true
   gather_facts: false
   serial: 1

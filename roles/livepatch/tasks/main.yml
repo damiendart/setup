@@ -12,6 +12,7 @@
   register: __livepatch_status
 
 - name: 'Ensure Ubuntu Livepatch is enabled'
+  when: "'Machine is not enabled.' in __livepatch_status.stdout"
   block:
     - name: 'Ensure Ubuntu Advantage subscription is active'
       ansible.builtin.command: 'ua attach {{ livepatch__ubuntu_advantage_token }}'
@@ -19,4 +20,3 @@
 
     - name: 'Ensure Ubuntu Livepatch is enabled'
       ansible.builtin.command: 'ua enable livepatch'
-  when: "'Machine is not enabled.' in __livepatch_status.stdout"

@@ -147,6 +147,9 @@
 - name: 'Make Sentry aware of deployment'
   tags:
     - 'sentry'
+  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
+  delegate_to: 'localhost'
+  run_once: true
   block:
     - name: 'Make Sentry aware of release'
       ansible.builtin.uri:
@@ -182,9 +185,6 @@
         status_code: 201
         url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/releases/{{ __release_metadata.release_timestamp }}/deploys/'
       changed_when: true
-  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
-  delegate_to: 'localhost'
-  run_once: true
 
 - name: 'Force all currently notified handlers to run'
   ansible.builtin.meta: 'flush_handlers'
@@ -208,7 +208,7 @@
       run_once: true
       no_log: true
 
-    - name: 'Check release is running on host'
+    - name: 'Check release is running on host' # noqa: command-instead-of-module
       ansible.builtin.command:
         # The "--resolve" option allows "/etc/hosts"-type functionality
         # without having to edit system-wide configuration files.
@@ -222,7 +222,7 @@
           '{{ item }}'
       register: __smoketest_response
       changed_when: false
-      loop: "{{ [ 'https://{{ deploy_website__site_domain }}' ] + deploy_website__vhosts[deploy_website__site_domain].additional_smoketest_urls | default([]) }}"
+      loop: "{{ ['https://{{ deploy_website__site_domain }}'] + deploy_website__vhosts[deploy_website__site_domain].additional_smoketest_urls | default([]) }}"
   rescue:
     - name: 'Pretty-print any smoke-test-related errors'
       ansible.builtin.debug:

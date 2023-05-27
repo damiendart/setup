@@ -4,4 +4,4 @@
 
 ---
 dependencies:
-  - 'base'
+  - role: 'base'

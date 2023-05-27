@@ -3,7 +3,8 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- hosts: 'development'
+- name: 'Provision development machines'
+  hosts: 'development'
   become: true
   roles:
     - 'base'
@@ -24,19 +25,22 @@
 
 # Work-related machines are provisioned by other means, so only run what
 # is necessary for things like dotfiles, miscellaneous utilities, etc.
-- hosts: 'development_work'
+- name: 'Provision work-related machines'
+  hosts: 'development_work'
   become: true
   roles:
     - 'development'
     - 'golang'
     - 'python'
 
-- hosts: 'playground'
+- name: 'Provision testing and experimentation machines'
+  hosts: 'playground'
   become: true
   roles:
     - 'base'
 
-- hosts: 'production'
+- name: 'Provision servers for hosting websites'
+  hosts: 'production'
   become: true
   roles:
     - 'backup'

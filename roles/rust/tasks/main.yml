@@ -12,6 +12,7 @@
   register: __rustup_binary
 
 - name: 'Ensure rustup and friends are installed'
+  when: not __rustup_binary.stat.exists
   block:
     - name: 'Download "rustup-init"'
       ansible.builtin.get_url:
@@ -32,7 +33,6 @@
       ansible.builtin.file:
         path: '/tmp/rustup-init'
         state: 'absent'
-  when: not __rustup_binary.stat.exists
 
 - name: 'Ensure rustup and friends are up-to-date'
   ansible.builtin.command: '/home/{{ rust__user_username }}/.cargo/bin/rustup update'

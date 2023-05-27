@@ -15,6 +15,7 @@
   register: __entr_binary
 
 - name: 'Get the version of entr that is currently installed (if available)'
+  when: __entr_binary.stat.exists
   block:
     - name: 'Get entr usage output'
       ansible.builtin.command:
@@ -26,9 +27,9 @@
     - name: 'Get the version of entr that is currently installed (if available)'
       ansible.builtin.set_fact:
         __entr_version: "{{ __entr_output.stderr | regex_search('release: ([0-9.]*)', '\\1') | first | trim }}"
-  when: __entr_binary.stat.exists
 
 - name: 'Ensure entr is installed'
+  when: development__entr_version not in __entr_version
   block:
     - name: 'Create temporary folder'
       ansible.builtin.tempfile:
@@ -68,4 +69,3 @@
       ansible.builtin.file:
         path: '{{ __entr_temp_directory.path }}'
         state: 'absent'
-  when: development__entr_version not in __entr_version

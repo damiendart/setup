@@ -62,7 +62,7 @@
 # This hook is not installed if logrotate is installed as Apache is
 # already gracefully reloaded daily as part of log rotation gubbins.
 - name: 'Ensure post-certificate-renewal Certbot hook exists'
-  ansible.builtin.file:
+  ansible.builtin.copy:
     content: |
       #!/bin/bash
       # Ansible managed
