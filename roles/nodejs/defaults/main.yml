@@ -5,7 +5,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-# A string containing a checksum used to verify the integrity the
+# A string containing a checksum used to verify the integrity of the
 # Node.js binary archive "node-v18.16.0-linux-x64.tar.xz". See also
 # "nodejs__version".
 nodejs__archive_checksum: 'sha256:44d93d9b4627fe5ae343012d855491d62c7381b236c347f7666a7ad070f26548'
