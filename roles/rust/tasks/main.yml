@@ -14,13 +14,14 @@
 - name: 'Ensure rustup and friends are installed'
   when: not __rustup_binary.stat.exists
   block:
-    - name: 'Download "rustup-init"'
+    - name: 'Ensure "rustup-init" is downloaded to a temporary location'
       ansible.builtin.get_url:
+        checksum: '{{ rust__rustup_init_checksum }}'
         dest: '/tmp/rustup-init'
         group: '{{ rust__user_username }}'
         mode: 0755
         owner: '{{ rust__user_username }}'
-        url: 'https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init'
+        url: '{{ rust__rustup_init_url }}'
 
     - name: 'Ensure rustup and friends are installed'
       ansible.builtin.command: '/tmp/rustup-init --no-modify-path -y'
@@ -29,7 +30,7 @@
       become: true
       become_user: '{{ rust__user_username }}'
   always:
-    - name: 'Remove "rustup-init"'
+    - name: 'Ensure "rustup-init" is removed'
       ansible.builtin.file:
         path: '/tmp/rustup-init'
         state: 'absent'
