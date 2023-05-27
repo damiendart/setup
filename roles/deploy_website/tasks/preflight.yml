@@ -38,8 +38,6 @@
         that: __release_base_directory_status.stat.islnk is not defined
 
 - name: 'Check Sentry organisation is valid'
-  tags:
-    - 'sentry'
   ansible.builtin.uri:
     headers:
       Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
@@ -50,8 +48,6 @@
   run_once: true
 
 - name: 'Check Sentry is aware of the GitHub repository associated with release'
-  tags:
-    - 'sentry'
   ansible.builtin.uri:
     headers:
       Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
@@ -67,8 +63,6 @@
 # project's Git repository on GitHub before it can associate the commit
 # with the release.
 - name: 'Check release Git commit SHA-1 hash is valid with GitHub'
-  tags:
-    - 'sentry'
   ansible.builtin.uri:
     headers:
       Authorization: 'Token {{ deploy_website__github_auth_token }}'

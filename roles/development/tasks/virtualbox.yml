@@ -6,8 +6,6 @@
 
 ---
 - name: 'Run VirtualBox-related tasks'
-  tags:
-    - 'virtualbox'
   when: development__run_virtualbox_tasks | bool
   block:
     - name: 'Ensure the VirtualBox package signing key is present for APT'

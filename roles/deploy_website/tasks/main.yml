@@ -11,8 +11,6 @@
     name: __release_metadata
 
 - name: 'Set virtual host base directory variable'
-  tags:
-    - 'deploy-website:setup'
   ansible.builtin.set_fact:
     __vhost_base_directory: '/var/www/{{ deploy_website__site_domain }}'
 
@@ -145,8 +143,6 @@
       when: __post_install_tasks_file.stat.exists
 
 - name: 'Make Sentry aware of deployment'
-  tags:
-    - 'sentry'
   when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
   delegate_to: 'localhost'
   run_once: true
@@ -190,8 +186,6 @@
   ansible.builtin.meta: 'flush_handlers'
 
 - name: 'Perform smoke tests'
-  tags:
-    - 'smoketest'
   block:
     - name: 'Check release is live'
       ansible.builtin.uri:
