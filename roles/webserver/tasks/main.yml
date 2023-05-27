@@ -64,10 +64,10 @@
     rule: 'allow'
   notify: 'Restart UFW'
 
-- name: 'Ensure the default PHP executable is set'
+- name: 'Ensure the default PHP executable is set to the latest available version of PHP ({{ (webserver__php_versions | community.general.version_sort)[-1] }})'
   community.general.alternatives:
     name: 'php'
-    path: '/usr/bin/php{{ webserver__php_default_version }}'
+    path: '/usr/bin/php{{ (webserver__php_versions | community.general.version_sort)[-1] }}'
 
 - name: 'Include basic Apache and PHP-FPM configuration tasks'
   ansible.builtin.include_tasks: 'base-configure.yml'

@@ -15,10 +15,9 @@ webserver__php_default_packages:
   - 'readline'
   - 'xml'
   - 'zip'
-webserver__php_default_version: &php_default_version '7.4'
 webserver__php_packages_extra: []
 webserver__php_versions:
-  - *php_default_version
+  - '8.2'
 
 # The following default PHP-FPM dynamic settings are tailored towards
 # use on the smallest available DigitalOcean droplet. For more
