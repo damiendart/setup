@@ -3,7 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ansible==7.5.0
-ansible-lint==6.16.1
+ansible-lint==6.17.0
 flake8==6.0.0
 passlib==1.7.4
 pytest-testinfra==8.0.0
