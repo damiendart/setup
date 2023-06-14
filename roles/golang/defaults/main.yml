@@ -6,9 +6,9 @@
 
 ---
 # A string containing a checksum used to verify the integrity the Go
-# binary archive download "go1.20.3.linux-amd64.tar.gz". See also
+# binary archive download "go1.20.5.linux-amd64.tar.gz". See also
 # "golang__version".
-golang__archive_checksum: 'sha256:979694c2c25c735755bf26f4f45e19e64e4811d661dd07b8c010f7a8e18adfca'
+golang__archive_checksum: 'sha256:d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e85c4732a3f7dc442612'
 
 # A list of strings of Go package import paths to install.
 golang__installable_packages:
@@ -17,7 +17,7 @@ golang__installable_packages:
   - 'honnef.co/go/tools/cmd/staticcheck@latest'
 
 # A string containing the version of Go to install.
-golang__version: '1.20.3'
+golang__version: '1.20.5'
 
 
 # The following variables will have host-specific and/or sensitive
