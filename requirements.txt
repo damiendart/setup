@@ -2,9 +2,9 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
-ansible==7.5.0
-ansible-lint==6.17.0
+ansible==8.0.0
+ansible-lint==6.17.1
 flake8==6.0.0
 passlib==1.7.4
-pytest-testinfra==8.0.0
-yamllint==1.31.0
+pytest-testinfra==8.1.0
+yamllint==1.32.0
