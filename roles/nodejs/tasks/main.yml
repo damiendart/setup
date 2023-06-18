@@ -29,11 +29,6 @@
 - name: 'Ensure Node.js is installed'
   when: nodejs__version not in (__node_version.stdout | default('') | trim)
   block:
-    - name: 'Ensure existing Node.js installation is removed'
-      ansible.builtin.file:
-        path: '/usr/local/node'
-        state: 'absent'
-
     - name: 'Ensure the Node.js binary archive is downloaded'
       ansible.builtin.get_url:
         checksum: '{{ nodejs__archive_checksum }}'
@@ -42,6 +37,11 @@
         mode: 0755
         owner: 'root'
         url: 'https://nodejs.org/dist/v{{ nodejs__version }}/node-v{{ nodejs__version }}-linux-x64.tar.xz'
+
+    - name: 'Ensure existing Node.js installation is removed'
+      ansible.builtin.file:
+        path: '/usr/local/node'
+        state: 'absent'
 
     - name: 'Ensure base Node.js directory is present'
       ansible.builtin.file:

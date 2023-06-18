@@ -19,11 +19,6 @@
   # type 'NoneType' is not iterable" error.
   when: "golang__version not in lookup('ansible.builtin.file', '/usr/local/go/VERSION', errors='ignore') | string"
   block:
-    - name: 'Ensure existing Go installation is removed'
-      ansible.builtin.file:
-        path: '/usr/local/go'
-        state: 'absent'
-
     - name: 'Ensure the Go binary archive is downloaded'
       ansible.builtin.get_url:
         checksum: '{{ golang__archive_checksum }}'
@@ -32,6 +27,11 @@
         mode: 0755
         owner: 'root'
         url: 'https://golang.org/dl/go{{ golang__version }}.linux-amd64.tar.gz'
+
+    - name: 'Ensure existing Go installation is removed'
+      ansible.builtin.file:
+        path: '/usr/local/go'
+        state: 'absent'
 
     - name: 'Ensure Go is installed'
       ansible.builtin.unarchive:

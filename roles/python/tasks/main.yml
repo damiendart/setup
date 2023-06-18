@@ -37,11 +37,6 @@
 - name: 'Ensure Python {{ python__version }} is installed' # noqa: name[template]
   when: python__version not in (__python_version.stdout | default('') | trim)
   block:
-    - name: 'Ensure existing Python installation is removed'
-      ansible.builtin.file:
-        path: '/usr/local/python'
-        state: 'absent'
-
     - name: 'Ensure the Python binary archive is downloaded'
       ansible.builtin.get_url:
         checksum: '{{ python__archive_checksum }}'
@@ -50,6 +45,11 @@
         mode: 0755
         owner: 'root'
         url: '{{ python__archive_url }}'
+
+    - name: 'Ensure existing Python installation is removed'
+      ansible.builtin.file:
+        path: '/usr/local/python'
+        state: 'absent'
 
     - name: 'Ensure base Python directory is present'
       ansible.builtin.file:
