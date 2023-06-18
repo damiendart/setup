@@ -8,13 +8,13 @@
 # A string containing a checksum used to verify the integrity the
 # Python binary archive download. See also "python__archive_url" and
 # "python__version".
-python__archive_checksum: 'sha256:a7b538f35630a17ea8b5e1703b38906da189b2d6054297b571c7f5e81fc953a0'
+python__archive_checksum: 'sha256:6452fe315b5240040acffc5688e97fc264d9eb8fbfdd90c6ede0bc46b20640e0'
 
 # A string containing the URL to the binary archive.
-python__archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20230116/cpython-3.11.1+20230116-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
+python__archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20230507/cpython-3.11.3+20230507-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
 
 # A string containing the version of Python to install.
-python__version: '3.11.1'
+python__version: '3.11.3'
 
 
 # The following variables will have host-specific and/or sensitive
