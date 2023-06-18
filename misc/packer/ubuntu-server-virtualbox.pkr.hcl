@@ -1,4 +1,4 @@
-# A Packer template to build a test Ubuntu 20.04 VirtualBox VM.
+# A Packer template to build a test Ubuntu 22.04.2 VirtualBox VM.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -33,11 +33,10 @@ variable "ssh_authorised_keys_file" {
 
 source "virtualbox-iso" "ubuntu-server-virtualbox" {
   boot_command = [
-    "<esc><esc><esc>",
-    "<enter><wait>",
-    "/casper/vmlinuz root=/dev/sr0 initrd=/casper/initrd ",
-    "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-    "<enter>"
+    "e",
+    "<wait><down><down><down><end><spacebar>",
+    "autoinstall ds=nocloud-net\\;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+    "<F10>",
   ]
   boot_wait = "5s"
   headless = false
@@ -61,11 +60,13 @@ source "virtualbox-iso" "ubuntu-server-virtualbox" {
               username = "ubuntu"
             }
             keyboard = {
-              layout = "en"
-              variant = "uk"
+              layout = "gb"
             }
             locale = "en_GB.UTF-8"
             network = var.netplan_configuration
+            refresh-installer = {
+              update = true
+            }
             ssh = {
               allow-pw = true
               authorized-keys: fileexists(var.ssh_authorised_keys_file) ? split("\n", file(var.ssh_authorised_keys_file)) : [""]
@@ -77,14 +78,20 @@ source "virtualbox-iso" "ubuntu-server-virtualbox" {
       ]
     )
   }
-  iso_checksum = "f8e3086f3cea0fb3fefb29937ab5ed9d19e767079633960ccb50e76153effc98"
-  iso_url = "https://releases.ubuntu.com/20.04/ubuntu-20.04.3-live-server-amd64.iso"
+  iso_checksum = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
+  iso_url = "https://releases.ubuntu.com/22.04.2/ubuntu-22.04.2-live-server-amd64.iso"
   guest_os_type = "Ubuntu_64"
   memory = 2048
   shutdown_command = "echo 'ubuntu' | sudo -S shutdown -P now"
   ssh_password = "ubuntu"
   ssh_timeout = "20m"
   ssh_username = "ubuntu"
+  vboxmanage = [
+    ["modifyvm", "{{ .Name }}", "--nat-localhostreachable1", "on"],
+  ]
+  vboxmanage_post = [
+    ["modifyvm", "{{ .Name }}", "--nat-localhostreachable1", "off"],
+  ]
 }
 
 build {
