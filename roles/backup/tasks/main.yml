@@ -19,18 +19,21 @@
     name: 'tarsnap'
     state: 'present'
 
-- name: 'Ensure a write-only Tarsnap key is present'
-  ansible.builtin.copy:
-    content: '{{ backup__tarsnap_write_only_key }}'
-    dest: '/root/tarsnap.key'
-    group: 'root'
-    mode: 0600
-    owner: 'root'
+- name: 'Ensure Tarsnap is set up to back up things'
+  when: backup__directories_to_backup | length > 0
+  block:
+    - name: 'Ensure a write-only Tarsnap key is present'
+      ansible.builtin.copy:
+        content: '{{ backup__tarsnap_write_only_key }}'
+        dest: '/root/tarsnap.key'
+        group: 'root'
+        mode: 0600
+        owner: 'root'
 
-- name: 'Ensure Tarsnap is set up to run daily'
-  ansible.builtin.template:
-    dest: '/etc/cron.daily/tarsnap'
-    group: 'root'
-    mode: 0755
-    src: 'tarsnap-cron.sh.j2'
-    owner: 'root'
+    - name: 'Ensure Tarsnap is set up to run daily'
+      ansible.builtin.template:
+        dest: '/etc/cron.daily/tarsnap'
+        group: 'root'
+        mode: 0755
+        src: 'tarsnap-cron.sh.j2'
+        owner: 'root'
