@@ -67,3 +67,12 @@
         group: 'root'
         owner: 'root'
         src: '{{ python__download_cache_directory }}/{{ python__archive_url | basename }}'
+
+- name: "Ensure user-wide development-related Python packages are installed (using \"pip{{ python__version.split('.')[0:2] | join('.') }}\")"
+  ansible.builtin.pip:
+    executable: "/usr/local/python/bin/pip{{ python__version.split('.')[0:2] | join('.') }}"
+    extra_args: '--user'
+    name: '{{ item }}'
+  become: true
+  become_user: '{{ python__user_username }}'
+  loop: '{{ python__user_level_packages }}'

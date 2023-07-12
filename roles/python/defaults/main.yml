@@ -13,6 +13,11 @@ python__archive_checksum: 'sha256:6452fe315b5240040acffc5688e97fc264d9eb8fbfdd90
 # A string containing the URL to the binary archive.
 python__archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20230507/cpython-3.11.3+20230507-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
 
+# A list of strings of Python packages to install at the user-level for
+# the user specified in "python__user_username".
+python__user_level_packages:
+  - 'pipx'
+
 # A string containing the version of Python to install.
 python__version: '3.11.3'
 
@@ -24,3 +29,7 @@ python__version: '3.11.3'
 # A string containing the directory where downloaded files are stored to
 # prevent unnecessary downloading when tasks are rerun.
 python__download_cache_directory: '{{ undef() }}'
+
+# A string specifying the host account username to use when installing
+# user-level Python packages. See also "python__user_level_packages".
+python__user_username: '{{ undef() }}'
