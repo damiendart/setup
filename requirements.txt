@@ -4,6 +4,7 @@
 
 ansible==8.0.0
 ansible-lint==6.17.1
+black==23.7.0
 flake8==6.0.0
 passlib==1.7.4
 pytest-testinfra==8.1.0

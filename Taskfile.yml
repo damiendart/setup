@@ -46,6 +46,17 @@ tasks:
 
   lint:python:
     cmds:
+      - task: 'lint:python:black'
+      - task: 'lint:python:flake8'
+    desc: 'Run all Python-linting tasks'
+
+  lint:python:black:
+    cmds:
+      - '.venv/bin/black --check --diff roles/*/*/*.py tests/*.py'
+    desc: 'Lint Python scripts with Black'
+
+  lint:python:flake8:
+    cmds:
       - '.venv/bin/flake8 roles/*/*/*.py* tests/*.py'
     desc: 'Lint Python scripts with Flake8'
 

@@ -3,6 +3,7 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
+
 def test_apache_is_installed_and_a_recent_version(host):
     apache = host.package("apache2")
 
