@@ -13,6 +13,7 @@ golang__archive_checksum: 'sha256:d7ec48cde0d3d2be2c69203bc3e0a44de8660b9c09a6e8
 # A list of strings of Go package import paths to install.
 golang__installable_packages:
   - 'github.com/damiendart/pathshorten/cmd/pathshorten@latest'
+  - 'github.com/damiendart/snippets/snippet-placeholder@latest'
   - 'golang.org/x/lint/golint@latest'
   - 'honnef.co/go/tools/cmd/staticcheck@latest'
 
