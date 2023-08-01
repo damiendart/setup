@@ -13,10 +13,17 @@ python__archive_checksum: 'sha256:6452fe315b5240040acffc5688e97fc264d9eb8fbfdd90
 # A string containing the URL to the binary archive.
 python__archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20230507/cpython-3.11.3+20230507-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
 
-# A list of strings of Python packages to install at the user-level for
-# the user specified in "python__user_username".
-python__user_level_packages:
-  - 'pipx'
+# A list of strings of additional Python packages to install using pip
+# for the user specified in "python__user_username". pipx is
+# automatically installed and doesn't not need to be specified here.
+python__user_level_pip_packages: []
+
+# A list of strings of Python packages to install using pipx for the
+# user specified in "python__user_username".
+python__user_level_pipx_packages:
+  - 'fonttools[woff]'
+  - 'llm'
+  - 'sqlite-utils'
 
 # A string containing the version of Python to install.
 python__version: '3.11.3'

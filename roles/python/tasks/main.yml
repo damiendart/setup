@@ -68,11 +68,19 @@
         owner: 'root'
         src: '{{ python__download_cache_directory }}/{{ python__archive_url | basename }}'
 
-- name: "Ensure user-wide development-related Python packages are installed (using \"pip{{ python__version.split('.')[0:2] | join('.') }}\")"
+- name: "Ensure user-wide Python packages are installed using \"pip{{ python__version.split('.')[0:2] | join('.') }}\""
   ansible.builtin.pip:
     executable: "/usr/local/python/bin/pip{{ python__version.split('.')[0:2] | join('.') }}"
     extra_args: '--user'
     name: '{{ item }}'
   become: true
   become_user: '{{ python__user_username }}'
-  loop: '{{ python__user_level_packages }}'
+  loop: '{{ ["pipx"] + python__user_level_pip_packages }}'
+
+- name: 'Ensure user-wide Python packages are installed using "pipx"'
+  ansible.builtin.command: '/home/{{ python__user_username }}/.local/bin/pipx install {{ item }}'
+  become: true
+  become_user: '{{ python__user_username }}'
+  register: __pipx_install
+  changed_when: __pipx_install.stdout is search('installed package')
+  loop: '{{ python__user_level_pipx_packages }}'
