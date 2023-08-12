@@ -30,7 +30,6 @@
     paths: '/etc/apache2/sites-enabled'
   register: __vhost_conf_links
 
-# Crontab files are created when deploying a website.
 - name: 'Get all website crontab files'
   ansible.builtin.find:
     paths:
@@ -73,6 +72,9 @@
     }}
   notify: 'Reload Apache'
 
+# Crontab files are created by the "deploy_website" Ansible role when
+# deploying a website. (Cleaning up old crontab files should really be
+# done in a seperate Ansible role, but eh.)
 - name: 'Ensure crontab-related detritus no longer exists'
   ansible.builtin.file:
     path: '{{ item }}'
