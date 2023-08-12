@@ -54,9 +54,8 @@
     - 'localized-error-pages.conf'
     - 'other-vhosts-access-log.conf'
     # As an Ansible host can potentially have multiple versions of PHP
-    # installed, PHP should instead be enabled at the virtual-host level
-    # using the "SETUP__ENABLE_PHP" Apache macro. For more information,
-    # see the "roles/webserver/templates/apache2-macros.conf.j2" file.
+    # installed, PHP should be enabled on a per-virtual-host basis. See
+    # the accompanying "deploy_website" Ansible role for an example.
     - "{{ __php_conf_files.files | map(attribute='path') | map('basename') }}"
     - 'serve-cgi-bin.conf'
   notify: 'Reload Apache'
@@ -82,22 +81,12 @@
     src: 'apache2.conf.j2'
   notify: 'Reload Apache'
 
-- name: 'Ensure custom Apache macros configuration file exists'
-  ansible.builtin.template:
-    dest: '/etc/apache2/conf-available/zzz-macros.conf'
-    group: 'root'
-    mode: 0600
-    owner: 'root'
-    src: 'apache2-macros.conf.j2'
-  notify: 'Reload Apache'
-
 - name: 'Ensure custom Apache configuration files are active'
   ansible.builtin.command: 'a2enconf {{ item }}'
   args:
     creates: '/etc/apache2/conf-enabled/{{ item }}.conf'
   loop:
     - 'zzz'
-    - 'zzz-macros'
   notify: 'Reload Apache'
 
 - name: 'Ensure custom PHP-FPM configuration files exists'
