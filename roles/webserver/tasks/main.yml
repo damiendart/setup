@@ -5,6 +5,9 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+- name: 'Include tasks to clean up old and unused virtual-host-related stuff'
+  ansible.builtin.include_tasks: 'vhosts-cleanup.yml'
+
 - name: 'Ensure "deb.sury.org" repositories are present in APT source lists'
   ansible.builtin.apt_repository:
     repo: 'ppa:ondrej/{{ item }}'
@@ -74,9 +77,6 @@
 
 - name: 'Include Apache virtual host configuration tasks'
   ansible.builtin.include_tasks: 'vhosts.yml'
-
-- name: 'Include tasks to clean up old and unused virtual-host-related stuff'
-  ansible.builtin.include_tasks: 'vhosts-cleanup.yml'
 
 - name: 'Include XDebug installation and configuration tasks'
   ansible.builtin.include_tasks: 'xdebug.yml'

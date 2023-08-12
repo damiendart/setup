@@ -46,6 +46,9 @@
       --email '{{ certbot__administrator_email }}'
   when: certbot__administrator_email not in __certbot_show_account.stdout
 
+- name: 'Include tasks to clean up old and unused certificates'
+  ansible.builtin.include_tasks: 'certificate-cleanup.yml'
+
 - name: "Ensure valid Let's Encrypt certificates for sites exist"
   ansible.builtin.script: 'certbot-check.py {{ item.key }} {{ item.value.aliases | default([]) | join(" ") }}'
   args:
@@ -75,6 +78,3 @@
     dest: '/etc/letsencrypt/renewal-hooks/post/reload-apache'
     mode: 0744
   when: '"monitoring" not in ansible_play_role_names'
-
-- name: 'Include tasks to clean up old and unused certificates'
-  ansible.builtin.include_tasks: 'certificate-cleanup.yml'
