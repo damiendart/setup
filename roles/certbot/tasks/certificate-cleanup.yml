@@ -16,7 +16,7 @@
   changed_when: false
   ignore_errors: true
 
-- name: 'Ensure old and unused certificates no longer exist'
+- name: "Ensure old and unused certificates no longer exist{{ ' (DRY RUN)' if not (certbot__certificate_cleanup | default(False)) }}"
   ansible.builtin.command: 'certbot delete --cert-name {{ item }}'
   when: certbot__certificate_cleanup | default(False)
   loop: >
