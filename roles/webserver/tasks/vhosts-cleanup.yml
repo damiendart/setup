@@ -73,8 +73,8 @@
   notify: 'Reload Apache'
 
 # Crontab files are created by the "deploy_website" Ansible role when
-# deploying a website. (Cleaning up old crontab files should really be
-# done in a seperate Ansible role, but eh.)
+# deploying a website. (You could argue that cleaning up old crontab
+# files should really be done in a seperate Ansible role, but eh.)
 - name: "Ensure crontab-related detritus no longer exists{{ ' (DRY RUN)' if not (webserver__vhosts_cleanup | default(False)) }}"
   ansible.builtin.file:
     path: '{{ item }}'
