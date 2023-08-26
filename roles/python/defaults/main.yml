@@ -8,10 +8,10 @@
 # A string containing a checksum used to verify the integrity the
 # Python binary archive download. See also "python__archive_url" and
 # "python__version".
-python__archive_checksum: 'sha256:6452fe315b5240040acffc5688e97fc264d9eb8fbfdd90c6ede0bc46b20640e0'
+python__archive_checksum: 'sha256:f6882a821a02c8f727fce12044f8ed03c0814c68c483e9c074b7d62e8aaf3adf'
 
 # A string containing the URL to the binary archive.
-python__archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20230507/cpython-3.11.3+20230507-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
+python__archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20230726/cpython-3.11.4+20230726-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
 
 # A list of strings of additional Python packages to install using pip
 # for the user specified in "python__user_username". pipx is
@@ -26,7 +26,7 @@ python__user_level_pipx_packages:
   - 'sqlite-utils'
 
 # A string containing the version of Python to install.
-python__version: '3.11.3'
+python__version: '3.11.4'
 
 
 # The following variables will have host-specific and/or sensitive
