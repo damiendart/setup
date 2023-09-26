@@ -38,7 +38,7 @@
 
     - name: 'Download entr source code archive'
       ansible.builtin.get_url:
-        checksum: 'sha256:{{ development__entr_sha256 }}'
+        checksum: '{{ development__entr_source_archive_checksum }}'
         group: 'root'
         mode: 0755
         owner: 'root'

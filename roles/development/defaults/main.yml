@@ -39,8 +39,10 @@ development__debian_packages:
   - checksum: 'sha256:9565f38443b691a77460b83465f251beb9aba1df90d90f3a69151b00d1a09c82'
     url: 'https://github.com/go-task/task/releases/download/v3.26.0/task_linux_amd64.deb'
 
-development__entr_version: '5.3'
-development__entr_sha256: 'd70b44a23136b87c89bb0079452121e6afdecf6b8f4178c19f2caac3dec3662f'
+# The following checksum is for the entr 5.4 source code archive
+# "5.4.tar.gz" from <https://github.com/eradman/entr/tags>.
+development__entr_source_archive_checksum: 'sha256:491dded2cc3f1dcd8d26f496a4c7b3a996b91c7ab20883ca375037a398221f9e'
+development__entr_version: '5.4'
 
 # The following checksum is for "super-ttc-iosevka-22.0.2.zip".
 development__iosevka_archive_checksum: 'sha256:f9fd7654cf33ec06edf791459c72a02c10ec23e9cb60df01169a0a65e826025c'
