@@ -46,9 +46,11 @@ development__entr_sha256: 'd70b44a23136b87c89bb0079452121e6afdecf6b8f4178c19f2ca
 development__iosevka_archive_checksum: 'sha256:f9fd7654cf33ec06edf791459c72a02c10ec23e9cb60df01169a0a65e826025c'
 development__iosevka_version: '22.0.2'
 
-# The following checksum is for "obsidian_1.3.5_amd64.deb".
-development__obsidian_package_checksum: 'sha256:7c668295015aa743ce350de233569fa0e6e807e1e736193be9192dbec16919a2'
-development__obsidian_version: '1.3.5'
+# Obsidian releases are available at <https://obsidian.md/download> and
+# <https://github.com/obsidianmd/obsidian-releases/releases/>. The
+# following checksum is for the file "obsidian_1.4.14_amd64.deb".
+development__obsidian_package_checksum: 'sha256:5b169cb88e73b0136078c0afd19527b232b971fbb8ec3637e65440a615b7805c'
+development__obsidian_version: '1.4.14'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
