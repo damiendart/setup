@@ -1,0 +1,12 @@
+# "golang_package" Ansible role variables.
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+golang_package__gopath: '/home/{{ golang_package__user }}/.go'
+
+golang_package__packages: []
+
+golang_package__user: '{{ undef() }}'

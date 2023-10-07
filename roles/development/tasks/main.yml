@@ -83,6 +83,16 @@
   loop_control:
     label: '{{ item.filename | default(item.url | basename) }}'
 
+- name: 'Ensure base development-related Go packages are installed'
+  ansible.builtin.include_role:
+    name: 'golang_package'
+  vars:
+    golang_package__packages:
+      - 'github.com/damiendart/pathshorten/cmd/pathshorten@latest'
+      - 'github.com/damiendart/snippets/snippet-placeholder@latest'
+      - 'golang.org/x/lint/golint@latest'
+      - 'honnef.co/go/tools/cmd/staticcheck@latest'
+
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
 

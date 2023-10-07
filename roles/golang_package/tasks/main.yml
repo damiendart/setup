@@ -1,0 +1,16 @@
+# Compiles and installs Go packages using "go install".
+#
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure Go packages are compiled and installed for user "{{ golang_package__user }}"'
+  ansible.builtin.command: '{{ ansible_local.golang.bin_dir }}/go install {{ item }}'
+  become: true
+  become_user: '{{ golang_package__user }}'
+  environment:
+    GOPATH: '{{ golang_package__gopath }}'
+  register: __go_install
+  changed_when: __go_install.stderr is search('downloading')
+  loop: '{{ golang_package__packages }}'

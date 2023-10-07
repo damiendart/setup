@@ -1,8 +1,7 @@
 golang
 ======
 
-Installs Go from a binary archive, and optionally installs Go packages
-into a user's home directory with `go install`.
+Installs Go from a binary archive.
 
 
 ## Configuration and usage

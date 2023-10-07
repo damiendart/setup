@@ -28,7 +28,3 @@ golang__version: '1.21.0'
 # A string containing the directory where downloaded files are stored to
 # prevent unnecessary downloading when tasks are rerun.
 golang__download_cache_directory: '{{ undef() }}'
-
-# A string specifying the host account username that will "go install"
-# the packages listed in "golang__installable_packages".
-golang__user_username: '{{ undef() }}'

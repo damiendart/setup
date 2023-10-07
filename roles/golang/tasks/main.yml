@@ -41,10 +41,22 @@
         remote_src: true
         src: '{{ golang__download_cache_directory }}/go{{ golang__version }}.linux-amd64.tar.gz'
 
-- name: 'Ensure Go-related tools are installed'
-  ansible.builtin.command: '/usr/local/go/bin/go install {{ item }}'
-  become: true
-  become_user: '{{ golang__user_username }}'
-  register: __go_install
-  changed_when: __go_install.stderr is search('downloading')
-  loop: '{{ golang__installable_packages }}'
+- name: 'Ensure Ansible local facts directory exists'
+  ansible.builtin.file:
+    mode: 0755
+    path: '/etc/ansible/facts.d'
+    state: 'directory'
+
+- name: 'Ensure Go-related local facts exists'
+  ansible.builtin.template:
+    dest: '/etc/ansible/facts.d/golang.fact'
+    group: 'root'
+    mode: 0644
+    owner: 'root'
+    src: 'golang.fact.j2'
+  register: __golang_facts
+
+- name: 'Ensure Ansible facts are up-to-date'
+  ansible.builtin.setup: # noqa: no-handler
+    filter: 'ansible_local'
+  when: __golang_facts is changed
