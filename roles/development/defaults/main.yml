@@ -6,22 +6,27 @@
 
 ---
 development__binary_archives:
+  # See <https://www.browserstack.com/docs/live/local-testing>.
   - binaries: 'BrowserStackLocal'
     checksum: 'sha256:6f9dc34364cbba82ee4309d0e9536fb956c9f88bdb3844e3449c16ed63fa2210'
     url: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
 
+  # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:e1c28b67b9199c329280598b4f344ac943dd3d31ee04f351d89084933a8efed7'
-    url: 'https://github.com/junegunn/fzf/releases/download/0.42.0/fzf-0.42.0-linux_amd64.tar.gz'
+    checksum: 'sha256:a43b0b22649c8e7b2ff7528a5169f868273ba1f74bd5bb4beb282c4af619eb65'
+    url: 'https://github.com/junegunn/fzf/releases/download/0.43.0/fzf-0.43.0-linux_amd64.tar.gz'
 
+  # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
-    checksum: 'sha256:793ed62255b9e572eda0c77d2a770f5fde501314b7598320786f1e51feb260d6'
-    url: 'https://releases.hashicorp.com/packer/1.9.1/packer_1.9.1_linux_amd64.zip'
+    checksum: 'sha256:6cd5269c4245aa8c99e551d1b862460d63fe711c58bec618fade25f8492e80d9'
+    url: 'https://releases.hashicorp.com/packer/1.9.4/packer_1.9.4_linux_amd64.zip'
 
-  # Ansible gets funny about trying to extract individual files from
-  # "tar.xz" archives using the "include" parameter. One workaround is
-  # to awkwardly recreate the "include" functionality with "extra_opts".
+  # See <https://github.com/koalaman/shellcheck/releases>.
   - checksum: 'sha256:700324c6dd0ebea0117591c6cc9d7350d9c7c5c287acbad7630fa17b1d4d9e2f'
+    # Ansible gets funny about trying to extract individual files from
+    # "tar.xz" archives using the "include" parameter. A pretty naff
+    # workaround is to awkwardly recreate the "include" functionality
+    # with "extra_opts".
     extra_opts:
       - '--exclude=LICENSE.txt'
       - '--exclude=README.txt'
@@ -30,29 +35,33 @@ development__binary_archives:
     url: 'https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.xz'
 
 development__debian_packages:
-  - checksum: 'sha256:caa7e0410f9e2cb1da2eb8db13cc97b5548fe455985e2c944e3929d22f99bcdc'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.1.3/pandoc-3.1.3-1-amd64.deb'
+  # See <https://github.com/jgm/pandoc/releases>.
+  - checksum: 'sha256:b9755f35abc652bf8a64a4fa134babba4921f45d8a43bb9b88fed50f62b31622'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.1.8/pandoc-3.1.8-1-amd64.deb'
 
+  # See <https://github.com/BurntSushi/ripgrep/releases>.
   - checksum: 'sha256:6d78bed13722019cb4f9d0cf366715e2dcd589f4cf91897efb28216a6bb319f1'
     url: 'https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb'
 
-  - checksum: 'sha256:9565f38443b691a77460b83465f251beb9aba1df90d90f3a69151b00d1a09c82'
-    url: 'https://github.com/go-task/task/releases/download/v3.26.0/task_linux_amd64.deb'
+  # See <https://github.com/go-task/task/releases>.
+  - checksum: 'sha256:4f229adc9d62f72bf8c6bfea262aba960964aa46377f335863fb151956124fdb'
+    url: 'https://github.com/go-task/task/releases/download/v3.31.0/task_linux_amd64.deb'
 
 # The following checksum is for the entr 5.4 source code archive
 # "5.4.tar.gz" from <https://github.com/eradman/entr/tags>.
 development__entr_source_archive_checksum: 'sha256:491dded2cc3f1dcd8d26f496a4c7b3a996b91c7ab20883ca375037a398221f9e'
 development__entr_version: '5.4'
 
-# The following checksum is for "super-ttc-iosevka-22.0.2.zip".
+# The following checksum is for "super-ttc-iosevka-22.0.2.zip" from
+# <https://github.com/be5invis/Iosevka/releases>.
 development__iosevka_archive_checksum: 'sha256:f9fd7654cf33ec06edf791459c72a02c10ec23e9cb60df01169a0a65e826025c'
 development__iosevka_version: '22.0.2'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
-# following checksum is for the file "obsidian_1.4.14_amd64.deb".
-development__obsidian_package_checksum: 'sha256:5b169cb88e73b0136078c0afd19527b232b971fbb8ec3637e65440a615b7805c'
-development__obsidian_version: '1.4.14'
+# following checksum is for the file "obsidian_1.4.16_amd64.deb".
+development__obsidian_package_checksum: 'sha256:7af0647fdc5a0a70840c9b71742c573e39990dde9e1dcd73479c4ca4aa38d74d'
+development__obsidian_version: '1.4.16'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false

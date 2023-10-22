@@ -1,5 +1,8 @@
 # "composer" Ansible role variables.
 #
+# Composer downloads and checksums are available at
+# <https://getcomposer.org/download/>.
+#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
@@ -8,10 +11,10 @@
 # A string containing a checksum used to verify the integrity of the
 # Composer PHP archive download "composer.phar". See also
 # "composer__composer_version".
-composer__composer_checksum: 'sha256:f07934fad44f9048c0dc875a506cca31cc2794d6aebfc1867f3b1fbf48dce2c5'
+composer__composer_checksum: 'sha256:9a18e1a3aadbcb94c1bafd6c4a98ff931f4b43a456ef48575130466e19f05dd6'
 
 # A string containing the version of Composer to install.
-composer__composer_version: '2.5.8'
+composer__composer_version: '2.6.5'
 
 
 # The following variables will have host-specific and/or sensitive
