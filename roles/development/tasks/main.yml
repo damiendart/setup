@@ -88,6 +88,7 @@
     name: 'golang_package'
   vars:
     golang_package__packages:
+      - 'github.com/damiendart/nt/cmd/nt@latest'
       - 'github.com/damiendart/pathshorten/cmd/pathshorten@latest'
       - 'github.com/damiendart/snippets/snippet-placeholder@latest'
       - 'golang.org/x/lint/golint@latest'
