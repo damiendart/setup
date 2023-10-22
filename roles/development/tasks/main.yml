@@ -36,7 +36,7 @@
     path: '/home/{{ development__user_username }}/{{ development__projects_folder }}'
     state: 'directory'
 
-- name: 'Ensure base development-related packages are installed'
+- name: 'Ensure base development environment packages are installed'
   ansible.builtin.apt:
     force_apt_get: true
     name:
@@ -49,7 +49,7 @@
       - 'vim{{ "-gtk3" if development__run_gui_tasks }}'
     state: 'present'
 
-- name: 'Ensure base development-related binary archives and Debian packages are downloaded'
+- name: 'Ensure base development environment binary archives and Debian packages are downloaded'
   ansible.builtin.get_url:
     checksum: '{{ item.checksum }}'
     dest: '{{ development__download_cache_directory }}/{{ item.filename | default(item.url | basename) }}'
@@ -61,7 +61,7 @@
   loop_control:
     label: '{{ item.url }}'
 
-- name: 'Ensure base development-related Debian packages are installed'
+- name: 'Ensure base development environment Debian packages are installed'
   ansible.builtin.apt:
     deb: '{{ development__download_cache_directory }}/{{ item.url | basename }}'
     state: 'present'
@@ -69,7 +69,7 @@
   loop_control:
     label: '{{ item.url | basename }}'
 
-- name: 'Ensure base development-related binaries from archives are installed'
+- name: 'Ensure base development environment binaries from archives are installed'
   ansible.builtin.unarchive:
     dest: '/usr/local/bin'
     extra_opts: '{{ item.extra_opts | default([]) }}'
@@ -83,7 +83,7 @@
   loop_control:
     label: '{{ item.filename | default(item.url | basename) }}'
 
-- name: 'Ensure base development-related Go packages are installed'
+- name: 'Ensure base development environment Go packages are installed'
   ansible.builtin.include_role:
     name: 'golang_package'
   vars:
