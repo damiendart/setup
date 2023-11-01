@@ -33,7 +33,7 @@
       ansible.builtin.git:
         dest: '/home/{{ development__user_username }}/{{ development__projects_folder }}/{{ item }}'
         repo: 'git@github.com:damiendart/{{ item }}.git'
-        update: false
+        update: '{{ development__update_dotfiles }}'
         version: 'master'
       loop:
         - 'snippets'
