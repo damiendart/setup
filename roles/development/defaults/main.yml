@@ -13,8 +13,8 @@ development__binary_archives:
 
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:a43b0b22649c8e7b2ff7528a5169f868273ba1f74bd5bb4beb282c4af619eb65'
-    url: 'https://github.com/junegunn/fzf/releases/download/0.43.0/fzf-0.43.0-linux_amd64.tar.gz'
+    checksum: 'sha256:73d7946f08dae8a330f4233e3eeb71c4ffc411412e3fe8488d608dde3f7a74bd'
+    url: 'https://github.com/junegunn/fzf/releases/download/0.44.1/fzf-0.44.1-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
@@ -36,21 +36,21 @@ development__binary_archives:
 
 development__debian_packages:
   # See <https://github.com/jgm/pandoc/releases>.
-  - checksum: 'sha256:b9755f35abc652bf8a64a4fa134babba4921f45d8a43bb9b88fed50f62b31622'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.1.8/pandoc-3.1.8-1-amd64.deb'
+  - checksum: 'sha256:ed6322b6bc225552e5c8447d7bf750e401295d7687725cee479903bf4fceef26'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.1.9/pandoc-3.1.9-1-amd64.deb'
 
   # See <https://github.com/BurntSushi/ripgrep/releases>.
-  - checksum: 'sha256:6d78bed13722019cb4f9d0cf366715e2dcd589f4cf91897efb28216a6bb319f1'
-    url: 'https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb'
+  - checksum: 'sha256:ab0de69388fde06c872525918572105beed6cee657d08a943e1c98c52a4a5139'
+    url: 'https://github.com/BurntSushi/ripgrep/releases/download/14.0.1/ripgrep_14.0.1-1_amd64.deb'
 
   # See <https://github.com/go-task/task/releases>.
   - checksum: 'sha256:4f229adc9d62f72bf8c6bfea262aba960964aa46377f335863fb151956124fdb'
     url: 'https://github.com/go-task/task/releases/download/v3.31.0/task_linux_amd64.deb'
 
-# The following checksum is for the entr 5.4 source code archive
-# "5.4.tar.gz" from <https://github.com/eradman/entr/tags>.
-development__entr_source_archive_checksum: 'sha256:491dded2cc3f1dcd8d26f496a4c7b3a996b91c7ab20883ca375037a398221f9e'
-development__entr_version: '5.4'
+# The following checksum is for the entr 5.5 source code archive
+# "5.5.tar.gz" from <https://github.com/eradman/entr/tags>.
+development__entr_source_archive_checksum: 'sha256:128c0ce2efea5ae6bd3fd33c3cd31e161eb0c02609d8717ad37e95b41656e526'
+development__entr_version: '5.5'
 
 # The following checksum is for "super-ttc-iosevka-22.0.2.zip" from
 # <https://github.com/be5invis/Iosevka/releases>.
