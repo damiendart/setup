@@ -94,6 +94,15 @@
       - 'golang.org/x/lint/golint@latest'
       - 'honnef.co/go/tools/cmd/staticcheck@latest'
 
+- name: 'Ensure base development environment Python packages are installed'
+  ansible.builtin.include_role:
+    name: 'python_package'
+  vars:
+    python_package__pipx_packages:
+      - 'fonttools[woff]'
+      - 'llm'
+      - 'sqlite-utils'
+
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
 

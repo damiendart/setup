@@ -1,0 +1,21 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: "Ensure user-wide Python packages to be installed with \"pip{{ ansible_local.python.version.split('.')[0:2] | join('.') }}\" are installed"
+  ansible.builtin.pip:
+    executable: "{{ ansible_local.python.bin_dir }}/pip{{ ansible_local.python.version.split('.')[0:2] | join('.') }}"
+    extra_args: '--user'
+    name: '{{ item }}'
+  become: true
+  become_user: '{{ python_package__user }}'
+  loop: '{{ ["pipx"] + python_package__pip_packages }}'
+
+- name: 'Ensure user-wide Python packages to be installed with "pipx" are installed'
+  ansible.builtin.command: '/home/{{ python_package__user }}/.local/bin/pipx install {{ item }}'
+  become: true
+  become_user: '{{ python_package__user }}'
+  register: __pipx_install
+  changed_when: __pipx_install.stdout is search('installed package')
+  loop: '{{ python_package__pipx_packages }}'

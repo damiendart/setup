@@ -1,5 +1,3 @@
-# Installs and configures various Python distributions.
-#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
@@ -68,19 +66,22 @@
         owner: 'root'
         src: '{{ python__download_cache_directory }}/{{ python__archive_url | basename }}'
 
-- name: "Ensure user-wide Python packages are installed using \"pip{{ python__version.split('.')[0:2] | join('.') }}\""
-  ansible.builtin.pip:
-    executable: "/usr/local/python/bin/pip{{ python__version.split('.')[0:2] | join('.') }}"
-    extra_args: '--user'
-    name: '{{ item }}'
-  become: true
-  become_user: '{{ python__user_username }}'
-  loop: '{{ ["pipx"] + python__user_level_pip_packages }}'
+- name: 'Ensure Ansible local facts directory exists'
+  ansible.builtin.file:
+    mode: 0755
+    path: '/etc/ansible/facts.d'
+    state: 'directory'
 
-- name: 'Ensure user-wide Python packages are installed using "pipx"'
-  ansible.builtin.command: '/home/{{ python__user_username }}/.local/bin/pipx install {{ item }}'
-  become: true
-  become_user: '{{ python__user_username }}'
-  register: __pipx_install
-  changed_when: __pipx_install.stdout is search('installed package')
-  loop: '{{ python__user_level_pipx_packages }}'
+- name: 'Ensure Python-related Ansible local facts exists'
+  ansible.builtin.template:
+    dest: '/etc/ansible/facts.d/python.fact'
+    group: 'root'
+    mode: 0644
+    owner: 'root'
+    src: 'python.fact.j2'
+  register: __python_facts
+
+- name: 'Ensure Ansible local facts are up-to-date'
+  ansible.builtin.setup: # noqa: no-handler
+    filter: 'ansible_local'
+  when: __python_facts is changed

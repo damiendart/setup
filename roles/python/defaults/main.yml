@@ -14,18 +14,6 @@ python__archive_checksum: 'sha256:9a2f2bb9fca7f31502e102306fbeed8ceb7f634f4376a0
 # A string containing the URL to the binary archive.
 python__archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20231002/cpython-3.11.6+20231002-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
 
-# A list of strings of additional Python packages to install using pip
-# for the user specified in "python__user_username". pipx is
-# automatically installed and doesn't not need to be specified here.
-python__user_level_pip_packages: []
-
-# A list of strings of Python packages to install using pipx for the
-# user specified in "python__user_username".
-python__user_level_pipx_packages:
-  - 'fonttools[woff]'
-  - 'llm'
-  - 'sqlite-utils'
-
 # A string containing the version of Python to install.
 python__version: '3.11.6'
 
@@ -37,7 +25,3 @@ python__version: '3.11.6'
 # A string containing the directory where downloaded files are stored to
 # prevent unnecessary downloading when tasks are rerun.
 python__download_cache_directory: '{{ undef() }}'
-
-# A string specifying the host account username to use when installing
-# user-level Python packages. See also "python__user_level_packages".
-python__user_username: '{{ undef() }}'
