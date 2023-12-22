@@ -4,6 +4,15 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
+packer {
+  required_plugins {
+    virtualbox = {
+      version = "~> 1"
+      source  = "github.com/hashicorp/virtualbox"
+    }
+  }
+}
+
 variable "netplan_configuration" {
   description = "A HCL-formatted netplan network configuration to apply to the virtual machine."
   # The default netplan network configuration provided assumes that the

@@ -18,8 +18,8 @@ development__binary_archives:
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
-    checksum: 'sha256:6cd5269c4245aa8c99e551d1b862460d63fe711c58bec618fade25f8492e80d9'
-    url: 'https://releases.hashicorp.com/packer/1.9.4/packer_1.9.4_linux_amd64.zip'
+    checksum: 'sha256:a8442e7041db0a7db48f468e353ee07fa6a7b35276ec62f60813c518ca3296c1'
+    url: 'https://releases.hashicorp.com/packer/1.10.0/packer_1.10.0_linux_amd64.zip'
 
   # See <https://github.com/koalaman/shellcheck/releases>.
   - checksum: 'sha256:700324c6dd0ebea0117591c6cc9d7350d9c7c5c287acbad7630fa17b1d4d9e2f'

@@ -20,8 +20,19 @@ tasks:
 
   dependencies:
     cmds:
+      - task: 'dependencies:packer'
+      - task: 'dependencies:python'
+    desc: 'Install project dependencies'
+
+  dependencies:python:
+    cmds:
       - '.venv/bin/python -m pip install -r requirements.txt'
     desc: 'Install Python dependencies'
+
+  dependencies:packer:
+    cmds:
+      - 'packer init misc/packer/*.hcl'
+    desc: 'Install Packer plugin binaries'
 
   lint:
     cmds:
