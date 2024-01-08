@@ -18,6 +18,7 @@ webserver__php_default_packages:
 webserver__php_packages_extra: []
 webserver__php_versions:
   - '8.2'
+webserver__php_versions_default: '{{ (webserver__php_versions | community.general.version_sort)[-1] }}'
 
 # The following default PHP-FPM dynamic settings are tailored towards
 # use on the smallest available DigitalOcean droplet. For more
