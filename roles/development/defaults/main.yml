@@ -66,7 +66,6 @@ development__obsidian_version: '1.4.16'
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
 development__update_dotfiles: false
-development__virtualbox_version: '7.0'
 
 
 # The following variables will have host-specific and/or sensitive

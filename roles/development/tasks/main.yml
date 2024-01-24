@@ -113,8 +113,5 @@
   ansible.builtin.include_tasks: 'gui.yml'
   when: development__run_gui_tasks | bool
 
-- name: 'Include VirtualBox installation tasks'
-  ansible.builtin.include_tasks: 'virtualbox.yml'
-
 - name: 'Include Open VM Tools installation tasks'
   ansible.builtin.include_tasks: 'open-vm-tools.yml'
