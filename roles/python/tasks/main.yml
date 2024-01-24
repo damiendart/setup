@@ -21,28 +21,28 @@
 
 - name: 'Get status of existing non-system Python installation'
   ansible.builtin.stat:
-    path: "/usr/local/python/bin/python{{ python__version | regex_search('\\d.\\d{1,}') }}"
+    path: "/usr/local/python/bin/python{{ python__python_version | regex_search('\\d.\\d{1,}') }}"
   changed_when: false
   register: __python_binary
 
 - name: 'Get version of existing non-system Python installation'
-  ansible.builtin.command: "/usr/local/python/bin/python{{ python__version | regex_search('\\d.\\d{1,}') }} --version"
+  ansible.builtin.command: "/usr/local/python/bin/python{{ python__python_version | regex_search('\\d.\\d{1,}') }} --version"
   changed_when: false
   failed_when: false
   register: __python_version
   when: __python_binary.stat.exists
 
-- name: 'Ensure Python {{ python__version }} is installed' # noqa: name[template]
-  when: python__version not in (__python_version.stdout | default('') | trim)
+- name: 'Ensure Python {{ python__python_version }} is installed' # noqa: name[template]
+  when: python__python_version not in (__python_version.stdout | default('') | trim)
   block:
     - name: 'Ensure the Python binary archive is downloaded'
       ansible.builtin.get_url:
-        checksum: '{{ python__archive_checksum }}'
-        dest: '{{ python__download_cache_directory }}/{{ python__archive_url | basename }}'
+        checksum: '{{ python__python_archive_checksum }}'
+        dest: '{{ python__download_cache_directory }}/{{ python__python_archive_url | basename }}'
         group: 'root'
         mode: 0755
         owner: 'root'
-        url: '{{ python__archive_url }}'
+        url: '{{ python__python_archive_url }}'
 
     - name: 'Ensure existing Python installation is removed'
       ansible.builtin.file:
@@ -57,14 +57,14 @@
         path: '/usr/local/python'
         state: 'directory'
 
-    - name: 'Ensure Python {{ python__version }} is installed' # noqa: name[template]
+    - name: 'Ensure Python {{ python__python_version }} is installed' # noqa: name[template]
       ansible.builtin.unarchive:
         dest: '/usr/local/python'
         extra_opts:
           - '--strip-components=1'
         group: 'root'
         owner: 'root'
-        src: '{{ python__download_cache_directory }}/{{ python__archive_url | basename }}'
+        src: '{{ python__download_cache_directory }}/{{ python__python_archive_url | basename }}'
 
 - name: 'Ensure Ansible local facts directory exists'
   ansible.builtin.file:
