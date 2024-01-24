@@ -112,6 +112,3 @@
 - name: 'Include tasks for hosts with GUIs'
   ansible.builtin.include_tasks: 'gui.yml'
   when: development__run_gui_tasks | bool
-
-- name: 'Include Open VM Tools installation tasks'
-  ansible.builtin.include_tasks: 'open-vm-tools.yml'
