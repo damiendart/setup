@@ -102,6 +102,7 @@
       - 'fonttools[woff]'
       - 'llm'
       - 'sqlite-utils'
+      - 'visidata[lxml]'
 
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
