@@ -19,3 +19,11 @@
   register: __pipx_install
   changed_when: __pipx_install.stdout is search('installed package')
   loop: '{{ python_package__pipx_packages }}'
+
+- name: 'Ensure user-wide Python packages installed with "pipx" are up-to-date'
+  ansible.builtin.command: "/home/{{ python_package__user }}/.local/bin/pipx upgrade {{ item | split('[') | first }}"
+  become: true
+  become_user: '{{ python_package__user }}'
+  register: __pipx_upgrade
+  changed_when: __pipx_upgrade.stdout is search('upgraded package')
+  loop: '{{ python_package__pipx_packages }}'
