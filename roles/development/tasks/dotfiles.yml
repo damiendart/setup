@@ -7,9 +7,6 @@
 - name: 'Run dotfiles-related tasks'
   become: true
   become_user: '{{ development__user_username }}'
-  # See the comment below about SSH agent forwarding for why the
-  # "ignore-errors" rule check is suppressed.
-  ignore_errors: true # noqa: ignore-errors
   block:
     - name: 'Ensure keys for GitHub hosts exists in administrator known hosts list'
       ansible.builtin.known_hosts:
