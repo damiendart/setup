@@ -13,16 +13,16 @@ development__binary_archives:
 
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:73d7946f08dae8a330f4233e3eeb71c4ffc411412e3fe8488d608dde3f7a74bd'
-    url: 'https://github.com/junegunn/fzf/releases/download/0.44.1/fzf-0.44.1-linux_amd64.tar.gz'
+    checksum: 'sha256:6878dc810c0e464d392985e4e9d3525f7c4af346985f4b094ca117ce1bb0838c'
+    url: 'https://github.com/junegunn/fzf/releases/download/0.46.1/fzf-0.46.1-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
-    checksum: 'sha256:a8442e7041db0a7db48f468e353ee07fa6a7b35276ec62f60813c518ca3296c1'
-    url: 'https://releases.hashicorp.com/packer/1.10.0/packer_1.10.0_linux_amd64.zip'
+    checksum: 'sha256:6ed412d212e6948f956a92099d6f941ddb470ff30ab40432622f5e68d594ec46'
+    url: 'https://releases.hashicorp.com/packer/1.10.2/packer_1.10.2_linux_amd64.zip'
 
   # See <https://github.com/koalaman/shellcheck/releases>.
-  - checksum: 'sha256:700324c6dd0ebea0117591c6cc9d7350d9c7c5c287acbad7630fa17b1d4d9e2f'
+  - checksum: 'sha256:6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87'
     # Ansible gets funny about trying to extract individual files from
     # "tar.xz" archives using the "include" parameter. A pretty naff
     # workaround is to awkwardly recreate the "include" functionality
@@ -31,21 +31,21 @@ development__binary_archives:
       - '--exclude=LICENSE.txt'
       - '--exclude=README.txt'
       - '--transform'
-      - 's/^shellcheck-v0.9.0\///'
-    url: 'https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.xz'
+      - 's/^shellcheck-v0.10.0\///'
+    url: 'https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.x86_64.tar.xz'
 
 development__debian_packages:
   # See <https://github.com/jgm/pandoc/releases>.
-  - checksum: 'sha256:ed6322b6bc225552e5c8447d7bf750e401295d7687725cee479903bf4fceef26'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.1.9/pandoc-3.1.9-1-amd64.deb'
+  - checksum: 'sha256:88a26aecaba5b8d314a37fb28badfd2577b36297627599c06202cd51a752995c'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.1.12.2/pandoc-3.1.12.2-1-amd64.deb'
 
   # See <https://github.com/BurntSushi/ripgrep/releases>.
-  - checksum: 'sha256:ab0de69388fde06c872525918572105beed6cee657d08a943e1c98c52a4a5139'
-    url: 'https://github.com/BurntSushi/ripgrep/releases/download/14.0.1/ripgrep_14.0.1-1_amd64.deb'
+  - checksum: 'sha256:78953d5a1c97cb363de0098ff73a7ef33fcae014abd4d62f0da490fe3f58ee94'
+    url: 'https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep_14.1.0-1_amd64.deb'
 
   # See <https://github.com/go-task/task/releases>.
-  - checksum: 'sha256:4f229adc9d62f72bf8c6bfea262aba960964aa46377f335863fb151956124fdb'
-    url: 'https://github.com/go-task/task/releases/download/v3.31.0/task_linux_amd64.deb'
+  - checksum: 'sha256:a745be92a71395b280a7a52749d18bf9bec2570765581469b3ef3aceb21dae31'
+    url: 'https://github.com/go-task/task/releases/download/v3.35.1/task_linux_amd64.deb'
 
 # The following checksum is for the entr 5.5 source code archive
 # "5.5.tar.gz" from <https://github.com/eradman/entr/tags>.
@@ -59,9 +59,9 @@ development__iosevka_version: '22.0.2'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
-# following checksum is for the file "obsidian_1.4.16_amd64.deb".
-development__obsidian_package_checksum: 'sha256:7af0647fdc5a0a70840c9b71742c573e39990dde9e1dcd73479c4ca4aa38d74d'
-development__obsidian_version: '1.4.16'
+# following checksum is for the file "obsidian_1.5.8_amd64.deb".
+development__obsidian_package_checksum: 'sha256:46675f643a24fb94d763eb03001090d3f500f1c6b3a354d11639f23ee268489b'
+development__obsidian_version: '1.5.8'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
