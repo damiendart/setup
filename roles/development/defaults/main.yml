@@ -13,8 +13,8 @@ development__binary_archives:
 
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:6878dc810c0e464d392985e4e9d3525f7c4af346985f4b094ca117ce1bb0838c'
-    url: 'https://github.com/junegunn/fzf/releases/download/0.46.1/fzf-0.46.1-linux_amd64.tar.gz'
+    checksum: 'sha256:0c8df3ed2633b8d14643b0c47d4fae4bbe5987cdfc34eb1db438b2d04db3c041'
+    url: 'https://github.com/junegunn/fzf/releases/download/0.49.0/fzf-0.49.0-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
@@ -36,8 +36,8 @@ development__binary_archives:
 
 development__debian_packages:
   # See <https://github.com/jgm/pandoc/releases>.
-  - checksum: 'sha256:88a26aecaba5b8d314a37fb28badfd2577b36297627599c06202cd51a752995c'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.1.12.2/pandoc-3.1.12.2-1-amd64.deb'
+  - checksum: 'sha256:7ae8376350fa5c54eb3011740934d66d02c887a140e8d19dee48e2ef2902b5f2'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.1.12.3/pandoc-3.1.12.3-1-amd64.deb'
 
   # See <https://github.com/BurntSushi/ripgrep/releases>.
   - checksum: 'sha256:78953d5a1c97cb363de0098ff73a7ef33fcae014abd4d62f0da490fe3f58ee94'
@@ -59,9 +59,9 @@ development__iosevka_version: '22.0.2'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
-# following checksum is for the file "obsidian_1.5.8_amd64.deb".
-development__obsidian_package_checksum: 'sha256:46675f643a24fb94d763eb03001090d3f500f1c6b3a354d11639f23ee268489b'
-development__obsidian_version: '1.5.8'
+# following checksum is for the file "obsidian_1.5.12_amd64.deb".
+development__obsidian_package_checksum: 'sha256:53d4e04010f852dd3abafbd2d2423071c32e0dcce47ab1b5e4b443ba9dcf75ee'
+development__obsidian_version: '1.5.12'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
