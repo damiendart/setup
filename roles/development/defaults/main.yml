@@ -13,8 +13,8 @@ development__binary_archives:
 
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:0c8df3ed2633b8d14643b0c47d4fae4bbe5987cdfc34eb1db438b2d04db3c041'
-    url: 'https://github.com/junegunn/fzf/releases/download/0.49.0/fzf-0.49.0-linux_amd64.tar.gz'
+    checksum: 'sha256:8fcefbcb085706de98f5fd23955ff343bd75eed826ec0a9c793bacba15ca9932'
+    url: 'https://github.com/junegunn/fzf/releases/download/0.50.0/fzf-0.50.0-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
@@ -36,16 +36,16 @@ development__binary_archives:
 
 development__debian_packages:
   # See <https://github.com/jgm/pandoc/releases>.
-  - checksum: 'sha256:7ae8376350fa5c54eb3011740934d66d02c887a140e8d19dee48e2ef2902b5f2'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.1.12.3/pandoc-3.1.12.3-1-amd64.deb'
+  - checksum: 'sha256:b51029afd2e302679aabb9464cd96bda378145d48bb853bd32d93c57b93a293d'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.1.13/pandoc-3.1.13-1-amd64.deb'
 
   # See <https://github.com/BurntSushi/ripgrep/releases>.
   - checksum: 'sha256:78953d5a1c97cb363de0098ff73a7ef33fcae014abd4d62f0da490fe3f58ee94'
     url: 'https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep_14.1.0-1_amd64.deb'
 
   # See <https://github.com/go-task/task/releases>.
-  - checksum: 'sha256:a745be92a71395b280a7a52749d18bf9bec2570765581469b3ef3aceb21dae31'
-    url: 'https://github.com/go-task/task/releases/download/v3.35.1/task_linux_amd64.deb'
+  - checksum: 'sha256:8d60fc4127347b48487d7da99ffe825dd9d2d1740dcad2a9d283d30d26925753'
+    url: 'https://github.com/go-task/task/releases/download/v3.36.0/task_linux_amd64.deb'
 
 # The following checksum is for the entr 5.5 source code archive
 # "5.5.tar.gz" from <https://github.com/eradman/entr/tags>.
