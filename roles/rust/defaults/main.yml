@@ -6,10 +6,11 @@
 
 ---
 # A string containing a checksum used to verify the integrity of the
-# "rustup-init" binary. Checksums are available at
-# <https://rust-lang.github.io/rustup/installation/other.html>. See also
-# "rust__rustup_init_url".
-rust__rustup_init_checksum: 'sha256:0b2f6c8f85a3d02fde2efc0ced4657869d73fccfce59defb4e8d29233116e6db'
+# "rustup-init" binary. Binary checksums are available by appending
+# ".sha256" to the binary download URL (for more information, see
+# <https://rust-lang.github.io/rustup/installation/other.html>). See
+# also "rust__rustup_init_url".
+rust__rustup_init_checksum: 'sha256:6aeece6993e902708983b209d04c0d1dbb14ebb405ddb87def578d41f920f56d'
 
 # A string containing the URL to the "rustup-init" binary.
 rust__rustup_init_url: 'https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init'

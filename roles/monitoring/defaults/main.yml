@@ -6,13 +6,13 @@
 
 ---
 # A string containing a checksum used to verify the integrity the Node
-# Exporter binary archive "node_exporter-1.7.0.linux-amd64.tar.gz".
+# Exporter binary archive "node_exporter-1.8.0.linux-amd64.tar.gz".
 # node_exporter binaries and checksums are available at
 # <https://github.com/prometheus/node_exporter/releases>.
-monitoring__node_exporter_archive_checksum: 'sha256:a550cd5c05f760b7934a2d0afad66d2e92e681482f5f57a917465b1fba3b02a6'
+monitoring__node_exporter_archive_checksum: 'sha256:c184e5dd98d518ac468339a9e073c233f777e0948a18862dd88e3f1bdcdf1438'
 
 # A string containing the version of Node Exporter to install.
-monitoring__node_exporter_version: '1.7.0'
+monitoring__node_exporter_version: '1.8.0'
 
 
 # The following variables will have host-specific and/or sensitive
