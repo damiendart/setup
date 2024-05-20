@@ -6,16 +6,6 @@
 
 ---
 services:
-  linkding:
-    image: 'sissbruecker/linkding:latest'
-    container_name: 'linkding'
-    ports:
-      # Prometheus got here first.
-      - '9000:9090'
-    volumes:
-      - '${LINKDING_DIRECTORY:?err}:/etc/linkding/data'
-    restart: 'unless-stopped'
-
   syncthing:
     image: 'syncthing/syncthing'
     container_name: 'syncthing'
