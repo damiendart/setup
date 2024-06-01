@@ -1,4 +1,4 @@
-; {{ ansible_managed }}
+# {{ ansible_managed }}
 
 display_errors = Off
 max_file_uploads = 20M
@@ -7,12 +7,13 @@ session.cache_expire = 30
 session.cookie_httponly = On
 session.cookie_samesite = Lax
 session.cookie_secure = On
-; While "session.sid_length" supports a value up to 256, setting it to
-; the highest possible value causes the default filesystem session
-; handler to bomb out because it tries, and fails, to create files with
-; filenames that are are too long. For more information, see
-; <https://bugs.php.net/bug.php?id=75140>.
+
+# While "session.sid_length" supports a value up to 256, setting it to
+# the maximum value causes the default filesystem session handler to
+# bomb out because it create files with file names that are too long.
+# For more information, see <https://bugs.php.net/bug.php?id=75140>.
 session.sid_length = 250
+
 session.sid_bits_per_character = 6
 session.use_strict_mode = On
 upload_max_filesize = 20M
