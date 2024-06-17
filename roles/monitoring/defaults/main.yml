@@ -9,10 +9,10 @@
 # Exporter binary archive "node_exporter-1.8.0.linux-amd64.tar.gz".
 # node_exporter binaries and checksums are available at
 # <https://github.com/prometheus/node_exporter/releases>.
-monitoring__node_exporter_archive_checksum: 'sha256:c184e5dd98d518ac468339a9e073c233f777e0948a18862dd88e3f1bdcdf1438'
+monitoring__node_exporter_archive_checksum: 'sha256:fbadb376afa7c883f87f70795700a8a200f7fd45412532cc1938a24d41078011'
 
 # A string containing the version of Node Exporter to install.
-monitoring__node_exporter_version: '1.8.0'
+monitoring__node_exporter_version: '1.8.1'
 
 
 # The following variables will have host-specific and/or sensitive

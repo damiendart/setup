@@ -13,13 +13,13 @@ development__binary_archives:
 
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:791510a7436713f87034429585e6c19b7ecf5bb1b76089c946e18575aa5fd11f'
-    url: 'https://github.com/junegunn/fzf/releases/download/0.52.0/fzf-0.52.0-linux_amd64.tar.gz'
+    checksum: 'sha256:af2663c3309967dc191d21537e53c2e9f8a37f490a32456b9498a006f05e3796'
+    url: 'https://github.com/junegunn/fzf/releases/download/0.53.0/fzf-0.53.0-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
-    checksum: 'sha256:12977fde5f4fbbb0a88b4e8dc59c2f899113e57292d02a8bdc0efecf8cb3a9a2'
-    url: 'https://releases.hashicorp.com/packer/1.10.3/packer_1.10.3_linux_amd64.zip'
+    checksum: 'sha256:dcac06a4c671bbb71e916da5abe947ebf4d6aa35c197e21c7c7b1d68cb8b7cad'
+    url: 'https://releases.hashicorp.com/packer/1.11.0/packer_1.11.0_linux_amd64.zip'
 
   # See <https://github.com/koalaman/shellcheck/releases>.
   - checksum: 'sha256:6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87'
@@ -59,9 +59,9 @@ development__iosevka_version: '22.0.2'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
-# following checksum is for the file "obsidian_1.5.12_amd64.deb".
-development__obsidian_package_checksum: 'sha256:53d4e04010f852dd3abafbd2d2423071c32e0dcce47ab1b5e4b443ba9dcf75ee'
-development__obsidian_version: '1.5.12'
+# following checksum is for the file "obsidian_1.6.3_amd64.deb".
+development__obsidian_package_checksum: 'sha256:cf88a0a9967ff872175a13e9dfadadeddc6e0ff4f560bf0d7b2e20afd8e7d58c'
+development__obsidian_version: '1.6.3'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
