@@ -35,10 +35,17 @@
     - 'python'
 
 - name: 'Provision testing and experimentation machines'
-  hosts: 'playground'
+  hosts: 'playground_production'
   become: true
   roles:
+    - 'backup'
     - 'base'
+    - 'certbot'
+    - 'imagemagick'
+    - 'monitoring'
+    - 'webserver'
+  vars:
+    webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
 
 - name: 'Provision servers for hosting websites'
   hosts: 'production'
