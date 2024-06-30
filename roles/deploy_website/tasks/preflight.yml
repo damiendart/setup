@@ -37,37 +37,33 @@
       ansible.builtin.assert:
         that: __release_base_directory_status.stat.islnk is not defined
 
-- name: 'Check Sentry organisation is valid'
-  ansible.builtin.uri:
-    headers:
-      Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
-    status_code: 200
-    url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/'
-  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
+- name: 'Check Sentry-related items'
   delegate_to: 'localhost'
   run_once: true
+  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
+  block:
+    - name: 'Check Sentry organisation is valid'
+      ansible.builtin.uri:
+        headers:
+          Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
+        status_code: 200
+        url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/'
 
-- name: 'Check Sentry is aware of the GitHub repository associated with release'
-  ansible.builtin.uri:
-    headers:
-      Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
-    status_code: 200
-    url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/repos/'
-  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
-  failed_when: __sentry_organisation_repositories.json | selectattr('name', 'equalto', __release_metadata.github_project) | count == 0
-  delegate_to: 'localhost'
-  register: __sentry_organisation_repositories
-  run_once: true
+    - name: 'Check Sentry is aware of the GitHub repository associated with release'
+      ansible.builtin.uri:
+        headers:
+          Authorization: 'Bearer {{ deploy_website__sentry_auth_token }}'
+        status_code: 200
+        url: 'https://sentry.io/api/0/organizations/{{ deploy_website__sentry_organisation }}/repos/'
+      failed_when: __sentry_organisation_repositories.json | selectattr('name', 'equalto', __release_metadata.github_project) | count == 0
+      register: __sentry_organisation_repositories
 
-# Sentry requires that a release's Git commit SHA-1 hash exists in the
-# project's Git repository on GitHub before it can associate the commit
-# with the release.
-- name: 'Check release Git commit SHA-1 hash is valid with GitHub'
-  ansible.builtin.uri:
-    headers:
-      Authorization: 'Token {{ deploy_website__github_auth_token }}'
-    status_code: 200
-    url: 'https://api.github.com/repos/{{ __release_metadata.github_project }}/git/commits/{{ __release_metadata.release_git_sha }}'
-  when: deploy_website__vhosts[deploy_website__site_domain].sentry_project is defined
-  delegate_to: 'localhost'
-  run_once: true
+    # Sentry requires that a release's Git commit SHA-1 hash exists in the
+    # project's Git repository on GitHub before it can associate the commit
+    # with the release.
+    - name: 'Check release Git commit SHA-1 hash is valid with GitHub'
+      ansible.builtin.uri:
+        headers:
+          Authorization: 'Token {{ deploy_website__github_auth_token }}'
+        status_code: 200
+        url: 'https://api.github.com/repos/{{ __release_metadata.github_project }}/git/commits/{{ __release_metadata.release_git_sha }}'
