@@ -47,15 +47,15 @@
 - name: 'Ensure the Obsidian Debian package is downloaded'
   ansible.builtin.get_url:
     checksum: '{{ development__obsidian_package_checksum }}'
-    dest: '{{ development__download_cache_directory }}/obsidian_{{ development__obsidian_version }}_amd64.deb'
+    dest: '{{ development__download_cache_directory }}/obsidian-{{ development__obsidian_version }}-amd64.deb'
     group: 'root'
     mode: 0755
     owner: 'root'
-    url: 'https://github.com/obsidianmd/obsidian-releases/releases/download/v{{ development__obsidian_version }}/obsidian_{{ development__obsidian_version }}_amd64.deb'
+    url: 'https://github.com/obsidianmd/obsidian-releases/releases/download/v{{ development__obsidian_version }}/obsidian-{{ development__obsidian_version }}-amd64.deb'
 
 - name: 'Ensure Obsidian is installed'
   ansible.builtin.apt:
-    deb: '{{ development__download_cache_directory }}/obsidian_{{ development__obsidian_version }}_amd64.deb'
+    deb: '{{ development__download_cache_directory }}/obsidian-{{ development__obsidian_version }}-amd64.deb'
     state: 'present'
 
 # Account for a bug where Obsidian's Debian package for v0.12.15 creates
