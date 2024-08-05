@@ -4,8 +4,8 @@
 
 ansible==9.3.0
 ansible-lint==24.2.1
-black==24.3.0
-flake8==7.0.0
+black==24.8.0
+flake8==7.1.1
 passlib==1.7.4
-pytest-testinfra==10.1.0
+pytest-testinfra==10.1.1
 yamllint==1.35.1
