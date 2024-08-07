@@ -6,13 +6,13 @@
 
 ---
 # A string containing a checksum used to verify the integrity of the
-# Node.js binary archive "node-v20.14.0-linux-x64.tar.xz". See also
+# Node.js binary archive "node-v20.16.0-linux-x64.tar.xz". See also
 # "nodejs__version". Node.js binary archives and checksums are
 # available at <https://nodejs.org/en/download>.
-nodejs__nodejs_archive_checksum: 'sha256:4f57f7828e6adb9f6bc77932f10e316cca68b0f160c82b21d9a2c7647c7f10bf'
+nodejs__nodejs_archive_checksum: 'sha256:c30af7dfea46de7d8b9b370fa33b8b15440bc93f0a686af8601bbb48b82f16c0'
 
 # A string containing the version of Node.js to install.
-nodejs__nodejs_version: '20.15.0'
+nodejs__nodejs_version: '20.16.0'
 
 
 # The following variables will have host-specific and/or sensitive

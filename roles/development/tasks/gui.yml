@@ -51,7 +51,7 @@
     group: 'root'
     mode: 0755
     owner: 'root'
-    url: 'https://github.com/obsidianmd/obsidian-releases/releases/download/v{{ development__obsidian_version }}/obsidian-{{ development__obsidian_version }}-amd64.deb'
+    url: 'https://github.com/obsidianmd/obsidian-releases/releases/download/v{{ development__obsidian_version }}/obsidian_{{ development__obsidian_version }}_amd64.deb'
 
 - name: 'Ensure Obsidian is installed'
   ansible.builtin.apt:

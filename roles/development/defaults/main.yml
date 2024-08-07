@@ -13,13 +13,13 @@ development__binary_archives:
 
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:af2663c3309967dc191d21537e53c2e9f8a37f490a32456b9498a006f05e3796'
-    url: 'https://github.com/junegunn/fzf/releases/download/0.53.0/fzf-0.53.0-linux_amd64.tar.gz'
+    checksum: 'sha256:6867008c46307f036e48b42ab9bfdc3224657f6a65d70c58a1f456c4d9348cf6'
+    url: 'https://github.com/junegunn/fzf/releases/download/v0.54.3/fzf-0.54.3-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
-    checksum: 'sha256:07a9d92fe98d7bb4be09392c06ef6c4f9ffbc905fe6c29fff0622432367f01cc'
-    url: 'https://releases.hashicorp.com/packer/1.11.1/packer_1.11.1_linux_amd64.zip'
+    checksum: 'sha256:ced13efc257d0255932d14b8ae8f38863265133739a007c430cae106afcfc45a'
+    url: 'https://releases.hashicorp.com/packer/1.11.2/packer_1.11.2_linux_amd64.zip'
 
   # See <https://github.com/koalaman/shellcheck/releases>.
   - checksum: 'sha256:6c881ab0698e4e6ea235245f22832860544f17ba386442fe7e9d629f8cbedf87'
@@ -36,8 +36,8 @@ development__binary_archives:
 
 development__debian_packages:
   # See <https://github.com/jgm/pandoc/releases>.
-  - checksum: 'sha256:0968e84fb28b91105f3403db3a8e64028fea74191947af4c9f5a1ff6c59086fd'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.2.1/pandoc-3.2.1-1-amd64.deb'
+  - checksum: 'sha256:7a6625d5aeb6b8666375807a3e16cc00659c48fb88299707651f60d88c31a360'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.3/pandoc-3.3-1-amd64.deb'
 
   # See <https://github.com/BurntSushi/ripgrep/releases>.
   - checksum: 'sha256:78953d5a1c97cb363de0098ff73a7ef33fcae014abd4d62f0da490fe3f58ee94'
@@ -59,9 +59,9 @@ development__iosevka_version: '22.0.2'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
-# following checksum is for the file "obsidian-1.6.5-amd64.deb".
-development__obsidian_package_checksum: 'sha256:2998e370edec62d2ab534a4ce2d233bffb7e49bc86cf85412de67017f73e1c8f'
-development__obsidian_version: '1.6.5'
+# following checksum is for the file "obsidian_1.6.7_amd64.deb".
+development__obsidian_package_checksum: 'sha256:772da38d23b15f0f5d7cf17024a1948ff2c073b2195954743703178bf1254b36'
+development__obsidian_version: '1.6.7'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
