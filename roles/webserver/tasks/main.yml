@@ -45,22 +45,6 @@
     - 'apache2'
     - "{{ webserver__php_versions | map('regex_replace', '^(.*)$', 'php\\1-fpm') }}"
 
-# The Apache package from "deb.sury.org" does not provide an UFW
-# profile. The following profile is based on the one Debian/Ubuntu
-# includes with its Apache package.
-- name: 'Ensure an Apache UFW profile exists'
-  ansible.builtin.copy:
-    content: |
-      [Apache Full]
-      title=Web Server (HTTP,HTTPS)
-      description=The Apache web server.
-      ports=80,443/tcp
-    dest: '/etc/ufw/applications.d/apache2-utils.ufw.profile'
-    owner: 'root'
-    group: 'root'
-    mode: 0644
-  notify: 'Restart UFW'
-
 - name: 'Ensure the Apache UFW profile is active'
   community.general.ufw:
     name: 'Apache Full'
