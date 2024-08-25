@@ -18,6 +18,7 @@
     name: '{{ base__administrator_account_username }}'
     password: '{{ base__administrator_account_password | password_hash("sha512") }}'
     ssh_key_type: '{{ base__administrator_account_ssh_key_type }}'
+    skeleton: '/etc/skel/'
     state: 'present'
     update_password: 'on_create'
   register: __user
