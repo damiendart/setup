@@ -52,10 +52,10 @@ development__debian_packages:
 development__entr_source_archive_checksum: 'sha256:0222b8df928d3b5a3b5194d63e7de098533e04190d9d9a154b926c6c1f9dd14e'
 development__entr_version: '5.6'
 
-# The following checksum is for "super-ttc-iosevka-22.0.2.zip" from
+# The following checksum is for "PkgTTC-Iosevka-31.5.0.zip" from
 # <https://github.com/be5invis/Iosevka/releases>.
-development__iosevka_archive_checksum: 'sha256:f9fd7654cf33ec06edf791459c72a02c10ec23e9cb60df01169a0a65e826025c'
-development__iosevka_version: '22.0.2'
+development__iosevka_archive_checksum: 'sha256:f42fc70db3c77e6be46d3055be808d03c2b66daf1fdb5bca4a09120db82ce2b9'
+development__iosevka_version: '31.5.0'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The

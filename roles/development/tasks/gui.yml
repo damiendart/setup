@@ -48,26 +48,28 @@
     path: '/home/{{ development__user_username }}/.fonts'
     state: 'directory'
 
-- name: 'Ensure any old Iosevka TTF files are removed'
-  ansible.builtin.file:
-    path: '/home/{{ development__user_username }}/.fonts/iosevka'
-    state: 'absent'
-
-- name: 'Ensure the Iosevka Super TTC archive is downloaded'
+- name: 'Ensure the Iosevka TTC archive is downloaded'
   ansible.builtin.get_url:
     checksum: '{{ development__iosevka_archive_checksum }}'
-    dest: '{{ development__download_cache_directory }}/super-ttc-iosevka-{{ development__iosevka_version }}.zip'
+    dest: '{{ development__download_cache_directory }}/PkgTTC-Iosevka-{{ development__iosevka_version }}.zip'
     group: 'root'
     mode: 0755
     owner: 'root'
-    url: 'https://github.com/be5invis/Iosevka/releases/download/v{{ development__iosevka_version }}/super-ttc-iosevka-{{ development__iosevka_version }}.zip'
+    url: 'https://github.com/be5invis/Iosevka/releases/download/v{{ development__iosevka_version }}/PkgTTC-Iosevka-{{ development__iosevka_version }}.zip'
 
-- name: 'Ensure the Iosevka Super TTC file is installed'
+- name: 'Ensure Iosevka TTC files are installed'
   ansible.builtin.unarchive:
     dest: '/home/{{ development__user_username }}/.fonts'
     group: '{{ development__user_username }}'
     owner: '{{ development__user_username }}'
-    src: '{{ development__download_cache_directory }}/super-ttc-iosevka-{{ development__iosevka_version }}.zip'
+    src: '{{ development__download_cache_directory }}/PkgTTC-Iosevka-{{ development__iosevka_version }}.zip'
+
+# I've found that Gnome Terminal does not get along with the Super TTC
+# version of Iosevka. Using individual TTC files is the easiest remedy.
+- name: 'Ensure any old Iosevka Super TTC files are removed'
+  ansible.builtin.file:
+    path: '/home/{{ development__user_username }}/.fonts/iosevka.ttc'
+    state: 'absent'
 
 - name: 'Ensure the Obsidian Debian package is downloaded'
   ansible.builtin.get_url:
