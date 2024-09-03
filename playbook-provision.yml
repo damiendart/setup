@@ -55,6 +55,7 @@
     - 'base'
     - 'certbot'
     - 'imagemagick'
+    - 'lego'
     - 'livepatch'
     - 'monitoring'
     - 'webserver'

@@ -1,0 +1,32 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure download cache directory exists'
+  ansible.builtin.file:
+    path: '{{ lego__download_cache_directory }}'
+    group: 'root'
+    mode: '0777'
+    owner: 'root'
+    state: 'directory'
+
+- name: 'Ensure the lego binary archive is downloaded'
+  ansible.builtin.get_url:
+    checksum: '{{ lego__lego_archive_checksum }}'
+    dest: '{{ lego__download_cache_directory }}/lego_v{{ lego__lego_version }}_linux_amd64.tar.gz'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    url: 'https://github.com/go-acme/lego/releases/download/v{{ lego__lego_version }}/lego_v{{ lego__lego_version }}_linux_amd64.tar.gz'
+
+- name: 'Ensure the lego binary is installed'
+  ansible.builtin.unarchive:
+    dest: '/usr/local/bin'
+    include:
+      - 'lego'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    remote_src: true
+    src: '{{ lego__download_cache_directory }}/lego_v{{ lego__lego_version }}_linux_amd64.tar.gz'
