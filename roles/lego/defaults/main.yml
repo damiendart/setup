@@ -19,3 +19,8 @@ lego__lego_version: '4.18.0'
 # A string containing the directory where downloaded files are stored to
 # prevent unnecessary downloading when tasks are rerun.
 lego__download_cache_directory: '{{ undef() }}'
+#
+# A string containing the email address associated with a Let's Encrypt
+# ACME account. An account will be created if the email address hasn't
+# been previously registered.
+lego__administrator_email: '{{ undef() }}'

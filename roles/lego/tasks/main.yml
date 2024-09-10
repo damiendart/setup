@@ -30,3 +30,17 @@
     owner: 'root'
     remote_src: true
     src: '{{ lego__download_cache_directory }}/lego_v{{ lego__lego_version }}_linux_amd64.tar.gz'
+
+- name: 'Ensure lego configuration directory exists'
+  ansible.builtin.file:
+    path: '/etc/lego'
+    group: 'root'
+    mode: '0755'
+    owner: 'root'
+    state: 'directory'
+
+- name: "Ensure valid certifcates for sites exist"
+  ansible.builtin.include_tasks: 'setup-certificate.yml'
+  loop: '{{ lego__certificates | dict2items }}'
+  loop_control:
+    label: '{{ item.key }}'

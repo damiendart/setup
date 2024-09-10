@@ -1,0 +1,58 @@
+---
+- name: 'Get certificate file status for "{{ item.key }}.crt"' # noqa: name[template]
+  ansible.builtin.stat:
+    path: '/etc/lego/certificates/{{ item.key }}.crt'
+  register: __certificate_status
+
+- name: 'Get certificate information for "{{ item.key }}.crt"' # noqa: name[template]
+  community.crypto.x509_certificate_info:
+    path: '/etc/lego/certificates/{{ item.key }}.crt'
+  register: __certificate_information
+  when: __certificate_status.stat.exists
+
+- name: 'Ensure "{{ item.key }}" has a valid certificate' # noqa: name[template]
+  ansible.builtin.command:
+    cmd: >
+      lego
+      --accept-tos
+      --domains={{ ' --domains='.join([item.key] + (item.value.aliases | default([]) | sort)) }}
+      --email="{{ lego__administrator_email }}"
+      --http
+      --http.webroot="/var/www/html"
+      --path="/etc/lego"
+      run
+      --must-staple
+    creates: >-
+      {{
+        (
+          __certificate_status.stat.exists and
+          __certificate_information.subject_alt_name
+            | map('replace', 'DNS:', '')
+            | symmetric_difference([item.key] + (item.value.aliases | default([])))
+            | length == 0
+        )
+          | ternary('/etc/lego/certificates/' + item.key + '.*', omit)
+      }}
+  ignore_errors: true
+  register: __lego_run
+
+- name: 'Ensure certificate-renewing cron job exists for "{{ item.key }}"' # noqa: name[template]
+  ansible.builtin.cron:
+    cron_file: 'lego-renew-{{ item.key | replace(".", "-") }}'
+    hour: '0'
+    job: >-
+      lego
+      --accept-tos
+      --domains={{ ' --domains='.join([item.key] + (item.value.aliases | default([]) | sort)) }}
+      --email="{{ lego__administrator_email }}"
+      --http
+      --http.webroot="/var/www/html"
+      --path="/etc/lego"
+      renew
+      --must-staple
+      >> /var/log/lego-renew-{{ item.key | replace(".", "-") }}.log
+      2>&1
+    minute: '{{ 60 | random(seed=inventory_hostname) }}'
+    name: 'renew certificate for {{ item.key }}'
+    state: 'present'
+    user: 'root'

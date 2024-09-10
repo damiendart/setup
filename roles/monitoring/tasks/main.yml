@@ -91,6 +91,9 @@
     - 'fail2ban'
     - 'monit'
 
+- name: 'Include lego log rotation setup tasks'
+  ansible.builtin.include_tasks: 'lego.yml'
+
 - name: 'Include Tarsnap monitoring installation and configuration tasks'
   ansible.builtin.include_tasks: 'backup.yml'
 

@@ -1,0 +1,13 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure custom logrotate configuration file for lego logs exists'
+  ansible.builtin.template:
+    dest: '/etc/logrotate.d/lego'
+    group: 'root'
+    mode: '0644'
+    owner: 'root'
+    src: 'logrotate-lego.conf.j2'
+  when: '"lego" in ansible_play_role_names'
