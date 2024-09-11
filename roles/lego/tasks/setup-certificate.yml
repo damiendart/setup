@@ -41,7 +41,7 @@
     cron_file: 'lego-renew-{{ item.key | replace(".", "-") }}'
     hour: '0'
     job: >-
-      lego
+      /usr/local/bin/lego
       --accept-tos
       --domains={{ ' --domains='.join([item.key] + (item.value.aliases | default([]) | sort)) }}
       --email="{{ lego__administrator_email }}"
