@@ -11,6 +11,11 @@ lego__lego_archive_checksum: 'sha256:6f42e9ac93cd604951c0cf94a7c4a26ac9825174152
 # A string containing the version of lego to install.
 lego__lego_version: '4.18.0'
 
+# An string, or False, containing a post-renewal hook command that is
+# executed when a certificate is renewed. If the value is False, the
+# hook will be omitted from the certificate renewal cron job.
+lego__renewal_hook: 'service apache2 graceful'
+
 
 # The following variables will have host-specific and/or sensitive
 # values and must be defined elsewhere (in an inventory, playbook, at
