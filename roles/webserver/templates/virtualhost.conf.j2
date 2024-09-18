@@ -45,9 +45,9 @@
     ErrorLog ${APACHE_LOG_DIR}/{{ item.key }}.error.log
     CustomLog ${APACHE_LOG_DIR}/{{ item.key }}.access.log combined
 
-    <IfFile "/etc/letsencrypt/live/{{ item.key }}/fullchain.pem">
-      SSLCertificateFile /etc/letsencrypt/live/{{ item.key }}/fullchain.pem
-      SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.key }}/privkey.pem
+    <IfFile "/etc/lego/certificates/{{ item.key }}.crt">
+      SSLCertificateFile /etc/lego/certificates/{{ item.key }}.crt
+      SSLCertificateKeyFile /etc/lego/certificates/{{ item.key }}.key
     </IfFile>
 
     <IfFile ! "/etc/letsencrypt/live/{{ item.key }}/fullchain.pem">
