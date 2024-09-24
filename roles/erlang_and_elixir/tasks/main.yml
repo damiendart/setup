@@ -5,15 +5,29 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the Erlang Solutions package signing key is present for APT'
+- name: 'Ensure old Erlang Solutions package signing key is not present for APT'
   ansible.builtin.apt_key:
-    state: 'present'
+    state: 'absent'
     url: 'https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc'
 
-- name: 'Ensure Erlang Solutions repository is present in APT sources list'
+- name: 'Ensure old Erlang Solutions repository entry is not present in APT sources list'
   ansible.builtin.apt_repository:
     repo: 'deb https://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib'
+    state: 'absent'
+
+- name: 'Ensure Erlang Solutions repository is present in APT sources list'
+  ansible.builtin.deb822_repository:
+    components:
+      - 'contrib'
+    enabled: true
+    name: 'Erlang Solutions'
+    signed_by: 'https://packages.erlang-solutions.com/{{ ansible_distribution | lower }}/erlang_solutions.asc'
+    suites:
+      - '{{ ansible_distribution_release | lower }}'
     state: 'present'
+    types:
+      - 'deb'
+    uris: 'https://packages.erlang-solutions.com/{{ ansible_distribution | lower }}'
 
 - name: 'Ensure Erlang and Elixir packages are installed'
   ansible.builtin.apt:
