@@ -18,10 +18,11 @@
   when: __entr_binary.stat.exists
   block:
     - name: 'Get entr usage output'
-      ansible.builtin.command:
-        cmd: '/usr/local/bin/entr'
+      ansible.builtin.shell:
+        # entr does not have a help flag, but will display its version
+        # if you run entr incorrectly without any arguments.
+        cmd: '/usr/local/bin/entr || /bin/true'
       changed_when: false
-      ignore_errors: true
       register: __entr_output
 
     - name: 'Get the version of entr that is currently installed (if available)'
