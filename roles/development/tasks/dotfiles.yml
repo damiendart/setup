@@ -23,15 +23,12 @@
     # including the "SSH_AUTH_SOCK" environment variable required for
     # SSH agent forwarding. For more information and potential
     # workarounds, see <https://stackoverflow.com/q/24124140>.
-    - name: 'Ensure the "snippets" and "toolbox" Git repositories exists'
+    - name: 'Ensure the "toolbox" Git repository exists'
       ansible.builtin.git:
-        dest: '/home/{{ development__user_username }}/{{ development__projects_folder }}/{{ item }}'
-        repo: 'git@github.com:damiendart/{{ item }}.git'
+        dest: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox'
+        repo: 'git@github.com:damiendart/toolbox.git'
         update: '{{ development__update_dotfiles }}'
         version: 'master'
-      loop:
-        - 'snippets'
-        - 'toolbox'
 
     - name: 'Ensure the "toolbox" install script runs successfully'
       ansible.builtin.command: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox/install'
