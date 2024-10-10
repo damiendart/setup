@@ -1,22 +1,24 @@
-# Installs and enables Ubuntu Advantage and Ubuntu Livepatch.
-#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
 - name: 'Get Ubuntu Livepatch status'
-  ansible.builtin.command: 'canonical-livepatch status --verbose'
+  ansible.builtin.shell:
+    cmd: '/snap/bin/canonical-livepatch status --verbose || /bin/true'
   changed_when: false
-  ignore_errors: true
   register: __livepatch_status
 
 - name: 'Ensure Ubuntu Livepatch is enabled'
   when: "'Machine is not enabled.' in __livepatch_status.stdout"
   block:
     - name: 'Ensure Ubuntu Advantage subscription is active'
-      ansible.builtin.command: 'ua attach {{ livepatch__ubuntu_advantage_token }}'
+      ansible.builtin.command: '/usr/bin/ubuntu-advantage attach {{ livepatch__ubuntu_advantage_token }}'
+      changed_when: __ubuntu_advantange_attach.rc == 0
       no_log: true
+      register: __ubuntu_advantange_attach
 
     - name: 'Ensure Ubuntu Livepatch is enabled'
-      ansible.builtin.command: 'ua enable livepatch'
+      ansible.builtin.command: '/usr/bin/ubuntu-advantage enable livepatch'
+      changed_when: __ubuntu_advantange_enable_livepatch.rc == 0
+      register: __ubuntu_advantange_enable_livepatch
