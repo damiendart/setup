@@ -1,0 +1,27 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the Google Chrome repository is present in APT sources list'
+  ansible.builtin.deb822_repository:
+    components:
+      - 'main'
+    enabled: true
+    name: 'Google Chrome'
+    signed_by: 'https://dl.google.com/linux/linux_signing_key.pub'
+    suites:
+      - 'stable'
+    state: 'present'
+    types:
+      - 'deb'
+    uris: 'https://dl.google.com/linux/chrome/deb'
+  register: __google_chrome_repository
+
+- name: 'Ensure Chrome is installed'
+  ansible.builtin.apt:
+    force_apt_get: true
+    name:
+      - 'google-chrome-stable'
+    state: 'present'
+    update_cache: '{{ __google_chrome_repository is changed }}'

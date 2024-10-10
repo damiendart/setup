@@ -8,6 +8,7 @@
   become: true
   roles:
     - 'base'
+    - 'chrome'
     - 'composer'
     - 'development'
     - 'docker'
