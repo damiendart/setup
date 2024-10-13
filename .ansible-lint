@@ -7,8 +7,3 @@ skip_list:
   # Skip checking role metadata as the roles contained in this project
   # are not intended to be imported elsewhere or used by Ansible Galaxy.
   - 'meta-incorrect'
-
-  - 'var-naming[no-role-prefix]'
-
-warn_list:
-  - 'no-changed-when'
