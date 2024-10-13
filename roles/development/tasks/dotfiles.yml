@@ -34,3 +34,9 @@
       ansible.builtin.command: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox/install'
       register: toolbox_install
       changed_when: toolbox_install.stdout is search("✔")
+
+    - name: 'Ensure a valid configuration file for the "po" utility script exists'
+      ansible.builtin.template:
+        dest: '/home/{{ development__user_username }}/.config/toolbox/po.ini'
+        mode: '0600'
+        src: 'po.ini.j2'
