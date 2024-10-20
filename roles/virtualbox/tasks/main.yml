@@ -5,21 +5,37 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the VirtualBox package signing key is present for APT'
+- name: 'Ensure the old VirtualBox package signing key is no longer present for APT'
   ansible.builtin.apt_key:
-    state: 'present'
+    state: 'absent'
     url: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
 
-- name: 'Ensure the VirtualBox repository is present in APT sources list'
+- name: 'Ensure the old VirtualBox repository is no longer present in APT sources list'
   ansible.builtin.apt_repository:
     repo: 'deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib'
+    state: 'absent'
+
+- name: 'Ensure VirtualBox repository is present in APT sources list'
+  ansible.builtin.deb822_repository:
+    components:
+      - 'contrib'
+    enabled: true
+    name: 'VirtualBox'
+    signed_by: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
+    suites:
+      - '{{ ansible_distribution_release | lower }}'
     state: 'present'
+    types:
+      - 'deb'
+    uris: 'http://download.virtualbox.org/virtualbox/debian'
+  register: __virtualbox_repository
 
 - name: 'Ensure VirtualBox is installed'
   ansible.builtin.apt:
     force_apt_get: true
     name: 'virtualbox-{{ virtualbox__virtualbox_version }}'
     state: 'present'
+    update_cache: '{{ __virtualbox_repository is changed }}'
 
 # To access USB devices from VirtualBox guests, the host user must
 # be a member of the "vboxusers" group. For more information, see
