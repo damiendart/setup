@@ -12,7 +12,6 @@
     - 'composer'
     - 'development'
     - 'docker'
-    - 'erlang_and_elixir'
     - 'golang'
     - 'imagemagick'
     - 'nodejs'
