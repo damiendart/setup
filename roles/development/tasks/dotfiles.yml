@@ -32,8 +32,14 @@
 
     - name: 'Ensure the "toolbox" install script runs successfully'
       ansible.builtin.command: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox/install'
-      register: toolbox_install
-      changed_when: toolbox_install.stdout is search("✔")
+      register: __toolbox_install
+      changed_when: __toolbox_install.stdout is search("✔")
+
+    - name: 'Ensure a "toolbox" configuration directory exists'
+      ansible.builtin.file:
+        mode: '0700'
+        path: '/home/{{ development__user_username }}/.config/toolbox'
+        state: 'directory'
 
     - name: 'Ensure a valid configuration file for the "po" utility script exists'
       ansible.builtin.template:
