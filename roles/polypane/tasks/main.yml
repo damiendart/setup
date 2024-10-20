@@ -1,0 +1,26 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure download cache directory exists'
+  ansible.builtin.file:
+    path: '{{ polypane__download_cache_directory }}'
+    group: 'root'
+    mode: '0777'
+    owner: 'root'
+    state: 'directory'
+
+- name: 'Ensure the Polypane Debian package is downloaded'
+  ansible.builtin.get_url:
+    checksum: '{{ polypane__polypane_package_checksum }}'
+    dest: '{{ polypane__download_cache_directory }}/polypane_{{ polypane__polypane_version }}_amd64.deb'
+    group: 'root'
+    mode: 0755
+    owner: 'root'
+    url: 'https://github.com/firstversionist/polypane/releases/download/v{{ polypane__polypane_version }}/polypane_{{ polypane__polypane_version }}_amd64.deb'
+
+- name: 'Ensure Polypane is installed'
+  ansible.builtin.apt:
+    deb: '{{ polypane__download_cache_directory }}/polypane_{{ polypane__polypane_version }}_amd64.deb'
+    state: 'present'

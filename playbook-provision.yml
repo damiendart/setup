@@ -15,6 +15,7 @@
     - 'golang'
     - 'imagemagick'
     - 'nodejs'
+    - 'polypane'
     - 'python'
     - 'rust'
     - 'syncthing'
