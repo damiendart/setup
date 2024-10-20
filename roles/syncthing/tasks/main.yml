@@ -7,21 +7,37 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the Syncthing package signing key is present for APT'
+- name: 'Ensure the old Syncthing package signing key is no longer present for APT'
   ansible.builtin.apt_key:
-    state: 'present'
+    state: 'absent'
     url: 'https://syncthing.net/release-key.gpg'
 
-- name: 'Ensure the Syncthing repository is present in APT sources list'
+- name: 'Ensure the old Syncthing repository is no longer present in APT sources list'
   ansible.builtin.apt_repository:
     repo: 'deb https://apt.syncthing.net/ syncthing stable'
+    state: 'absent'
+
+- name: 'Ensure Syncthing repository is present in APT sources list'
+  ansible.builtin.deb822_repository:
+    components:
+      - 'stable'
+    enabled: true
+    name: 'Syncthing'
+    signed_by: 'https://syncthing.net/release-key.gpg'
+    suites:
+      - 'syncthing'
     state: 'present'
+    types:
+      - 'deb'
+    uris: 'https://apt.syncthing.net'
+  register: __syncthing_repository
 
 - name: 'Ensure Syncthing is installed'
   ansible.builtin.apt:
     force_apt_get: true
     name: 'syncthing'
     state: 'present'
+    update_cache: '{{ __syncthing_repository is changed }}'
 
 - name: 'Ensure Syncthing is running and set to start on user login'
   ansible.builtin.systemd:
