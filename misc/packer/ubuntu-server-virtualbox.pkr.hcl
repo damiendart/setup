@@ -1,4 +1,4 @@
-# A Packer template to build a test Ubuntu 22.04.4 VirtualBox VM.
+# A Packer template to build a test Ubuntu 24.04.1 VirtualBox VM.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -87,8 +87,8 @@ source "virtualbox-iso" "ubuntu-server-virtualbox" {
       ]
     )
   }
-  iso_checksum = "45f873de9f8cb637345d6e66a583762730bbea30277ef7b32c9c3bd6700a32b2"
-  iso_url = "https://releases.ubuntu.com/22.04.4/ubuntu-22.04.4-live-server-amd64.iso"
+  iso_checksum = "e240e4b801f7bb68c20d1356b60968ad0c33a41d00d828e74ceb3364a0317be9"
+  iso_url = "https://releases.ubuntu.com/24.04.1/ubuntu-24.04.1-live-server-amd64.iso"
   guest_os_type = "Ubuntu_64"
   memory = 2048
   shutdown_command = "echo 'ubuntu' | sudo -S shutdown -P now"
