@@ -3,6 +3,14 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+# A dictionary where keys are domain names to obtain certificates for.
+# Each key can have an optional value consisting of another dictionary
+# with the following key-value pairs:
+#
+# - "aliases": A list of additional domain names to include when
+#   obtaining a certificate.
+lego__certificates: {}
+
 # A string containing a checksum used to verify the integrity of the
 # lego binary archive "lego_4.18.0_linux_amd64.tar.gz". See
 # <https://github.com/go-acme/lego/releases> for archives and checksums.
