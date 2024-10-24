@@ -60,5 +60,4 @@
     - 'monitoring'
     - 'webserver'
   vars:
-    certbot__certificate_cleanup: '{{ cli__website_cleanup | default(False) }}'
     webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
