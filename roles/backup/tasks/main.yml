@@ -3,17 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the old Tarsnap package signing key is no longer present for APT'
-  ansible.builtin.apt_key:
-    state: 'absent'
-    url: 'https://pkg.tarsnap.com/tarsnap-deb-packaging-key.asc'
-
-- name: 'Ensure the old Tarsnap repository is no longer present in APT sources list'
-  ansible.builtin.apt_repository:
-    repo: 'deb http://pkg.tarsnap.com/deb/{{ ansible_distribution_release }} ./'
-    state: 'absent'
-
-- name: 'Ensure Tarsnap repository is present in APT sources list'
+- name: 'Ensure the Tarsnap repository is present in APT sources list'
   ansible.builtin.deb822_repository:
     enabled: true
     name: 'Tarsnap'

@@ -32,17 +32,7 @@
     - { key: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
     - { key: 'net.bridge.bridge-nf-call-iptables', value: '1' }
 
-- name: 'Ensure the old Docker package signing key is no longer present for APT'
-  ansible.builtin.apt_key:
-    state: 'absent'
-    url: 'https://download.docker.com/linux/ubuntu/gpg'
-
-- name: 'Ensure the old Docker repository is no longer present in APT sources list'
-  ansible.builtin.apt_repository:
-    repo: 'deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable'
-    state: 'absent'
-
-- name: 'Ensure Docker repository is present in APT sources list'
+- name: 'Ensure the Docker repository is present in APT sources list'
   ansible.builtin.deb822_repository:
     components:
       - 'stable'

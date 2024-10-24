@@ -5,17 +5,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the old VirtualBox package signing key is no longer present for APT'
-  ansible.builtin.apt_key:
-    state: 'absent'
-    url: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
-
-- name: 'Ensure the old VirtualBox repository is no longer present in APT sources list'
-  ansible.builtin.apt_repository:
-    repo: 'deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib'
-    state: 'absent'
-
-- name: 'Ensure VirtualBox repository is present in APT sources list'
+- name: 'Ensure the VirtualBox repository is present in APT sources list'
   ansible.builtin.deb822_repository:
     components:
       - 'contrib'

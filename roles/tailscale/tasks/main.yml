@@ -3,16 +3,6 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the old Tailscale package signing key is no longer present for APT'
-  ansible.builtin.apt_key:
-    state: 'absent'
-    url: 'https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.gpg'
-
-- name: 'Ensure the old Tailscale repository is no longer present in APT sources list'
-  ansible.builtin.apt_repository:
-    repo: 'deb https://pkgs.tailscale.com/stable/ubuntu {{ ansible_distribution_release }} main'
-    state: 'absent'
-
 # The following repository details are from
 # <https://pkgs.tailscale.com/stable/ubuntu/>.
 - name: 'Ensure the Tailscale repository is present in APT sources list'
