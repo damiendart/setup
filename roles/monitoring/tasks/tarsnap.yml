@@ -6,7 +6,7 @@
 
 ---
 - name: 'Ensure Tarsnap-related monitoring is in place'
-  when: '"backup" in ansible_play_role_names'
+  when: '"tarsnap" in ansible_play_role_names'
   block:
     - name: 'Ensure custom logrotate configuration file for Tarsnap logs exists'
       ansible.builtin.template:

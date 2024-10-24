@@ -24,11 +24,11 @@
     update_cache: '{{ __tarsnap_repository is changed }}'
 
 - name: 'Ensure Tarsnap is set up to back up things'
-  when: backup__directories_to_backup | length > 0
+  when: tarsnap__directories_to_backup | length > 0
   block:
     - name: 'Ensure a write-only Tarsnap key is present'
       ansible.builtin.copy:
-        content: '{{ backup__tarsnap_write_only_key }}'
+        content: '{{ tarsnap__tarsnap_write_only_key }}'
         dest: '/root/tarsnap.key'
         group: 'root'
         mode: 0600

@@ -8,7 +8,7 @@
 
 
 # shellcheck disable=SC2288
-FOLDERS_TO_BACKUP='{{ backup__directories_to_backup | join(' ') }}'
+FOLDERS_TO_BACKUP='{{ tarsnap__directories_to_backup | join(' ') }}'
 START_TIMESTAMP="$(date)"
 TARSNAP_LOG='/var/log/tarsnap.log'
 

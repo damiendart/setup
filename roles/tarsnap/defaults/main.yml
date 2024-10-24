@@ -1,12 +1,10 @@
-# "backup" Ansible role variables.
-#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
 # A list of strings specifying the directories for Tarsnap to backup.
-backup__directories_to_backup: []
+tarsnap__directories_to_backup: []
 
 
 # The following variables will have host-specific and/or sensitive
@@ -16,4 +14,4 @@ backup__directories_to_backup: []
 # A string containing a write-only Tarsnap key. See
 # <https://www.tarsnap.com/tips.html#write-only-keys> for more
 # information on write-only Tarsnap keys.
-backup__tarsnap_write_only_key: '{{ undef() }}'
+tarsnap__tarsnap_write_only_key: '{{ undef() }}'

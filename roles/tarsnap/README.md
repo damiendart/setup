@@ -1,5 +1,5 @@
-backup
-======
+tarsnap
+=======
 
 Installs and configures Tarsnap to perform daily backups.
 

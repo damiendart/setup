@@ -39,11 +39,11 @@
   hosts: 'playground_production'
   become: true
   roles:
-    - 'backup'
     - 'base'
     - 'imagemagick'
     - 'lego'
     - 'monitoring'
+    - 'tarsnap'
     - 'webserver'
   vars:
     webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
@@ -52,12 +52,12 @@
   hosts: 'production'
   become: true
   roles:
-    - 'backup'
     - 'base'
     - 'imagemagick'
     - 'lego'
     - 'livepatch'
     - 'monitoring'
+    - 'tarsnap'
     - 'webserver'
   vars:
     webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
