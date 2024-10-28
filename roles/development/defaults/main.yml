@@ -13,8 +13,8 @@ development__binary_archives:
 
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:4df2393776942780ddab2cea713ddaac06cd5c3886cd23bc9119a6d3aa1e02bd'
-    url: 'https://github.com/junegunn/fzf/releases/download/v0.55.0/fzf-0.55.0-linux_amd64.tar.gz'
+    checksum: 'sha256:7afad5dcc3e3a7cbaef577ec02c4dd90280e283bc16da99809498f75a5f18080'
+    url: 'https://github.com/junegunn/fzf/releases/download/v0.56.0/fzf-0.56.0-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
@@ -36,32 +36,32 @@ development__binary_archives:
 
 development__debian_packages:
   # See <https://github.com/jgm/pandoc/releases>.
-  - checksum: 'sha256:5813dac3384b9ab3e8fc2cb6f080d24ebff7d29bfef295242c01898225d3e2f3'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.4/pandoc-3.4-1-amd64.deb'
+  - checksum: 'sha256:4f41d817d262ef3d17953a3e6e0fefddb971aa4f2f121544a9a86db449d945e1'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.5/pandoc-3.5-1-amd64.deb'
 
   # See <https://github.com/BurntSushi/ripgrep/releases>.
   - checksum: 'sha256:2f0c732ef166b4f7be7190d4012d60b3f8467bdd6f795c0598817bd2ac1706ae'
     url: 'https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep_14.1.1-1_amd64.deb'
 
   # See <https://github.com/go-task/task/releases>.
-  - checksum: 'sha256:788405c4764a956d3854806c3c138f06db9d8cf2756c0eba9821a74fa8321f4f'
-    url: 'https://github.com/go-task/task/releases/download/v3.39.0/task_linux_amd64.deb'
+  - checksum: 'sha256:d4ea84524cc4e0969e84f063fc99b9aba2090ec259c00a2e12d9ed1a182cf6af'
+    url: 'https://github.com/go-task/task/releases/download/v3.39.2/task_linux_amd64.deb'
 
 # The following checksum is for the entr 5.6 source code archive
 # "5.6.tar.gz" from <https://github.com/eradman/entr/tags>.
 development__entr_source_archive_checksum: 'sha256:0222b8df928d3b5a3b5194d63e7de098533e04190d9d9a154b926c6c1f9dd14e'
 development__entr_version: '5.6'
 
-# The following checksum is for "PkgTTC-Iosevka-31.5.0.zip" from
+# The following checksum is for "PkgTTC-Iosevka-31.9.1.zip" from
 # <https://github.com/be5invis/Iosevka/releases>.
-development__iosevka_archive_checksum: 'sha256:0c9235e64d0bcfa7e3501b472e10631505422bc4a4934068ed6a364656274422'
-development__iosevka_version: '31.6.1'
+development__iosevka_archive_checksum: 'sha256:7e58976856ef79b07aa99494678e8352193a556fb8508238c0b0917d6600aada'
+development__iosevka_version: '31.9.1'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
-# following checksum is for the file "obsidian_1.6.7_amd64.deb".
-development__obsidian_package_checksum: 'sha256:772da38d23b15f0f5d7cf17024a1948ff2c073b2195954743703178bf1254b36'
-development__obsidian_version: '1.6.7'
+# following checksum is for the file "obsidian_1.7.4_amd64.deb".
+development__obsidian_package_checksum: 'sha256:79efb6b67f453bc1e9f95f6527f66da69ab0fa71ce758e8e1a51fba2bde63209'
+development__obsidian_version: '1.7.4'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
