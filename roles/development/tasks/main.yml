@@ -99,11 +99,10 @@
     name: 'python_package'
   vars:
     python_package__pipx_packages:
+      - 'edir'
       - 'fonttools[woff]'
-      - 'harlequin[mysql]'
       - 'llm'
       - 'sqlite-utils'
-      - 'visidata[lxml]'
 
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
