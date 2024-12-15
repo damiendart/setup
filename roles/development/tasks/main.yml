@@ -102,6 +102,7 @@
       - 'edir'
       - 'fonttools[woff]'
       - 'llm'
+      - 'pygments'
       - 'sqlite-utils'
 
 - name: 'Include dotfiles installation tasks'
