@@ -1,0 +1,18 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+
+# VueScan releases are available at
+# <https://www.hamrick.com/alternate-versions.html>.
+vuescan__vuescan_package_checksum: 'sha256:96674ee595fb6ec7a047da9d653de49eff7c04474c3412a8007c23a8eb301b72'
+
+
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
+
+# A string containing the directory where downloaded files are stored to
+# prevent unnecessary downloading when tasks are rerun.
+vuescan__download_cache_directory: '{{ undef() }}'

@@ -21,6 +21,7 @@
     - 'syncthing'
     - 'tailscale'
     - 'virtualbox'
+    - 'vuescan'
     - 'webserver'
   vars:
     webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
