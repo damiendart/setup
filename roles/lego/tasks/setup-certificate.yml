@@ -21,7 +21,7 @@
       --http.webroot="/var/www/html"
       --path="/etc/lego"
       run
-      --must-staple
+      {% if item.value.must_staple | default(false) %}--must-staple{% endif %}
     creates: >-
       {{
         (
@@ -49,7 +49,7 @@
       --http.webroot="/var/www/html"
       --path="/etc/lego"
       renew
-      --must-staple
+      {% if item.value.must_staple | default(false) %}--must-staple{% endif %}
       {% if lego__renewal_hook %}--renew-hook="{{ lego__renewal_hook }}"{% endif %}
       >> /var/log/lego-renew-{{ item.key | replace(".", "-") }}.log
       2>&1
