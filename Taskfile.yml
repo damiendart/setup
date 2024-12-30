@@ -83,7 +83,7 @@ tasks:
 
   start:
     cmds:
-      - 'python3.11 -m venv .venv'
+      - 'python3.13 -m venv .venv'
       - cmd: |
           if [ -z "$VIRTUAL_ENV" ]; then
             echo "Run \"source .venv/bin/activate\" to activate the virtual environment"

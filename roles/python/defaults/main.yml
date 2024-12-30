@@ -9,13 +9,13 @@
 # Python binary archive download. See also "python__archive_url" and
 # "python__version". Python binary archives and checksums are available
 # at <https://github.com/indygreg/python-build-standalone/releases>.
-python__python_archive_checksum: 'sha256:beb6939490fa3bf9ddae468cfe8441233901050862d393b3a90f2c80d4309062'
+python__python_archive_checksum: 'sha256:d7814640ba4e79102c1b99eae5a4891a40467efdd568f2068d93c492332c29f8'
 
 # A string containing the URL to the binary archive.
-python__python_archive_url: 'https://github.com/indygreg/python-build-standalone/releases/download/20241016/cpython-3.11.10+20241016-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
+python__python_archive_url: 'https://github.com/astral-sh/python-build-standalone/releases/download/20241219/cpython-3.13.1+20241219-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
 
 # A string containing the version of Python to install.
-python__python_version: '3.11.10'
+python__python_version: '3.13.1'
 
 
 # The following variables will have host-specific and/or sensitive
