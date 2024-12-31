@@ -94,11 +94,11 @@
       - 'golang.org/x/lint/golint@latest'
       - 'honnef.co/go/tools/cmd/staticcheck@latest'
 
-- name: 'Ensure base development environment Python packages are installed'
+- name: 'Ensure base development environment Python-based tools are installed'
   ansible.builtin.include_role:
-    name: 'python_package'
+    name: 'pipx'
   vars:
-    python_package__pipx_packages:
+    pipx__pipx_packages:
       - 'edir'
       - 'fonttools[woff]'
       - 'llm'

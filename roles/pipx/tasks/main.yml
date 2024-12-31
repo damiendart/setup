@@ -13,8 +13,8 @@
   ansible.builtin.set_fact:
     __has_updated_python: >
       {{
-        ansible_local.python_package is not defined
-        or ansible_local.python.version != ansible_local.python_package.python_version
+        ansible_local.pipx is not defined
+        or ansible_local.python.version != ansible_local.pipx.python_version
       }}
 
 - name: "Ensure \"pipx\" is installed using \"pip{{ ansible_local.python.version.split('.')[0:2] | join('.') }}\""
@@ -24,30 +24,30 @@
     name: 'pipx'
     state: "{{ __has_updated_python | ternary('forcereinstall', 'present') }}"
   become: true
-  become_user: '{{ python_package__user }}'
+  become_user: '{{ pipx__user }}'
 
 - name: 'Ensure existing user-wide applications installed with "pipx" are uninstalled'
-  ansible.builtin.command: '/home/{{ python_package__user }}/.local/bin/pipx uninstall-all'
+  ansible.builtin.command: '/home/{{ pipx__user }}/.local/bin/pipx uninstall-all'
   become: true
-  become_user: '{{ python_package__user }}'
+  become_user: '{{ pipx__user }}'
   changed_when: true
   when: __has_updated_python
 
 - name: 'Ensure user-wide applications to be installed with "pipx" are installed'
-  ansible.builtin.command: '/home/{{ python_package__user }}/.local/bin/pipx install {{ item }}'
+  ansible.builtin.command: '/home/{{ pipx__user }}/.local/bin/pipx install {{ item }}'
   become: true
-  become_user: '{{ python_package__user }}'
+  become_user: '{{ pipx__user }}'
   register: __pipx_install
   changed_when: __pipx_install.stdout is search('installed package')
-  loop: '{{ python_package__pipx_packages }}'
+  loop: '{{ pipx__pipx_packages }}'
 
 - name: 'Ensure user-wide Python applications installed with "pipx" are up-to-date'
-  ansible.builtin.command: "/home/{{ python_package__user }}/.local/bin/pipx upgrade {{ item | split('[') | first }}"
+  ansible.builtin.command: "/home/{{ pipx__user }}/.local/bin/pipx upgrade {{ item | split('[') | first }}"
   become: true
-  become_user: '{{ python_package__user }}'
+  become_user: '{{ pipx__user }}'
   register: __pipx_upgrade
   changed_when: __pipx_upgrade.stdout is search('upgraded package')
-  loop: '{{ python_package__pipx_packages }}'
+  loop: '{{ pipx__pipx_packages }}'
 
 - name: 'Ensure Ansible local facts directory exists'
   ansible.builtin.file:
@@ -57,14 +57,14 @@
 
 - name: 'Ensure role-related Ansible local facts exists'
   ansible.builtin.template:
-    dest: '/etc/ansible/facts.d/python_package.fact'
+    dest: '/etc/ansible/facts.d/pipx.fact'
     group: 'root'
     mode: 0644
     owner: 'root'
-    src: 'python_package.fact.j2'
-  register: __python_package_facts
+    src: 'pipx.fact.j2'
+  register: __pipx_facts
 
 - name: 'Ensure Ansible local facts are up-to-date'
   ansible.builtin.setup: # noqa: no-handler
     filter: 'ansible_local'
-  when: __python_package_facts is changed
+  when: __pipx_facts is changed

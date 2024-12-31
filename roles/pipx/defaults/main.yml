@@ -3,8 +3,8 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-python_package__pip_packages: []
+pipx__pip_packages: []
 
-python_package__pipx_packages: []
+pipx__pipx_packages: []
 
-python_package__user: '{{ undef() }}'
+pipx__user: '{{ undef() }}'
