@@ -1,10 +1,25 @@
-# Compiles and installs Go packages using "go install".
-#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+- name: 'Determine whether a new version of Go has been installed in this play'
+  ansible.builtin.set_fact:
+    __has_updated_go: >
+      {{
+        ansible_local.golang_package is not defined
+        or ansible_local.golang.version != ansible_local.golang_package.go_version
+      }}
+
+# Existing tools installed with "go install" won't break when Go is
+# updated, but we still use the opportunity to blitz "$GOPATH" to keep
+# any configuration drift in check.
+- name: 'Ensure "{{ golang_package__gopath }}" is removed when a new version of Go has been installed'
+  ansible.builtin.file:
+    path: '{{ golang_package__gopath }}'
+    state: 'absent'
+  when: __has_updated_go
+
 - name: 'Ensure Go packages are compiled and installed for user "{{ golang_package__user }}"'
   ansible.builtin.command: '{{ ansible_local.golang.bin_dir }}/go install {{ item }}'
   become: true
@@ -14,3 +29,23 @@
   register: __go_install
   changed_when: __go_install.stderr is search('downloading')
   loop: '{{ golang_package__packages }}'
+
+- name: 'Ensure Ansible local facts directory exists'
+  ansible.builtin.file:
+    mode: 0755
+    path: '/etc/ansible/facts.d'
+    state: 'directory'
+
+- name: 'Ensure role-related Ansible local facts exists'
+  ansible.builtin.template:
+    dest: '/etc/ansible/facts.d/golang_package.fact'
+    group: 'root'
+    mode: 0644
+    owner: 'root'
+    src: 'golang_package.fact.j2'
+  register: __golang_package_facts
+
+- name: 'Ensure Ansible local facts are up-to-date'
+  ansible.builtin.setup: # noqa: no-handler
+    filter: 'ansible_local'
+  when: __golang_package_facts is changed
