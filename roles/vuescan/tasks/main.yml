@@ -11,16 +11,39 @@
     owner: 'root'
     state: 'directory'
 
-- name: 'Ensure the VueScan Debian package is downloaded'
-  ansible.builtin.get_url:
-    checksum: '{{ vuescan__vuescan_package_checksum }}'
-    dest: '{{ vuescan__download_cache_directory }}/vuex6498.deb'
-    group: 'root'
-    mode: 0755
-    owner: 'root'
-    url: 'https://www.hamrick.com/files/vuex6498.deb'
+- name: 'Ensure VueScan {{ vuescan__vuescan_version }} is installed' # noqa: name[template]
+  when: ansible_local.vuescan is not defined or ansible_local.vuescan.version != vuescan__vuescan_version
+  block:
+    - name: 'Ensure the VueScan Debian package is downloaded'
+      ansible.builtin.get_url:
+        checksum: '{{ vuescan__vuescan_package_checksum }}'
+        dest: '{{ vuescan__download_cache_directory }}/vuex6498.deb'
+        group: 'root'
+        mode: 0755
+        owner: 'root'
+        url: 'https://www.hamrick.com/files/vuex6498.deb'
 
-- name: 'Ensure VueScan is installed'
-  ansible.builtin.apt:
-    deb: '{{ vuescan__download_cache_directory }}/vuex6498.deb'
-    state: 'present'
+    - name: 'Ensure VueScan is installed'
+      ansible.builtin.apt:
+        deb: '{{ vuescan__download_cache_directory }}/vuex6498.deb'
+        state: 'present'
+
+- name: 'Ensure Ansible local facts directory exists'
+  ansible.builtin.file:
+    mode: 0755
+    path: '/etc/ansible/facts.d'
+    state: 'directory'
+
+- name: 'Ensure VueScan-related local facts exists'
+  ansible.builtin.template:
+    dest: '/etc/ansible/facts.d/vuescan.fact'
+    group: 'root'
+    mode: 0644
+    owner: 'root'
+    src: 'vuescan.fact.j2'
+  register: __vuescan_facts
+
+- name: 'Ensure Ansible facts are up-to-date'
+  ansible.builtin.setup: # noqa: no-handler
+    filter: 'ansible_local'
+  when: __vuescan_facts is changed
