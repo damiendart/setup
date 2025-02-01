@@ -90,7 +90,6 @@
     golang_package__packages:
       - 'github.com/damiendart/nt/cmd/nt@latest'
       - 'github.com/damiendart/pathshorten/cmd/pathshorten@latest'
-      - 'github.com/StackExchange/dnscontrol/v4@latest'
       - 'golang.org/x/lint/golint@latest'
       - 'honnef.co/go/tools/cmd/staticcheck@latest'
 

@@ -47,6 +47,10 @@ development__debian_packages:
   - checksum: 'sha256:91cb78c5b91d1c3e2977c294e1975e80ccbd9e312216ef96475d7562791f6931'
     url: 'https://github.com/go-task/task/releases/download/v3.40.1/task_linux_amd64.deb'
 
+    # See <https://github.com/StackExchange/dnscontrol/releases>.
+  - checksum: 'sha256:bffc9357ee65862dd5548f0f8825c4ee388286e4f6905b8ae787b5e688da67c4'
+    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.15.5/dnscontrol-4.15.5.amd64.deb'
+
 # The following checksum is for the entr 5.6 source code archive
 # "5.6.tar.gz" from <https://github.com/eradman/entr/tags>.
 development__entr_source_archive_checksum: 'sha256:0222b8df928d3b5a3b5194d63e7de098533e04190d9d9a154b926c6c1f9dd14e'
