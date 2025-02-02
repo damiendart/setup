@@ -1,22 +1,19 @@
 #!/bin/bash
-# shellcheck disable=SC2086
 # {{ ansible_managed }}
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
-
-# shellcheck disable=SC2288
-FOLDERS_TO_BACKUP='{{ tarsnap__directories_to_backup | join(' ') }}'
-START_TIMESTAMP="$(date)"
+ARCHIVE_NAME="$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)"
 TARSNAP_LOG='/var/log/tarsnap.log'
 
-/usr/bin/tarsnap -c --keyfile /root/tarsnap.key \
-    -f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" \
-    $FOLDERS_TO_BACKUP >$TARSNAP_LOG 2>&1
-{
-  echo
-  echo "Started:  $START_TIMESTAMP"
-  echo "Finished: $(date)"
-} >> $TARSNAP_LOG
+# shellcheck disable=SC2129
+printf -- '--- BACKUP STARTED AT %s ---\n\n' "$(date)" >>$TARSNAP_LOG
+printf -- 'ARCHIVE NAME: %s\n\n' "$ARCHIVE_NAME" >>$TARSNAP_LOG
+
+/usr/bin/tarsnap -c --keyfile /root/tarsnap.key -f "$ARCHIVE_NAME" -T - >>$TARSNAP_LOG 2>&1 <<DIRECTORIES
+{{ tarsnap__directories_to_backup | join('\n') }}
+DIRECTORIES
+
+printf -- '\n--- BACKUP FINISHED AT %s ---\n\n' "$(date)" >>$TARSNAP_LOG

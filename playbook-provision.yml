@@ -20,6 +20,7 @@
     - 'rust'
     - 'syncthing'
     - 'tailscale'
+    - 'tarsnap'
     - 'virtualbox'
     - 'vuescan'
     - 'webserver'
