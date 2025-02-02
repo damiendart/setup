@@ -33,8 +33,6 @@
         )
           | ternary('/etc/lego/certificates/' + item.key + '.*', omit)
       }}
-  ignore_errors: true
-  register: __lego_run
 
 - name: 'Ensure certificate-renewing cron job exists for "{{ item.key }}"' # noqa: name[template]
   ansible.builtin.cron:
