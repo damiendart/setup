@@ -6,8 +6,8 @@
 
 # Polypane releases are available at
 # <https://github.com/firstversionist/polypane/releases/>.
-polypane__polypane_package_checksum: 'sha256:076801780d569f5a6a3832cf0b832850860c8b4dae5509880bb61a2df642374d'
-polypane__polypane_version: '22.1.1'
+polypane__polypane_package_checksum: 'sha256:1145232fac399df72602aa1ec769cd8f0e19a31bb94455dfefc5076c332eb3a4'
+polypane__polypane_version: '23.0.1'
 
 
 # The following variables will have host-specific and/or sensitive
