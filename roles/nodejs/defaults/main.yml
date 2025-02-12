@@ -9,10 +9,10 @@
 # Node.js binary archive "node-v22.13.1-linux-x64.tar.xz". See also
 # "nodejs__version". Node.js binary archives and checksums are
 # available at <https://nodejs.org/en/download>.
-nodejs__nodejs_archive_checksum: 'sha256:0d2a5af33c7deab5555c8309cd3f373446fe1526c1b95833935ab3f019733b3b'
+nodejs__nodejs_archive_checksum: 'sha256:69b09dba5c8dcb05c4e4273a4340db1005abeafe3927efda2bc5b249e80437ec'
 
 # A string containing the version of Node.js to install.
-nodejs__nodejs_version: '22.13.1'
+nodejs__nodejs_version: '22.14.0'
 
 
 # The following variables will have host-specific and/or sensitive

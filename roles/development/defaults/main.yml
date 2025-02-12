@@ -36,8 +36,8 @@ development__binary_archives:
 
 development__debian_packages:
   # See <https://github.com/jgm/pandoc/releases>.
-  - checksum: 'sha256:6b5e9104a7b1f64f3dfdf0ac547585ff9d462d6a0669d88208996821b96e62bc'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.6.2/pandoc-3.6.2-1-amd64.deb'
+  - checksum: 'sha256:518b690c37a294b9e16524ad21fc56816250557349345420b79042f644df5476'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.6.3/pandoc-3.6.3-1-amd64.deb'
 
   # See <https://github.com/BurntSushi/ripgrep/releases>.
   - checksum: 'sha256:2f0c732ef166b4f7be7190d4012d60b3f8467bdd6f795c0598817bd2ac1706ae'
@@ -48,13 +48,13 @@ development__debian_packages:
     url: 'https://github.com/go-task/task/releases/download/v3.41.0/task_linux_amd64.deb'
 
     # See <https://github.com/StackExchange/dnscontrol/releases>.
-  - checksum: 'sha256:bffc9357ee65862dd5548f0f8825c4ee388286e4f6905b8ae787b5e688da67c4'
-    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.15.5/dnscontrol-4.15.5.amd64.deb'
+  - checksum: 'sha256:7a3830c2e1a20191abe1cef11818a3e3294beeebfcb3f3ecee18ba225c10423f'
+    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.16.0/dnscontrol-4.16.0.amd64.deb'
 
 # The following checksum is for the entr 5.6 source code archive
 # "5.6.tar.gz" from <https://github.com/eradman/entr/tags>.
-development__entr_source_archive_checksum: 'sha256:0222b8df928d3b5a3b5194d63e7de098533e04190d9d9a154b926c6c1f9dd14e'
-development__entr_version: '5.6'
+development__entr_source_archive_checksum: 'sha256:90c5d943820c70cef37eb41a382a6ea4f5dd7fd95efef13b2b5520d320f5d067'
+development__entr_version: '5.7'
 
 # The following checksum is for "PkgTTC-Iosevka-32.5.0.zip" from
 # <https://github.com/be5invis/Iosevka/releases>.
