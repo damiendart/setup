@@ -4,6 +4,8 @@
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
+{% set env_vars = deploy_website__vhosts[deploy_website__site_domain].env_vars | default({}) -%}
+
 Define SHARED_ROOT "{{ __vhost_base_directory }}/shared"
 Define RELEASE_ROOT "{{ __vhost_base_directory }}/releases/{{ __release_metadata.release_timestamp }}"
 Define RELEASE_TIMESTAMP "{{ __release_metadata.release_timestamp }}"
@@ -13,12 +15,10 @@ SetEnv RELEASE_TIMESTAMP "${RELEASE_TIMESTAMP}"
 SetEnv RELEASE_GIT_SHA "{{ __release_metadata.release_git_sha }}"
 SetEnv SHARED_ROOT "${SHARED_ROOT}"
 
-{% if deploy_website__vhosts[deploy_website__site_domain].env_vars is defined %}
-  {% for i in deploy_website__vhosts[deploy_website__site_domain].env_vars | dict2items %}
-    Define {{ i.key }} "{{ i.value | string }}"
-    SetEnv {{ i.key }} "{{ i.value | string }}"
-  {% endfor %}
-{% endif %}
+{% for i in env_vars | dict2items %}
+  Define {{ i.key }} "{{ i.value | string }}"
+  SetEnv {{ i.key }} "{{ i.value | string }}"
+{% endfor %}
 
 <If "%{HTTP_USER_AGENT} == 'deploy-website-smoke-test'">
   header set "X-Release-Timestamp" "${RELEASE_TIMESTAMP}"
@@ -50,6 +50,9 @@ SetEnv SHARED_ROOT "${SHARED_ROOT}"
 {% endif %}
 
 IncludeOptional "${RELEASE_ROOT}/private/apache2/virtualhost.con[f]"
+{% if 'APP_ENV' in env_vars %}
+  IncludeOptional "${RELEASE_ROOT}/private/apache2/virtualhost-{{ env_vars['APP_ENV'] }}.con[f]"
+{% endif %}
 
 DocumentRoot "${RELEASE_ROOT}/public"
 
@@ -64,6 +67,9 @@ DocumentRoot "${RELEASE_ROOT}/public"
   </IfFile>
 
   IncludeOptional "${RELEASE_ROOT}/private/apache2/directory.con[f]"
+  {% if 'APP_ENV' in env_vars %}
+    IncludeOptional "${RELEASE_ROOT}/private/apache2/directory-{{ env_vars['APP_ENV'] }}.con[f]"
+  {% endif %}
 </Directory>
 
 # Variable scope is not a thing in Apache configuration; undefining
@@ -75,8 +81,6 @@ UnDefine RELEASE_ROOT
 UnDefine RELEASE_TIMESTAMP
 UnDefine VHOST_ROOT
 
-{% if deploy_website__vhosts[deploy_website__site_domain].env_vars is defined %}
-  {% for i in deploy_website__vhosts[deploy_website__site_domain].env_vars | dict2items %}
-    UnDefine {{ i.key }}
-  {% endfor %}
-{% endif %}
+{% for i in env_vars | dict2items %}
+  UnDefine {{ i.key }}
+{% endfor %}
