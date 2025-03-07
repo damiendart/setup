@@ -37,6 +37,12 @@
     - 'golang'
     - 'python'
 
+- name: 'Provision home server machines'
+  hosts: 'home_server'
+  become: true
+  roles:
+    - 'home_server'
+
 - name: 'Provision testing and experimentation machines'
   hosts: 'playground_production'
   become: true
