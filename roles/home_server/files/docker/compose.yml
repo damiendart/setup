@@ -1,11 +1,19 @@
-# A Docker Compose file for running stuff on a Synology DiskStation.
-#
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
 services:
+  cgit:
+    build:
+      context: './cgit'
+    container_name: 'cgit'
+    ports:
+      - '9091:9091'
+    restart: 'unless-stopped'
+    volumes:
+      - '${CGIT_REPOSITORIES_DIRECTORY:?err}:/var/repositories:ro'
+
   syncthing:
     image: 'syncthing/syncthing'
     container_name: 'syncthing'
