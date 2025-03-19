@@ -37,14 +37,21 @@ Header always set X-XSS-Protection "1; mode=block"
 <IfModule mod_mime.c>
   # Force UTF-8 encoding for other file formats.
   AddCharset utf-8 .css .js
+
+  # See <https://www.iana.org/assignments/media-types/media-types.xhtml>
+  # and <https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types>.
+
   AddType application/manifest+json webmanifest
-  AddType application/javascript js
   AddType application/vnd.ms-fontobject eot
-  AddType application/x-font-ttf ttc ttf
-  AddType application/x-font-woff woff
   AddType application/x-shockwave-flash swf
-  AddType font/opentype otf
-  AddType image/x-icon ico
+  AddType font/otf otf
+  AddType font/ttf ttc ttf
+  AddType font/woff woff
+  AddType font/woff2 woff
+  AddType image/avif avif
+  AddType image/vnd.microsoft.icon ico
+  AddType image/webp webp
+  AddType text/javascript js
   AddType text/x-c c
   AddType text/x-diff patch
   AddType text/x-python py
