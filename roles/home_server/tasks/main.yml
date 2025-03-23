@@ -7,5 +7,6 @@
   ansible.builtin.copy:
     dest: '{{ home_server__docker_directory }}'
     group: 'users'
+    mode: '0600'
     owner: '{{ home_server__user_username }}'
     src: '{{ role_path }}/files/docker/'
