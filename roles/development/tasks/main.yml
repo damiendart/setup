@@ -110,6 +110,9 @@
 - name: 'Include entr building and installation tasks'
   ansible.builtin.include_tasks: 'entr.yml'
 
+- name: 'Include fish shell installation tasks'
+  ansible.builtin.include_tasks: 'fish-shell.yml'
+
 - name: 'Include tasks for hosts with GUIs'
   ansible.builtin.include_tasks: 'gui.yml'
   when: development__run_gui_tasks | bool

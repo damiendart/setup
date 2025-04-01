@@ -1,0 +1,26 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the fish shell repository is present in APT sources list'
+  ansible.builtin.deb822_repository:
+    components:
+      - 'main'
+    enabled: true
+    name: 'fish shell'
+    signed_by: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x73c9fcc9e2bb48da'
+    suites:
+      - '{{ ansible_distribution_release | lower }}'
+    state: 'present'
+    types:
+      - 'deb'
+    uris: 'https://ppa.launchpadcontent.net/fish-shell/release-4/ubuntu'
+  register: __fish_shell_repository
+
+- name: 'Ensure fish shell is installed'
+  ansible.builtin.apt:
+    force_apt_get: true
+    name: 'fish'
+    state: 'present'
+    update_cache: '{{ __fish_shell_repository is changed }}'
