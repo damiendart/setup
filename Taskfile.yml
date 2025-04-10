@@ -84,11 +84,4 @@ tasks:
   start:
     cmds:
       - 'python3.13 -m venv .venv'
-      - cmd: |
-          if [ -z "$VIRTUAL_ENV" ]; then
-            echo "Run \"source .venv/bin/activate\" to activate the virtual environment"
-          else
-            echo "Active Python virtual environment: $VIRTUAL_ENV"
-          fi
-        silent: true
     desc: 'Create a Python virtual environment for development, running Ansible, and testing'
