@@ -9,10 +9,10 @@
 # binary archive download "go1.23.5.linux-amd64.tar.gz". See also
 # "golang__golang_version". Go binary archives and checksums are
 # available at <https://go.dev/dl/>.
-golang__golang_archive_checksum: 'sha256:dea9ca38a0b852a74e81c26134671af7c0fbe65d81b0dc1c5bfe22cf7d4c8858'
+golang__golang_archive_checksum: 'sha256:68097bd680839cbc9d464a0edce4f7c333975e27a90246890e9f1078c7e702ad'
 
 # A string containing the version of Go to install.
-golang__golang_version: '1.24.0'
+golang__golang_version: '1.24.2'
 
 
 # The following variables will have host-specific and/or sensitive

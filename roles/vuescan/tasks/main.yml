@@ -22,5 +22,5 @@
 
 - name: 'Ensure VueScan is installed'
   ansible.builtin.apt:
-    deb: '{{ vuescan__download_cache_directory }}/vuex6498.deb'
+    deb: '{{ vuescan__download_cache_directory }}/vuex64-{{ vuescan__vuescan_version }}.deb'
     state: 'present'

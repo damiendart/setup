@@ -7,8 +7,8 @@
 # VueScan releases are available at
 # <https://www.hamrick.com/alternate-versions.html>.
 
-vuescan__vuescan_package_checksum: 'sha256:0ea8e84bbf815f2a0733dc52eda2f7adf9f1af4639826efdb3aef0a48c7a6f0e'
-vuescan__vuescan_version: '9.8.44'
+vuescan__vuescan_package_checksum: 'sha256:f245d71681feecc5d6b0810c35ddf2e523af49c127954e819fafbaa68c9e7fd3'
+vuescan__vuescan_version: '9.8.45'
 
 
 # The following variables will have host-specific and/or sensitive
