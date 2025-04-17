@@ -85,8 +85,8 @@ source "virtualbox-iso" "ubuntu-server-virtualbox" {
       ]
     )
   }
-  iso_checksum = "e240e4b801f7bb68c20d1356b60968ad0c33a41d00d828e74ceb3364a0317be9"
-  iso_url = "https://releases.ubuntu.com/24.04.1/ubuntu-24.04.1-live-server-amd64.iso"
+  iso_checksum = "d6dab0c3a657988501b4bd76f1297c053df710e06e0c3aece60dead24f270b4d"
+  iso_url = "https://releases.ubuntu.com/24.04.2/ubuntu-24.04.2-live-server-amd64.iso"
   guest_os_type = "Ubuntu_64"
   memory = 2048
   shutdown_command = "echo 'ubuntu' | sudo -S shutdown -P now"
