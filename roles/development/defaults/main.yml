@@ -6,11 +6,6 @@
 
 ---
 development__binary_archives:
-  # See <https://www.browserstack.com/docs/live/local-testing>.
-  - binaries: 'BrowserStackLocal'
-    checksum: 'sha256:6f9dc34364cbba82ee4309d0e9536fb956c9f88bdb3844e3449c16ed63fa2210'
-    url: 'https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip'
-
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
     checksum: 'sha256:f728b94bbbf7008602581fc07ea00de5dccf55a2cb2bf9fd9a35f1071b3b9f6c'
