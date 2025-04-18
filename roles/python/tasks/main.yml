@@ -64,6 +64,7 @@
           - '--strip-components=1'
         group: 'root'
         owner: 'root'
+        remote_src: true
         src: '{{ python__download_cache_directory }}/{{ python__python_archive_url | basename }}'
 
 - name: 'Ensure Ansible local facts directory exists'

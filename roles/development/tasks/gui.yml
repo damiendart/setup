@@ -62,6 +62,7 @@
     dest: '/home/{{ development__user_username }}/.fonts'
     group: '{{ development__user_username }}'
     owner: '{{ development__user_username }}'
+    remote_src: true
     src: '{{ development__download_cache_directory }}/PkgTTC-Iosevka-{{ development__iosevka_version }}.zip'
 
 # I've found that Gnome Terminal does not get along with the Super TTC

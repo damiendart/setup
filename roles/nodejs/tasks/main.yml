@@ -58,4 +58,5 @@
           - '--strip-components=1'
         group: 'root'
         owner: 'root'
+        remote_src: true
         src: '{{ nodejs__download_cache_directory }}/node-v{{ nodejs__nodejs_version }}-linux-x64.tar.xz'
