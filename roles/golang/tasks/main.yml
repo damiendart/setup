@@ -13,11 +13,21 @@
     owner: 'root'
     state: 'directory'
 
+- name: 'Get status of existing Go installation'
+  ansible.builtin.stat:
+    path: '/usr/local/go/VERSION'
+  changed_when: false
+  register: __go_version_status
+
+- name: 'Get version of existing Go installation'
+  ansible.builtin.slurp:
+    src: '/usr/local/go/VERSION'
+  changed_when: false
+  register: __go_version
+  when: __go_version_status.stat.exists
+
 - name: 'Ensure Go {{ golang__golang_version }} is installed' #noqa: name[template]
-  # Without the string conversion, if "/usr/local/go/VERSION" does not
-  # exist, the lookup call will return None and cause an "argument of
-  # type 'NoneType' is not iterable" error.
-  when: "golang__golang_version not in lookup('ansible.builtin.file', '/usr/local/go/VERSION', errors='ignore') | string"
+  when: golang__golang_version not in (__go_version.content | default('') | b64decode)
   block:
     - name: 'Ensure the Go binary archive is downloaded'
       ansible.builtin.get_url:
