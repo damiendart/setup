@@ -14,7 +14,7 @@
 # Existing tools installed with "go install" won't break when Go is
 # updated, but we still use the opportunity to blitz "$GOPATH" to keep
 # any configuration drift in check.
-- name: 'Ensure "{{ golang_package__gopath }}" is removed when a new version of Go has been installed'
+- name: 'Ensure "{{ golang_package__gopath }}" is removed when a newer version of Go has been installed'
   ansible.builtin.file:
     path: '{{ golang_package__gopath }}'
     state: 'absent'
