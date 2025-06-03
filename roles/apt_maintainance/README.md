@@ -19,6 +19,10 @@ at the project root.
 
 ## Notes
 
+If the "Ensure APT package lists are up-to-date" task fails with "Failed
+to update apt cache: unknown reason", run `sudo apt update` and check
+for any warnings or errors.
+
 If Ansible hangs while running any of the tasks that use the
 `ansible.builtin.apt` module, it may be that an interactive prompt of
 some kind has appeared which cannot be actioned through Ansible.
