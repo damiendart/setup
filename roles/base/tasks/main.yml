@@ -55,7 +55,8 @@
       - 'git'
       - 'htop'
       - 'msmtp-mta'
-      # Ansible requires Passlib for certain functions.
+      # The "community.general.htpasswd" Ansible module requires the
+      # "passlib" Python library to be installed on all targets.
       - 'python3-passlib'
       - 'openssh-server'
       - 'ufw'

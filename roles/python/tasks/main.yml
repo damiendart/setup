@@ -11,14 +11,6 @@
     owner: 'root'
     state: 'directory'
 
-- name: 'Ensure base packages for system Python are installed'
-  ansible.builtin.apt:
-    force_apt_get: true
-    name:
-      - 'python3-pip'
-      - 'python3-venv'
-    state: 'present'
-
 - name: 'Get status of existing non-system Python installation'
   ansible.builtin.stat:
     path: "/usr/local/python/bin/python{{ python__python_version | regex_search('\\d.\\d{1,}') }}"
