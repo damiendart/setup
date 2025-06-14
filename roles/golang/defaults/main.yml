@@ -6,13 +6,13 @@
 
 ---
 # A string containing a checksum used to verify the integrity the Go
-# binary archive download "go1.23.5.linux-amd64.tar.gz". See also
+# binary archive download "go1.24.4.linux-amd64.tar.gz". See also
 # "golang__golang_version". Go binary archives and checksums are
 # available at <https://go.dev/dl/>.
-golang__golang_archive_checksum: 'sha256:68097bd680839cbc9d464a0edce4f7c333975e27a90246890e9f1078c7e702ad'
+golang__golang_archive_checksum: 'sha256:77e5da33bb72aeaef1ba4418b6fe511bc4d041873cbf82e5aa6318740df98717'
 
 # A string containing the version of Go to install.
-golang__golang_version: '1.24.2'
+golang__golang_version: '1.24.4'
 
 
 # The following variables will have host-specific and/or sensitive
