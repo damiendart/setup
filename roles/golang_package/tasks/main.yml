@@ -32,7 +32,7 @@
 
 - name: 'Ensure Ansible local facts directory exists'
   ansible.builtin.file:
-    mode: 0755
+    mode: '0755'
     path: '/etc/ansible/facts.d'
     state: 'directory'
 
@@ -40,7 +40,7 @@
   ansible.builtin.template:
     dest: '/etc/ansible/facts.d/golang_package.fact'
     group: 'root'
-    mode: 0644
+    mode: '0644'
     owner: 'root'
     src: 'golang_package.fact.j2'
   register: __golang_package_facts

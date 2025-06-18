@@ -51,7 +51,7 @@
 
 - name: 'Ensure Ansible local facts directory exists'
   ansible.builtin.file:
-    mode: 0755
+    mode: '0755'
     path: '/etc/ansible/facts.d'
     state: 'directory'
 
@@ -59,7 +59,7 @@
   ansible.builtin.template:
     dest: '/etc/ansible/facts.d/pipx.fact'
     group: 'root'
-    mode: 0644
+    mode: '0644'
     owner: 'root'
     src: 'pipx.fact.j2'
   register: __pipx_facts

@@ -41,7 +41,7 @@
       ansible.builtin.get_url:
         checksum: '{{ development__entr_source_archive_checksum }}'
         group: 'root'
-        mode: 0755
+        mode: '0755'
         owner: 'root'
         dest: '{{ __entr_temp_directory.path }}/src.tar.gz'
         url: 'https://github.com/eradman/entr/archive/refs/tags/{{ development__entr_version }}.tar.gz'
@@ -50,7 +50,7 @@
       ansible.builtin.unarchive:
         dest: '{{ __entr_temp_directory.path }}'
         group: 'root'
-        mode: 0755
+        mode: '0755'
         owner: 'root'
         src: '{{ __entr_temp_directory.path }}/src.tar.gz'
         remote_src: true

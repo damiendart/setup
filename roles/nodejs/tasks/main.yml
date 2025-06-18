@@ -34,7 +34,7 @@
         checksum: '{{ nodejs__nodejs_archive_checksum }}'
         dest: '{{ nodejs__download_cache_directory }}/node-v{{ nodejs__nodejs_version }}-linux-x64.tar.xz'
         group: 'root'
-        mode: 0755
+        mode: '0755'
         owner: 'root'
         url: 'https://nodejs.org/dist/v{{ nodejs__nodejs_version }}/node-v{{ nodejs__nodejs_version }}-linux-x64.tar.xz'
 

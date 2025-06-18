@@ -16,7 +16,7 @@
     checksum: '{{ vuescan__vuescan_package_checksum }}'
     dest: '{{ vuescan__download_cache_directory }}/vuex64-{{ vuescan__vuescan_version }}.deb'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     url: 'https://www.hamrick.com/files/vuex6498.deb'
 

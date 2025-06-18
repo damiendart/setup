@@ -16,7 +16,7 @@
     checksum: '{{ lego__lego_archive_checksum }}'
     dest: '{{ lego__download_cache_directory }}/lego_v{{ lego__lego_version }}_linux_amd64.tar.gz'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     url: 'https://github.com/go-acme/lego/releases/download/v{{ lego__lego_version }}/lego_v{{ lego__lego_version }}_linux_amd64.tar.gz'
 
@@ -26,7 +26,7 @@
     include:
       - 'lego'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     remote_src: true
     src: '{{ lego__download_cache_directory }}/lego_v{{ lego__lego_version }}_linux_amd64.tar.gz'

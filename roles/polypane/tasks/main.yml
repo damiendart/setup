@@ -16,7 +16,7 @@
     checksum: '{{ polypane__polypane_package_checksum }}'
     dest: '{{ polypane__download_cache_directory }}/polypane_{{ polypane__polypane_version }}_amd64.deb'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     url: 'https://github.com/firstversionist/polypane/releases/download/v{{ polypane__polypane_version }}/polypane_{{ polypane__polypane_version }}_amd64.deb'
 

@@ -33,7 +33,7 @@
 - name: 'Ensure a deployment lock file exists'
   ansible.builtin.file:
     group: '{{ deploy_website__administrator_username }}'
-    mode: 0640
+    mode: '0640'
     owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __vhost_base_directory }}/deploy.lock'
     state: 'touch'
@@ -47,7 +47,7 @@
 - name: 'Create release base directory'
   ansible.builtin.file:
     group: 'www-data'
-    mode: 0750
+    mode: '0750'
     owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __release_base_directory }}'
     state: 'directory'
@@ -108,7 +108,7 @@
   ansible.builtin.template:
     dest: '{{ __vhost_base_directory }}/deployment.apache2.conf'
     group: 'root'
-    mode: 0640
+    mode: '0640'
     owner: '{{ deploy_website__administrator_username }}'
     src: 'deployment.apache2.conf.j2'
   notify:
@@ -124,7 +124,7 @@
     dest: '{{ __vhost_base_directory }}/deployment.conf.sh'
     group: 'root'
     owner: '{{ deploy_website__administrator_username }}'
-    mode: 0640
+    mode: '0640'
     src: 'deployment.conf.sh.j2'
 
 - name: 'Run any post-installation tasks'

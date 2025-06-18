@@ -19,7 +19,7 @@
     ansible.builtin.template:
       dest: '/etc/php/{{ item }}/fpm/conf.d/99-xdebug.ini'
       group: 'root'
-      mode: 0644
+      mode: '0644'
       owner: 'root'
       src: '99-xdebug.ini.j2'
     loop: '{{ webserver__xdebug_versions }}'

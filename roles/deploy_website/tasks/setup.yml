@@ -10,7 +10,7 @@
 - name: 'Ensure base deployment-related directories exist'
   ansible.builtin.file:
     group: 'www-data'
-    mode: 0750
+    mode: '0750'
     owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __vhost_base_directory }}/{{ item }}'
     state: 'directory'
@@ -21,7 +21,7 @@
 - name: 'Ensure "private" shared-data directory exists'
   ansible.builtin.file:
     group: 'root'
-    mode: 0750
+    mode: '0750'
     owner: '{{ deploy_website__administrator_username }}'
     path: '{{ __vhost_base_directory }}/shared/private'
     state: 'directory'

@@ -31,13 +31,13 @@
         content: '{{ tarsnap__tarsnap_write_only_key }}'
         dest: '/root/tarsnap.key'
         group: 'root'
-        mode: 0600
+        mode: '0600'
         owner: 'root'
 
     - name: 'Ensure Tarsnap is set up to run daily'
       ansible.builtin.template:
         dest: '/etc/cron.daily/tarsnap'
         group: 'root'
-        mode: 0755
+        mode: '0755'
         src: 'tarsnap-cron.sh.j2'
         owner: 'root'

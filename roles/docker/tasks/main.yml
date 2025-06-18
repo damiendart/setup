@@ -78,7 +78,7 @@
     content: '{{ __containerd_config_default.stdout }}'
     dest: '/etc/containerd/config.toml'
     group: 'root'
-    mode: 0600
+    mode: '0600'
     owner: 'root'
   notify: 'Restart containerd'
 

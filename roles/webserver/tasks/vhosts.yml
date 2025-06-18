@@ -8,7 +8,7 @@
 - name: 'Ensure virtual hosts base directories exist'
   ansible.builtin.file:
     group: 'www-data'
-    mode: 0750
+    mode: '0750'
     owner: '{{ webserver__administrator_username }}'
     path: '/var/www/{{ item.key }}'
     state: 'directory'
@@ -20,7 +20,7 @@
   ansible.builtin.template:
     dest: '/etc/apache2/sites-available/{{ "00-" if item.key == webserver__server_name else "" }}{{ item.key }}.conf'
     group: 'root'
-    mode: 0600
+    mode: '0600'
     owner: 'root'
     src: 'virtualhost.conf.j2'
   loop: '{{ webserver__vhosts | dict2items }}'
@@ -31,7 +31,7 @@
 - name: 'Ensure ".htpasswd" files exist for password-protected Apache virtual hosts'
   community.general.htpasswd:
     group: 'www-data'
-    mode: 0640
+    mode: '0640'
     name: '{{ item.value.auth.username }}'
     owner: 'root'
     password: '{{ item.value.auth.password }}'

@@ -43,7 +43,7 @@
 - name: 'Ensure fonts directory exists in administrator home directory'
   ansible.builtin.file:
     group: '{{ development__user_username }}'
-    mode: 0700
+    mode: '0700'
     owner: '{{ development__user_username }}'
     path: '/home/{{ development__user_username }}/.fonts'
     state: 'directory'
@@ -53,7 +53,7 @@
     checksum: '{{ development__iosevka_archive_checksum }}'
     dest: '{{ development__download_cache_directory }}/PkgTTC-Iosevka-{{ development__iosevka_version }}.zip'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     url: 'https://github.com/be5invis/Iosevka/releases/download/v{{ development__iosevka_version }}/PkgTTC-Iosevka-{{ development__iosevka_version }}.zip'
 
@@ -77,7 +77,7 @@
     checksum: '{{ development__obsidian_package_checksum }}'
     dest: '{{ development__download_cache_directory }}/obsidian-{{ development__obsidian_version }}-amd64.deb'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     url: 'https://github.com/obsidianmd/obsidian-releases/releases/download/v{{ development__obsidian_version }}/obsidian_{{ development__obsidian_version }}_amd64.deb'
 

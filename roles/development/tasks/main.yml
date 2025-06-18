@@ -31,7 +31,7 @@
     group: '{{ development__user_username }}'
     # The personal projects directory has relaxed permissions to allow
     # Apache access to directories within it.
-    mode: 0755
+    mode: '0755'
     owner: '{{ development__user_username }}'
     path: '/home/{{ development__user_username }}/{{ development__projects_folder }}'
     state: 'directory'
@@ -54,7 +54,7 @@
     checksum: '{{ item.checksum }}'
     dest: '{{ development__download_cache_directory }}/{{ item.filename | default(item.url | basename) }}'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     url: '{{ item.url }}'
   loop: '{{ development__binary_archives + development__debian_packages }}'
@@ -75,7 +75,7 @@
     extra_opts: '{{ item.extra_opts | default([]) }}'
     group: 'root'
     include: '{{ item.binaries | default([]) }}'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     remote_src: true
     src: '{{ development__download_cache_directory }}/{{ item.filename | default(item.url | basename) }}'

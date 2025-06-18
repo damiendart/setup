@@ -76,7 +76,7 @@
   ansible.builtin.template:
     dest: '/etc/apache2/conf-available/zzz.conf'
     group: 'root'
-    mode: 0600
+    mode: '0600'
     owner: 'root'
     src: 'apache2.conf.j2'
   notify: 'Reload Apache'
@@ -93,7 +93,7 @@
   ansible.builtin.template:
     dest: '/etc/php/{{ item }}/fpm/conf.d/99-custom.ini'
     group: 'root'
-    mode: 0644
+    mode: '0644'
     owner: 'root'
     src: '99-custom.ini.j2'
   loop: '{{ webserver__php_versions }}'
@@ -103,7 +103,7 @@
   ansible.builtin.template:
     dest: '/etc/php/{{ item }}/fpm/pool.d/zzz.conf'
     group: 'root'
-    mode: 0600
+    mode: '0600'
     owner: 'root'
     src: 'php-fpm-pool.conf.j2'
   loop: '{{ webserver__php_versions }}'
@@ -112,7 +112,7 @@
 - name: 'Ensure Node Exporter password file exists'
   community.general.htpasswd:
     group: 'www-data'
-    mode: 0640
+    mode: '0640'
     name: '{{ webserver__status_path_node_exporter_username }}'
     owner: 'root'
     password: '{{ webserver__status_path_node_exporter_password }}'

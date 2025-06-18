@@ -32,7 +32,7 @@
         checksum: '{{ python__python_archive_checksum }}'
         dest: '{{ python__download_cache_directory }}/{{ python__python_archive_url | basename }}'
         group: 'root'
-        mode: 0755
+        mode: '0755'
         owner: 'root'
         url: '{{ python__python_archive_url }}'
 
@@ -61,7 +61,7 @@
 
 - name: 'Ensure Ansible local facts directory exists'
   ansible.builtin.file:
-    mode: 0755
+    mode: '0755'
     path: '/etc/ansible/facts.d'
     state: 'directory'
 
@@ -69,7 +69,7 @@
   ansible.builtin.template:
     dest: '/etc/ansible/facts.d/python.fact'
     group: 'root'
-    mode: 0644
+    mode: '0644'
     owner: 'root'
     src: 'python.fact.j2'
   register: __python_facts

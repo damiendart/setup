@@ -19,7 +19,7 @@
         checksum: '{{ rust__rustup_init_checksum }}'
         dest: '/tmp/rustup-init'
         group: '{{ rust__user_username }}'
-        mode: 0755
+        mode: '0755'
         owner: '{{ rust__user_username }}'
         url: '{{ rust__rustup_init_url }}'
 

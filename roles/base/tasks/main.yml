@@ -101,7 +101,7 @@
     group: 'root'
     # The msmtp configuration files has relaxed permissions as a few
     # places remain where non-root users require msmtp.
-    mode: 0644
+    mode: '0644'
     owner: 'root'
     src: '{{ item }}.j2'
   loop:

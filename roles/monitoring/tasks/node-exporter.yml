@@ -9,7 +9,7 @@
     checksum: '{{ monitoring__node_exporter_archive_checksum }}'
     dest: '{{ monitoring__download_cache_directory }}/node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64.tar.gz'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     url: 'https://github.com/prometheus/node_exporter/releases/download/v{{ monitoring__node_exporter_version }}/node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64.tar.gz'
 
@@ -23,7 +23,7 @@
       - '--transform'
       - 's/^node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64\///'
     group: 'root'
-    mode: 0755
+    mode: '0755'
     owner: 'root'
     remote_src: true
     src: '{{ monitoring__download_cache_directory }}/node_exporter-{{ monitoring__node_exporter_version }}.linux-amd64.tar.gz'
@@ -49,7 +49,7 @@
 - name: 'Ensure a Prometheus Node Exporter textfile collector directory exists'
   ansible.builtin.file:
     group: 'node_exporter'
-    mode: 0775
+    mode: '0775'
     owner: 'node_exporter'
     path: '{{ item }}'
     state: 'directory'
@@ -61,7 +61,7 @@
   ansible.builtin.template:
     dest: '/etc/systemd/system/node_exporter.service'
     group: 'root'
-    mode: 0644
+    mode: '0644'
     owner: 'root'
     src: 'node_exporter.service.j2'
   notify: 'Restart Prometheus Node Exporter'
