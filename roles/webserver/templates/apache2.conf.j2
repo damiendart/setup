@@ -68,6 +68,17 @@ Header always set X-XSS-Protection "1; mode=block"
   SSLSessionTickets off
   SSLStaplingCache "shmcb:${APACHE_RUN_DIR}/ssl_stapling(32768)"
   SSLUseStapling On
+
+  # The self-signed snake oil SSL/TLS certificate is created by the
+  # "ssl-cert" package when it is installed. For more information,
+  # please see <https://wiki.debian.org/Self-Signed_Certificate>.
+  #
+  # It is used as a fallback for instances such as responding to
+  # requests with invalid hostnames or when a virtual host hasn't been
+  # issued a valid trusted certificate.
+
+  SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+  SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
 </IfModule>
 
 <IfModule mod_brotli.c>

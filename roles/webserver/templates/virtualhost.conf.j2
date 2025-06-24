@@ -52,11 +52,6 @@
       SSLCertificateKeyFile /etc/lego/certificates/{{ item.key }}.key
     </IfFile>
 
-    <IfFile ! "/etc/lego/certificates/{{ item.key }}.crt">
-      SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
-      SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-    </IfFile>
-
     <If "%{HTTP_HOST} != '{{ item.key }}'">
       Redirect permanent "/" "https://{{ item.key }}/"
     </If>
