@@ -8,8 +8,8 @@
 development__binary_archives:
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:64b56dd484a2317d5f04c28ac0791b36807f034adb419209ad39fb6637255794'
-    url: 'https://github.com/junegunn/fzf/releases/download/v0.62.0/fzf-0.62.0-linux_amd64.tar.gz'
+    checksum: 'sha256:eeb492ae609e437a648bec0d0b09647d97c648bfd910b95987ffa64577a5a665'
+    url: 'https://github.com/junegunn/fzf/releases/download/v0.65.0/fzf-0.65.0-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
@@ -39,22 +39,22 @@ development__debian_packages:
     url: 'https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep_14.1.1-1_amd64.deb'
 
   # See <https://github.com/go-task/task/releases>.
-  - checksum: 'sha256:cdd55b9908d3ef0889bb2270132f7bdb90e50d85b645c57434385cb8ea80cc42'
-    url: 'https://github.com/go-task/task/releases/download/v3.44.0/task_linux_amd64.deb'
+  - checksum: 'sha256:9ba2f9f5f11f8429f82cf4ceaa90e6187e02e5a0c161ba0975ba621942ce20bc'
+    url: 'https://github.com/go-task/task/releases/download/v3.44.1/task_linux_amd64.deb'
 
     # See <https://github.com/StackExchange/dnscontrol/releases>.
-  - checksum: 'sha256:5b401b324821b6178a3de8d37f91be77c2c6e01151150e2c6716ab5ed87668be'
-    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.21.0/dnscontrol-4.21.0.amd64.deb'
+  - checksum: 'sha256:9b609494bf6c97383d19ba1c04d87fc0df8bd4536cdbb580080eadd690f95c0a'
+    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.22.0/dnscontrol-4.22.0.amd64.deb'
 
 # The following checksum is for the entr 5.7 source code archive
 # "5.7.tar.gz" from <https://github.com/eradman/entr/tags>.
 development__entr_source_archive_checksum: 'sha256:90c5d943820c70cef37eb41a382a6ea4f5dd7fd95efef13b2b5520d320f5d067'
 development__entr_version: '5.7'
 
-# The following checksum is for "PkgTTC-Iosevka-33.2.4.zip" from
+# The following checksum is for "PkgTTC-Iosevka-33.2.7.zip" from
 # <https://github.com/be5invis/Iosevka/releases>.
-development__iosevka_archive_checksum: 'sha256:2438a402b9821fcbfe6a1f203cd0453f30f9b11dc47282b5b85ebd460d068c8b'
-development__iosevka_version: '33.2.4'
+development__iosevka_archive_checksum: 'sha256:df022efe10206934a56d8b84b278e9e802a3af5f93aaccebc76630ce8f3cfc7c'
+development__iosevka_version: '33.2.7'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
