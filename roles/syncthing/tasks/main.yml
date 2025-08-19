@@ -10,7 +10,7 @@
 - name: 'Ensure the Syncthing repository is present in APT sources list'
   ansible.builtin.deb822_repository:
     components:
-      - 'stable'
+      - 'stable-v2'
     enabled: true
     name: 'Syncthing'
     signed_by: 'https://syncthing.net/release-key.gpg'
