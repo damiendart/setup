@@ -3,16 +3,35 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+networks:
+  forgejo:
+    external: false
+
 services:
-  cgit:
-    build:
-      context: './cgit'
-    container_name: 'cgit'
+  forgejo:
+    environment:
+      - 'FORGEJO__MAILER__FROM=${FORGEJO__MAILER__FROM:?err}'
+      - 'FORGEJO__MAILER__PASSWD=${FORGEJO__MAILER__PASSWD:?err}'
+      - 'FORGEJO__MAILER__SMTP_ADDR=${FORGEJO__MAILER__SMTP_ADDR:?err}'
+      - 'FORGEJO__MAILER__USER=${FORGEJO__MAILER__USER:?err}'
+      - 'FORGEJO__SECURITY__INTERNAL_TOKEN=${FORGEJO__SECURITY__INTERNAL_TOKEN:?err}'
+      - 'FORGEJO__SECURITY__SECRET_KEY=${FORGEJO__SECURITY__SECRET_KEY:?err}'
+      - 'USER_GID=${FORGEJO_USER_GID:?err}'
+      - 'USER_UID=${FORGEJO_USER_UID:?err}'
+    container_name: 'forgejo'
+    hostname: 'diskstation'
+    image: 'codeberg.org/forgejo/forgejo:12'
+    networks:
+      - 'forgejo'
     ports:
-      - '9091:9091'
+      - '3000:3000'
+      - '222:22'
     restart: 'unless-stopped'
     volumes:
-      - '${CGIT_REPOSITORIES_DIRECTORY:?err}:/var/repositories:ro'
+      - '${FORGEJO_DIRECTORY:?err}:/data'
+      - './forgejo/app.ini:/data/gitea/conf/app.ini'
+      - '/etc/localtime:/etc/localtime:ro'
+      - '/etc/TZ:/etc/timezone:ro'
 
   syncthing:
     image: 'syncthing/syncthing'
