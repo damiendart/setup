@@ -9,13 +9,13 @@
 # Python binary archive download. See also "python__archive_url" and
 # "python__version". Python binary archives and checksums are available
 # at <https://github.com/astral-sh/python-build-standalone/releases>.
-python__python_archive_checksum: 'sha256:9176d9a84d602b779bc59d3d1115affe3ce0350646c26f4f4921e24caab3eb9d'
+python__python_archive_checksum: 'sha256:89130fbe7022799246d59b43e1577d60589739ebd04472a306015bc4dfe0c9f1'
 
 # A string containing the URL to the binary archive.
-python__python_archive_url: 'https://github.com/astral-sh/python-build-standalone/releases/download/20250723/cpython-3.13.5+20250723-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
+python__python_archive_url: 'https://github.com/astral-sh/python-build-standalone/releases/download/20250902/cpython-3.13.7+20250902-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
 
 # A string containing the version of Python to install.
-python__python_version: '3.13.5'
+python__python_version: '3.13.7'
 
 
 # The following variables will have host-specific and/or sensitive
