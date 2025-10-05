@@ -6,6 +6,7 @@
 
 AddDefaultCharset utf-8
 Alias /.well-known/acme-challenge/ "/var/www/html/.well-known/acme-challenge/"
+ErrorDocument 400 "<!DOCTYPE html><title>400</title><pre>400</pre>"
 ErrorDocument 401 "<!DOCTYPE html><title>401</title><pre>401</pre>"
 ErrorDocument 403 "<!DOCTYPE html><title>403</title><pre>403</pre>"
 ErrorDocument 404 "<!DOCTYPE html><title>404</title><pre>404</pre>"
@@ -13,6 +14,7 @@ ErrorDocument 410 "<!DOCTYPE html><title>410</title><pre>410</pre>"
 FileETag None
 ServerTokens ProductOnly
 ServerSignature Off
+StrictHostCheck On
 Protocols h2 h2c http/1.1
 
 ServerName {{ webserver__server_name }}
