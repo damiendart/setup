@@ -74,6 +74,7 @@
           + webserver__vhosts.values()
             | selectattr('aliases', 'defined')
             | map(attribute='aliases')
+            | flatten
         )
           | list
           | select('regex', '\.(example|invalid|localhost|test)$')
