@@ -8,13 +8,13 @@
 development__binary_archives:
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:5eb8efc0e94aa559f84ea83eeba99bea7dce818e63f92b4b62e60663220f1c14'
-    url: 'https://github.com/junegunn/fzf/releases/download/v0.65.2/fzf-0.65.2-linux_amd64.tar.gz'
+    checksum: 'sha256:362d5f92187560a87338b427dbe573d1e1bf8b4fb4bab1f44aca6a8f7fe8070f'
+    url: 'https://github.com/junegunn/fzf/releases/download/v0.66.0/fzf-0.66.0-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
-    checksum: 'sha256:b9c39b150fd856c6a6ab1639acc01a181d85033f4e0dc6c9ef87bbb692a59c31'
-    url: 'https://releases.hashicorp.com/packer/1.14.1/packer_1.14.1_linux_amd64.zip'
+    checksum: 'sha256:cfefdea4ac580eba7b254ef34d25b756d4961741004e3e701a1476594d13e64a'
+    url: 'https://releases.hashicorp.com/packer/1.14.2/packer_1.14.2_linux_amd64.zip'
 
   # See <https://github.com/koalaman/shellcheck/releases>.
   - checksum: 'sha256:8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198'
@@ -31,36 +31,36 @@ development__binary_archives:
 
 development__debian_packages:
   # See <https://github.com/jgm/pandoc/releases>.
-  - checksum: 'sha256:2279fceaaf078f0a19f1b68321175d238840db49117a0c674e12d7de335fea40'
-    url: 'https://github.com/jgm/pandoc/releases/download/3.8/pandoc-3.8-1-amd64.deb'
+  - checksum: 'sha256:bf9cfea4e2b021b3fb5cddb3748d2f5ddca43a8a74f6d64eb3339f93a3939e25'
+    url: 'https://github.com/jgm/pandoc/releases/download/3.8.2/pandoc-3.8.2-1-amd64.deb'
 
   # See <https://github.com/BurntSushi/ripgrep/releases>.
-  - checksum: 'sha256:2f0c732ef166b4f7be7190d4012d60b3f8467bdd6f795c0598817bd2ac1706ae'
-    url: 'https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep_14.1.1-1_amd64.deb'
+  - checksum: 'sha256:ec08b128f8774c256f87b8f79def4f4930c769e21e980ec9a80e27f4f5f76759'
+    url: 'https://github.com/BurntSushi/ripgrep/releases/download/15.0.0/ripgrep_15.0.0-1_amd64.deb'
 
   # See <https://github.com/go-task/task/releases>.
-  - checksum: 'sha256:9ba2f9f5f11f8429f82cf4ceaa90e6187e02e5a0c161ba0975ba621942ce20bc'
-    url: 'https://github.com/go-task/task/releases/download/v3.44.1/task_linux_amd64.deb'
+  - checksum: 'sha256:b6725faf62ae793d147b70e203fca047c01920807376f9c54d2e9d4211314b81'
+    url: 'https://github.com/go-task/task/releases/download/v3.45.4/task_linux_amd64.deb'
 
     # See <https://github.com/StackExchange/dnscontrol/releases>.
-  - checksum: 'sha256:bc6f10e743eb04933b3ad62a856e1d6ae6d6e52d146b31fcca1ea5b6285d2745'
-    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.24.0/dnscontrol-4.24.0.amd64.deb'
+  - checksum: 'sha256:6c3c698f70b7cf07bbf35f674fb189ae00cc7004d8f813c626ee334d0400a4d4'
+    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.26.0/dnscontrol-4.26.0.amd64.deb'
 
 # The following checksum is for the entr 5.7 source code archive
 # "5.7.tar.gz" from <https://github.com/eradman/entr/tags>.
 development__entr_source_archive_checksum: 'sha256:90c5d943820c70cef37eb41a382a6ea4f5dd7fd95efef13b2b5520d320f5d067'
 development__entr_version: '5.7'
 
-# The following checksum is for "PkgTTC-Iosevka-33.2.9.zip" from
+# The following checksum is for "PkgTTC-Iosevka-33.3.1.zip" from
 # <https://github.com/be5invis/Iosevka/releases>.
-development__iosevka_archive_checksum: 'sha256:9ea4f9e4eb6dab0433a2cb9a063a9a2beb354fd1d73058193962b8cc1a22f300'
-development__iosevka_version: '33.2.9'
+development__iosevka_archive_checksum: 'sha256:566c4a3ac0865636189ee9f367b2d9e41f7e064e8f4e90d7fec9ae98d34f0e5d'
+development__iosevka_version: '33.3.1'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
-# following checksum is for the file "obsidian_1.9.12_amd64.deb".
-development__obsidian_package_checksum: 'sha256:5c2a5d7fcd566879e3db066ccc4df81b9c6ac3e72ec88a4ae13e0428a1cf289f'
-development__obsidian_version: '1.9.12'
+# following checksum is for the file "obsidian_1.9.14_amd64.deb".
+development__obsidian_package_checksum: 'sha256:d1ad758b1977a34ff7d0c906f11e0e88aa0a940fa4a22b83d357dab8ddd32d37'
+development__obsidian_version: '1.9.14'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
