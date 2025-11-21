@@ -25,6 +25,8 @@
       value: 'false'
     - key: '/org/gnome/mutter/center-new-windows'
       value: 'true'
+    - key: '/org/gnome/settings-daemon/plugins/media-keys/max-screencast-length'
+      value: 'uint32 1800'
     - key: '/org/gnome/shell/extensions/desktop-icons/show-home'
       value: 'false'
     - key: '/org/gnome/shell/extensions/desktop-icons/show-trash'
