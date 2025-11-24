@@ -73,7 +73,7 @@ tasks:
 
   lint:shell:
     cmds:
-      - 'shellcheck roles/*/*/*.sh*'
+      - 'shellcheck bootstrap.sh roles/*/*/*.sh*'
     desc: 'Lint shell scripts with ShellCheck'
 
   lint:yaml:

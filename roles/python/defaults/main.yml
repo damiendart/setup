@@ -5,6 +5,10 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+# When editing this file, ensure that the Python version installed by
+# this Ansible role matches the version installed by the "bootstrap.sh"
+# Shell script.
+
 # A string containing a checksum used to verify the integrity the
 # Python binary archive download. See also "python__archive_url" and
 # "python__version". Python binary archives and checksums are available
