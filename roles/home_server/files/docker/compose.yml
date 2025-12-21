@@ -20,7 +20,7 @@ services:
       - 'USER_UID=${FORGEJO_USER_UID:?err}'
     container_name: 'forgejo'
     hostname: 'diskstation'
-    image: 'codeberg.org/forgejo/forgejo:12'
+    image: 'codeberg.org/forgejo/forgejo:13'
     networks:
       - 'forgejo'
     ports:
