@@ -44,3 +44,6 @@
   loop: '{{ lego__certificates | dict2items }}'
   loop_control:
     label: '{{ item.key }}'
+
+- name: 'Include tasks to clean up old and unused certificates'
+  ansible.builtin.include_tasks: 'certificate-cleanup.yml'
