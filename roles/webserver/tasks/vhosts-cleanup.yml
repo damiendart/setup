@@ -1,5 +1,3 @@
-# Cleans up any virtual-host-related and website deployment detritus.
-#
 # There is some gnarly Jinja filter usage here, so as a precaution
 # changes will only be made when the "webserver__vhosts_cleanup"
 # variable is set to a truthy value; that way you can use the dry-run to
@@ -39,20 +37,14 @@
     use_regex: true
   register: __crontabs
 
-- name: "Ensure virtual-host-related detritus no longer exists{{ ' (DRY RUN)' if not (webserver__vhosts_cleanup | default(False)) }}"
+- name: "Ensure old and unused virtual host configuration files no longer exists{{ ' (DRY RUN)' if not (webserver__vhosts_cleanup | default(False)) }}"
   ansible.builtin.file:
     path: '{{ item }}'
     state: 'absent'
   when: webserver__vhosts_cleanup | default(False)
   loop: >
     {{
-      __vhost_directories.files
-        | map(attribute='path')
-        | map('regex_replace', '/var/www/(html)?')
-        | reject('equalto', '')
-        | difference(webserver__vhosts.keys())
-        | map('regex_replace', '^', '/var/www/')
-      + __vhost_conf_files.files
+      __vhost_conf_files.files
         | map(attribute='path')
         | map('replace', '/etc/apache2/sites-available/', '')
         | map('replace', '.conf', '')
@@ -72,17 +64,26 @@
     }}
   notify: 'Reload Apache'
 
-# Crontab files are created by the "deploy_website" Ansible role when
-# deploying a website. (You could argue that cleaning up old crontab
-# files should really be done in a seperate Ansible role, but eh.)
-- name: "Ensure crontab-related detritus no longer exists{{ ' (DRY RUN)' if not (webserver__vhosts_cleanup | default(False)) }}"
+# We force any notified handlers to run to ensure any old and unused
+# virtual hosts are no longer active before removing deployment files.
+- name: 'Force all currently notified handlers to run'
+  ansible.builtin.meta: 'flush_handlers'
+
+# Crontab files are created by the "deploy_website" Ansible role.
+- name: "Ensure old and unused virtual host deployment files no longer exists{{ ' (DRY RUN)' if not (webserver__vhosts_cleanup | default(False)) }}"
   ansible.builtin.file:
     path: '{{ item }}'
     state: 'absent'
   when: webserver__vhosts_cleanup | default(False)
   loop: >
     {{
-      __crontabs.files
+      __vhost_directories.files
+        | map(attribute='path')
+        | map('regex_replace', '/var/www/(html)?')
+        | reject('equalto', '')
+        | difference(webserver__vhosts.keys())
+        | map('regex_replace', '^', '/var/www/')
+      + __crontabs.files
         | map(attribute='path')
         | map('replace', '/etc/cron.d/website-', '')
         | difference(webserver__vhosts.keys() | map('replace', '.', '-'))
