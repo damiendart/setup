@@ -12,12 +12,12 @@
 lego__certificates: {}
 
 # A string containing a checksum used to verify the integrity of the
-# lego binary archive "lego_v4.27.0_linux_amd64.tar.gz". See
+# lego binary archive "lego_v4.31.0_linux_amd64.tar.gz". See
 # <https://github.com/go-acme/lego/releases> for archives and checksums.
-lego__lego_archive_checksum: 'sha256:898b58bbbca4282d706b4f204593cb94fc2ed13232777236c06dc20259bbcd02'
+lego__lego_archive_checksum: 'sha256:3bf525406fee5d31a588f9b278426db972904bf6572e67eba2616f41c2c1b79a'
 
 # A string containing the version of lego to install.
-lego__lego_version: '4.27.0'
+lego__lego_version: '4.31.0'
 
 # An string, or False, containing a post-renewal hook command that is
 # executed when a certificate is renewed. If the value is False, the

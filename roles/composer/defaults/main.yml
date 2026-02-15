@@ -11,10 +11,10 @@
 # A string containing a checksum used to verify the integrity of the
 # Composer PHP archive download "composer.phar". See also
 # "composer__composer_version".
-composer__composer_checksum: 'sha256:f446ea719708bb85fcbf4ef18def5d0515f1f9b4d703f6d820c9c1656e10a2f2'
+composer__composer_checksum: 'sha256:c86ce603fe836bf0861a38c93ac566c8f1e69ac44b2445d9b7a6a17ea2e9972a'
 
 # A string containing the version of Composer to install.
-composer__composer_version: '2.8.12'
+composer__composer_version: '2.9.5'
 
 
 # The following variables will have host-specific and/or sensitive
