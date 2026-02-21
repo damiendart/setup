@@ -21,15 +21,17 @@
         SetHandler server-status
       </If>
       <Else>
-        Redirect permanent "/" "https://{{ item.key }}/"
+        Redirect permanent "https://%{HTTP_HOST}%{REQUEST_URI}"
       </Else>
     </Location>
 
     <LocationMatch "/(?!server-status)">
-      Redirect permanent "/" "https://{{ item.key }}/"
+      Redirect permanent "https://%{HTTP_HOST}%{REQUEST_URI}"
     </LocationMatch>
   {% else %}
-    Redirect permanent "/" "https://{{ item.key }}/"
+    <Location "/">
+      Redirect permanent "https://%{HTTP_HOST}%{REQUEST_URI}"
+    </Location>
   {% endif %}
 </VirtualHost>
 
@@ -53,11 +55,11 @@
     </IfFile>
 
     <If "%{HTTP_HOST} != '{{ item.key }}'">
-      Redirect permanent "/" "https://{{ item.key }}/"
+      Redirect permanent "https://{{ item.key }}%{REQUEST_URI}"
     </If>
 
     <IfModule mod_headers.c>
-      Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
+      Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     </IfModule>
 
     {% if
