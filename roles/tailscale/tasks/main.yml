@@ -4,20 +4,20 @@
 
 ---
 # The following repository details are from
-# <https://pkgs.tailscale.com/stable/ubuntu/>.
+# <https://pkgs.tailscale.com/stable/>.
 - name: 'Ensure the Tailscale repository is present in APT sources list'
   ansible.builtin.deb822_repository:
     components:
       - 'main'
     enabled: true
     name: 'Tailscale'
-    signed_by: 'https://pkgs.tailscale.com/stable/ubuntu/{{ ansible_distribution_release }}.gpg'
+    signed_by: 'https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}/{{ ansible_distribution_release | lower }}.gpg'
     suites:
-      - '{{ ansible_distribution_release }}'
+      - '{{ ansible_distribution_release | lower }}'
     state: 'present'
     types:
       - 'deb'
-    uris: 'https://pkgs.tailscale.com/stable/ubuntu'
+    uris: 'https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}'
   register: __tailscale_repository
 
 - name: 'Ensure Tailscale is installed'
