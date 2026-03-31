@@ -32,10 +32,9 @@ variable "netplan_configuration" {
   }
 }
 
-variable "ssh_authorised_keys_file" {
+variable "ssh_public_key_file" {
   type = string
-  description = "The filepath to an authorised SSH keys file to copy over to the virtual machine."
-  default = "${env("HOME")}/.ssh/authorized_keys"
+  default = "${env("HOME")}/.ssh/id_ed25519.pub"
 }
 
 source "virtualbox-iso" "ubuntu-server-virtualbox" {
@@ -76,7 +75,7 @@ source "virtualbox-iso" "ubuntu-server-virtualbox" {
             }
             ssh = {
               allow-pw = true
-              authorized-keys: fileexists(var.ssh_authorised_keys_file) ? split("\n", file(var.ssh_authorised_keys_file)) : [""]
+              authorized-keys: fileexists(var.ssh_public_key_file) ? split("\n", file(var.ssh_public_key_file)) : [""]
               install-server = true
             }
             version: 1

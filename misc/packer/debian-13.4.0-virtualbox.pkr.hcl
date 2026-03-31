@@ -11,6 +11,11 @@ packer {
   }
 }
 
+variable "ssh_public_key_file" {
+  type = string
+  default = "${env("HOME")}/.ssh/id_ed25519.pub"
+}
+
 source "virtualbox-iso" "debian-virtualbox" {
   boot_command = [
     "<wait><wait><wait><esc><wait><wait><wait>",
@@ -97,4 +102,34 @@ source "virtualbox-iso" "debian-virtualbox" {
 
 build {
   sources = ["sources.virtualbox-iso.debian-virtualbox"]
+
+  provisioner "file" {
+    destination = "/tmp/authorized_keys"
+    source = var.ssh_public_key_file
+  }
+
+  provisioner "file" {
+    destination = "/tmp/virtualbox_network"
+    content = join(
+      "\n",
+      [
+        "allow-hotplug enp0s8",
+        "iface enp0s8 inet dhcp",
+        "iface enp0s8 inet6 dhcp",
+      ]
+    )
+  }
+
+  provisioner "shell" {
+    inline = [
+      "echo 'debian' | sudo -S -E mv /tmp/virtualbox_network /etc/network/interfaces.d/",
+      "echo 'debian' | sudo -S -E chmod 644 /etc/network/interfaces.d/virtualbox_network",
+
+      "echo 'debian' | sudo -S -E mkdir /home/debian/.ssh",
+      "echo 'debian' | sudo -S -E chmod 700 /home/debian/.ssh/",
+      "echo 'debian' | sudo -S -E mv /tmp/authorized_keys /home/debian/.ssh/",
+      "echo 'debian' | sudo -S -E chmod 600 /home/debian/.ssh/authorized_keys",
+      "echo 'debian' | sudo -S -E chown -R debian:debian /home/debian/.ssh/"
+    ]
+  }
 }
