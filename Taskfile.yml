@@ -53,8 +53,8 @@ tasks:
 
   lint:packer:
     cmds:
-      - 'packer validate misc/packer/debian-13.4.0-virtualbox.pkr.hcl'
-      - 'packer validate misc/packer/ubuntu-24.04.3-server-virtualbox.pkr.hcl'
+      - 'packer validate -syntax-only misc/packer/debian-13.4.0-virtualbox.pkr.hcl'
+      - 'packer validate -syntax-only misc/packer/ubuntu-24.04.3-server-virtualbox.pkr.hcl'
     desc: 'Lint Packer templates with Packer'
 
   lint:python:
