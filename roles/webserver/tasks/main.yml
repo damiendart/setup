@@ -8,7 +8,26 @@
 - name: 'Include tasks to clean up old and unused virtual-host-related stuff'
   ansible.builtin.include_tasks: 'vhosts-cleanup.yml'
 
-- name: 'Ensure "deb.sury.org" repositories are present in APT source lists'
+- name: 'Ensure "deb.sury.org" Debian repositories are present in APT source lists'
+  when: ansible_distribution == 'Debian'
+  ansible.builtin.deb822_repository:
+    components:
+      - 'main'
+    enabled: true
+    name: 'deb-sury-org-{{ item }}'
+    signed_by: 'https://packages.sury.org/{{ item }}/apt.gpg'
+    suites:
+      - '{{ ansible_distribution_release | lower }}'
+    state: 'present'
+    types:
+      - 'deb'
+    uris: 'https://packages.sury.org/{{ item }}/'
+  loop:
+    - 'apache2'
+    - 'php'
+
+- name: 'Ensure "deb.sury.org" Ubuntu repositories are present in APT source lists'
+  when: ansible_distribution == 'Ubuntu'
   ansible.builtin.apt_repository:
     repo: 'ppa:ondrej/{{ item }}'
     state: 'present'
