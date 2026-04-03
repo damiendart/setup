@@ -3,7 +3,22 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure the fish shell repository is present in APT sources list'
+- name: 'Ensure the fish shell Debian repository is present in APT sources list'
+  when: ansible_distribution == 'Debian'
+  ansible.builtin.deb822_repository:
+    enabled: true
+    name: 'fish shell'
+    signed_by: 'https://download.opensuse.org/repositories/shells:fish:release:4/Debian_{{ ansible_distribution_major_version }}/Release.key'
+    suites:
+      - '/'
+    state: 'present'
+    types:
+      - 'deb'
+    uris: 'http://download.opensuse.org/repositories/shells:/fish:/release:/4/Debian_{{ ansible_distribution_major_version }}/'
+  register: __fish_shell_repository
+
+- name: 'Ensure the fish shell Ubuntu repository is present in APT sources list'
+  when: ansible_distribution == 'Ubuntu'
   ansible.builtin.deb822_repository:
     components:
       - 'main'
