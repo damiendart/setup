@@ -17,14 +17,22 @@
         or ansible_local.python.version != ansible_local.pipx.python_version
       }}
 
+# The "ansible.builtin.pip" module is not used for this task as it
+# requires additional Python packages to be installed on the host that
+# won't be used anywhere else. For more information, see
+# <https://github.com/ansible/ansible/issues/82444>.
 - name: "Ensure \"pipx\" is installed using \"pip{{ ansible_local.python.version.split('.')[0:2] | join('.') }}\""
-  ansible.builtin.pip:
-    executable: "{{ ansible_local.python.bin_dir }}/pip{{ ansible_local.python.version.split('.')[0:2] | join('.') }}"
-    extra_args: '--user'
-    name: 'pipx'
-    state: "{{ __has_updated_python | ternary('forcereinstall', 'present') }}"
+  ansible.builtin.command:
+    cmd: >
+      {{ ansible_local.python.bin_dir }}/pip{{ ansible_local.python.version.split('.')[0:2] | join('.') }}
+      install
+      --user
+      {% if __has_updated_python %}--force-reinstall{% endif %}
+      pipx
   become: true
   become_user: '{{ pipx__user }}'
+  register: __pip_install
+  changed_when: __pip_install.stdout is search('Successfully installed')
 
 - name: 'Ensure existing user-wide applications installed with "pipx" are uninstalled'
   ansible.builtin.command: '/home/{{ pipx__user }}/.local/bin/pipx uninstall-all'
