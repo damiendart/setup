@@ -3,13 +3,12 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-webserver__php_default_packages:
+webserver__php_packages_default:
   - 'cli'
   - 'common'
   - 'curl'
   - 'fpm'
   - 'gd'
-  - 'json'
   - 'mbstring'
   - 'opcache'
   - 'readline'
@@ -17,7 +16,7 @@ webserver__php_default_packages:
   - 'zip'
 webserver__php_packages_extra: []
 webserver__php_versions:
-  - '8.2'
+  - '8.5'
 webserver__php_versions_default: '{{ (webserver__php_versions | community.general.version_sort)[-1] }}'
 
 # The following default PHP-FPM dynamic settings are tailored towards

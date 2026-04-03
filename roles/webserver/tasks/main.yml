@@ -23,16 +23,16 @@
     #     tool that, amongst other things, will allow getting PHP-FPM
     #     status from the command line. For more information, see
     #     <https://maxchadwick.xyz/blog/getting-the-php-fpm-status-from-the-command-line>.
-    #   - As of PHP 8.0.0, the JSON extension is a core PHP extension
-    #     and doesn't require installing a separate package.
+    #   - As of PHP 8.5, the Opcache extension is a core PHP extension
+    #     and does not require installing a separate package.
     name: >
       {{
         ['apache2', 'libfcgi0ldbl']
         + webserver__php_versions
-          | product(webserver__php_default_packages + webserver__php_packages_extra)
+          | product(webserver__php_packages_default + webserver__php_packages_extra)
           | map('join', '-')
           | map('regex_replace', '^', 'php')
-          | reject('match', 'php8..-json')
+          | reject('match', 'php8.5-opcache')
       }}
     state: 'present'
 
