@@ -61,7 +61,7 @@
     state: 'present'
     update_cache: '{{ __docker_repository is changed }}'
 
-- name: 'Ensure administrator can run docker commands without sudo'
+- name: 'Ensure the administrator can run Docker commands without sudo'
   ansible.builtin.user:
     name: '{{ docker__administrator_user_username }}'
     groups: 'docker'
