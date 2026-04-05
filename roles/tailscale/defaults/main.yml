@@ -1,0 +1,10 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+
+# A string containing a Tailscale auth key, used to authenticate a host
+# without an interactive login. For more information, see
+# <https://tailscale.com/docs/features/access-control/auth-keys>.
+tailscale__auth_key: '{{ undef() }}'
