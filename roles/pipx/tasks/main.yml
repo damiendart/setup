@@ -31,6 +31,8 @@
       pipx
   become: true
   become_user: '{{ pipx__user }}'
+  environment:
+    PIP_REQUIRE_VIRTUALENV: 'false'
   register: __pip_install
   changed_when: __pip_install.stdout is search('Successfully installed')
 
