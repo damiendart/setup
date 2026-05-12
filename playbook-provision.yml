@@ -21,6 +21,7 @@
     - 'syncthing'
     - 'tailscale'
     - 'tarsnap'
+    - 'ubuntu_pro'
     - 'virtualbox'
     - 'vuescan'
     - 'webserver'
@@ -64,9 +65,9 @@
     - 'base'
     - 'imagemagick'
     - 'lego'
-    - 'livepatch'
     - 'monitoring'
     - 'tarsnap'
+    - 'ubuntu_pro'
     - 'webserver'
   vars:
     lego__certificate_cleanup: '{{ cli__website_cleanup | default(False) }}'

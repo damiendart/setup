@@ -1,4 +1,4 @@
-# "livepatch" Ansible role variables.
+# "ubuntu_pro" Ansible role variables.
 #
 # This file was written by Damien Dart, <damiendart@pobox.com>. This is
 # free and unencumbered software released into the public domain. For
@@ -9,7 +9,7 @@
 # values and must be defined elsewhere (in an inventory, playbook, at
 # runtime, etc).
 
-# A string containing the token for associating an Ubuntu Advantage
-# support contract to the host. For more information, please see
-# <https://ubuntu.com/advantage>.
-livepatch__ubuntu_advantage_token: '{{ undef() }}'
+# A string containing the token for associating an Ubuntu Pro
+# subscription to the host. For more information, see
+# <https://ubuntu.com/pro>.
+ubuntu_pro__subscription_token: '{{ undef() }}'
