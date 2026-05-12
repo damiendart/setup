@@ -85,5 +85,5 @@ tasks:
 
   start:
     cmds:
-      - 'python3.13 -m venv .venv'
+      - '/usr/local/python/bin/python3.13 -m venv .venv'
     desc: 'Create a Python virtual environment for development, running Ansible, and testing'

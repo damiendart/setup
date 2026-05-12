@@ -32,9 +32,9 @@ if [ -d /usr/local/python ]; then
   esac
 fi
 
-PYTHON_ARCHIVE_CHECKSUM='c2f108738c36e89f3191ea3197e6b66d6d3d4e9b1d870123844c4981c07ca4e4'
-PYTHON_ARCHIVE_URL='https://github.com/astral-sh/python-build-standalone/releases/download/20251014/cpython-3.13.9+20251014-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
-PYTHON_VERSION='3.13.9'
+PYTHON_ARCHIVE_CHECKSUM='cb1aab17b3ed7c1d9cccac8d7988589d4848a0c23c8d94f282639f97e4868c33'
+PYTHON_ARCHIVE_URL='https://github.com/astral-sh/python-build-standalone/releases/download/20260325/cpython-3.13.12+20260325-x86_64_v3-unknown-linux-gnu-install_only.tar.gz'
+PYTHON_VERSION='3.13.12'
 
 TEMP="$(mktemp --suffix='.tar.gz')"
 
