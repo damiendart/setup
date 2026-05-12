@@ -112,3 +112,11 @@
     env: true
     job: '{{ base__administrator_account_email }}'
     name: 'MAILTO'
+
+# This is a kludge so that Apache can use "git-http-backend" and friends
+# for serving Git repositories not owned by the web server user.
+- name: 'Ensure Git ignores any "dubious ownership" errors'
+  community.general.git_config:
+    name: 'safe.directory'
+    value: '*'
+  when: base__apply_git_safe_directory_kludge | default(false)

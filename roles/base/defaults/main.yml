@@ -13,6 +13,12 @@ base__administrator_account_ssh_key: false
 # A string that specifies the type of SSH key to generate.
 base__administrator_account_ssh_key_type: 'ed25519'
 
+# A boolean value that specifies whether to opt-out of the security
+# check that limits Git from interacting with repositories owned by
+# someone other than the current user. For more information, please see
+# <https://git-scm.com/docs/git-config#Documentation/git-config.txt-safedirectory>.
+base__apply_git_safe_directory_kludge: false
+
 
 # The following variables will have host-specific and/or sensitive
 # values and must be defined elsewhere (in an inventory, playbook, at
