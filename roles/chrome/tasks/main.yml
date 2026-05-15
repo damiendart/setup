@@ -3,6 +3,19 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+# For more information, see <https://www.google.com/intl/en_uk/chrome/>
+# and the "/opt/google/chrome/cron/google-chrome" Shell script once
+# Google Chrome is installed.
+- name: 'Ensure Google Chrome does not try to fiddle around with the APT sources list'
+  ansible.builtin.content:
+    path: '/etc/default/google-chrome'
+    content: |
+      repo_add_once="false"
+      repo_reenable_on_distupgrade="false"
+    group: 'root'
+    mode: '0644'
+    owner: 'root'
+
 - name: 'Ensure the Google Chrome repository is present in APT sources list'
   ansible.builtin.deb822_repository:
     components:
