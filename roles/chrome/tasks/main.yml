@@ -7,8 +7,8 @@
 # and the "/opt/google/chrome/cron/google-chrome" Shell script once
 # Google Chrome is installed.
 - name: 'Ensure Google Chrome does not try to fiddle around with the APT sources list'
-  ansible.builtin.content:
-    path: '/etc/default/google-chrome'
+  ansible.builtin.copy:
+    dest: '/etc/default/google-chrome'
     content: |
       repo_add_once="false"
       repo_reenable_on_distupgrade="false"
