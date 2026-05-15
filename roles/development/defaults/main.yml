@@ -46,6 +46,9 @@ development__debian_packages:
   - checksum: 'sha256:f4883c766dfd10c1f5bae5c0dfa77ef497174503502a1fc9599ecd4ac53c5cf1'
     url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.36.1/dnscontrol-4.36.1.amd64.deb'
 
+development__dotfiles_update: true
+development__dotfiles_repository_url: 'https://github.com/damiendart/toolbox.git'
+
 # The following checksum is for the entr 5.8 source code archive
 # "5.8.tar.gz" from <https://github.com/eradman/entr/tags>.
 development__entr_source_archive_checksum: 'sha256:dc9a2bdc556b2be900c1d8cdf432de26492de5af3ffade000d4bfd97f3122bfb'
@@ -64,9 +67,6 @@ development__obsidian_version: '1.12.7'
 
 development__projects_folder: 'Shed'
 development__run_gui_tasks: false
-development__update_dotfiles: false
-development__use_dotfiles_https_url: false
-
 
 # The following variables will have host-specific and/or sensitive
 # values and must be defined elsewhere (in an inventory, playbook, at

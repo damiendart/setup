@@ -26,8 +26,8 @@
     - name: 'Ensure the "toolbox" Git repository exists'
       ansible.builtin.git:
         dest: '/home/{{ development__user_username }}/{{ development__projects_folder }}/toolbox'
-        repo: "{{ development__use_dotfiles_https_url | ternary('https://github.com/damiendart/toolbox.git', 'git@github.com:damiendart/toolbox.git') }}"
-        update: '{{ development__update_dotfiles }}'
+        repo: '{{ development__dotfiles_repository_url }}'
+        update: '{{ development__dotfiles_update }}'
         version: 'master'
 
     - name: 'Ensure the "toolbox" install script runs successfully'
