@@ -25,7 +25,7 @@
   no_log: true
 
 - name: 'Prompt user to check SSH-public-key-related bits-and-pieces'
-  when: __user.ssh_public_key is defined
+  when: __user is changed and __user.ssh_public_key is defined
   block:
     - name: 'Show SSH public key for non-root administrator user'
       ansible.builtin.debug:
