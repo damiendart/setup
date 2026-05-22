@@ -8,13 +8,13 @@
 development__binary_archives:
   # See <https://github.com/junegunn/fzf/releases>.
   - binaries: 'fzf'
-    checksum: 'sha256:8fd0e0b93bdf64ba90081ffb6658d77ea5a024c122b36852b1de30f9d2733754'
-    url: 'https://github.com/junegunn/fzf/releases/download/v0.70.0/fzf-0.70.0-linux_amd64.tar.gz'
+    checksum: 'sha256:0e58e4bd0b3c5d68c56b54c460a6863d0de79633ed18d388575a960ab447b006'
+    url: 'https://github.com/junegunn/fzf/releases/download/v0.72.0/fzf-0.72.0-linux_amd64.tar.gz'
 
   # See <https://developer.hashicorp.com/packer/downloads>.
   - binaries: 'packer'
-    checksum: 'sha256:648d704bec73805a5508ed612185a9e5858ca7d57b730b88b1a54c3af3a91f5f'
-    url: 'https://releases.hashicorp.com/packer/1.15.1/packer_1.15.1_linux_amd64.zip'
+    checksum: 'sha256:9ed712c9a8f223c7985d7d21c6b65744bf1c66b8aca333232b96f5ae3fd9c90d'
+    url: 'https://releases.hashicorp.com/packer/1.15.3/packer_1.15.3_linux_amd64.zip'
 
   # See <https://github.com/koalaman/shellcheck/releases>.
   - checksum: 'sha256:8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198'
@@ -39,12 +39,12 @@ development__debian_packages:
     url: 'https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep_15.1.0-1_amd64.deb'
 
   # See <https://github.com/go-task/task/releases>.
-  - checksum: 'sha256:1a9a3d52d7b8a482d950f7ee26beebd1217c8f0924db306855dcd91e286f46e8'
-    url: 'https://github.com/go-task/task/releases/download/v3.49.1/task_3.49.1_linux_amd64.deb'
+  - checksum: 'sha256:e6c9ee89eb9679c6c430c085113cf7781b8a768714c3c776c068b5c9a74531e5'
+    url: 'https://github.com/go-task/task/releases/download/v3.51.1/task_3.51.1_linux_amd64.deb'
 
     # See <https://github.com/StackExchange/dnscontrol/releases>.
-  - checksum: 'sha256:f4883c766dfd10c1f5bae5c0dfa77ef497174503502a1fc9599ecd4ac53c5cf1'
-    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.36.1/dnscontrol-4.36.1.amd64.deb'
+  - checksum: 'sha256:79313138b13bedfbb2f51d5f946d52b99511594dd8321fafcee672a630b97f82'
+    url: 'https://github.com/StackExchange/dnscontrol/releases/download/v4.39.0/dnscontrol-4.39.0.amd64.deb'
 
 development__dotfiles_update: true
 development__dotfiles_repository_url: 'https://github.com/damiendart/toolbox.git'
@@ -54,10 +54,10 @@ development__dotfiles_repository_url: 'https://github.com/damiendart/toolbox.git
 development__entr_source_archive_checksum: 'sha256:dc9a2bdc556b2be900c1d8cdf432de26492de5af3ffade000d4bfd97f3122bfb'
 development__entr_version: '5.8'
 
-# The following checksum is for "PkgTTC-Iosevka-34.3.0.zip" from
+# The following checksum is for "PkgTTC-Iosevka-34.5.0.zip" from
 # <https://github.com/be5invis/Iosevka/releases>.
-development__iosevka_archive_checksum: 'sha256:bf5a4f83c4a01511d03b07f091ad4896dc27dc359d978e13ab2976488fa423c2'
-development__iosevka_version: '34.3.0'
+development__iosevka_archive_checksum: 'sha256:dcf71e613712e2619dc4120f6867b34c1ebe3390506437ca868d64eeb2dc6467'
+development__iosevka_version: '34.5.0'
 
 # Obsidian releases are available at <https://obsidian.md/download> and
 # <https://github.com/obsidianmd/obsidian-releases/releases/>. The
