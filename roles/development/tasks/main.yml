@@ -90,8 +90,6 @@
     golang_package__packages:
       - 'github.com/damiendart/nt/cmd/nt@latest'
       - 'github.com/damiendart/pathshorten/cmd/pathshorten@latest'
-      - 'golang.org/x/lint/golint@latest'
-      - 'honnef.co/go/tools/cmd/staticcheck@latest'
 
 - name: 'Ensure base development environment Python-based tools are installed'
   ansible.builtin.include_role:
@@ -100,9 +98,6 @@
     pipx__pipx_packages:
       - 'edir'
       - 'fonttools[woff]'
-      - 'llm'
-      - 'pygments'
-      - 'sqlite-utils'
 
 - name: 'Include dotfiles installation tasks'
   ansible.builtin.include_tasks: 'dotfiles.yml'
