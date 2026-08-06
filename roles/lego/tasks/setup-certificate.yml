@@ -18,13 +18,13 @@
   ansible.builtin.command:
     cmd: >
       lego
+      run
       --accept-tos
       --domains={{ ' --domains='.join([item.key] + (item.value.aliases | default([]) | sort)) }}
       --email="{{ lego__administrator_email }}"
       --http
       --http.webroot="/var/www/html"
       --path="/etc/lego"
-      run
       {% if item.value.must_staple | default(false) %}--must-staple{% endif %}
     creates: >-
       {{
@@ -44,15 +44,15 @@
     hour: '0'
     job: >-
       /usr/local/bin/lego
+      run
       --accept-tos
       --domains={{ ' --domains='.join([item.key] + (item.value.aliases | default([]) | sort)) }}
       --email="{{ lego__administrator_email }}"
       --http
       --http.webroot="/var/www/html"
       --path="/etc/lego"
-      renew
       {% if item.value.must_staple | default(false) %}--must-staple{% endif %}
-      {% if lego__renewal_hook %}--renew-hook="{{ lego__renewal_hook }}"{% endif %}
+      {% if lego__renewal_hook %}--deploy-hook="{{ lego__renewal_hook }}"{% endif %}
       >> /var/log/lego-renew-{{ item.key | replace(".", "-") }}.log
       2>&1
     minute: '{{ 60 | random(seed=inventory_hostname) }}'

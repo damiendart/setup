@@ -39,6 +39,13 @@
     owner: 'root'
     state: 'directory'
 
+# Updating lego from version 4 to version 5 requires a configuration
+# migration with the interactive "lego migrate" command; see
+# <https://go-acme.github.io/lego/migration/cli/index.html>.
+- name: 'Pause playbook execution for manual lego configuration migration'
+  ansible.builtin.pause:
+  when: lego__needs_migrating
+
 - name: "Ensure valid certifcates for sites exist"
   ansible.builtin.include_tasks: 'setup-certificate.yml'
   loop: '{{ lego__certificates | dict2items }}'
