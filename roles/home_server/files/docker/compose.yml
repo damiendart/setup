@@ -48,3 +48,13 @@ services:
       - '22000:22000/tcp'
       - '22000:22000/udp'
     restart: 'unless-stopped'
+
+  # See <https://github.com/damiendart/timetracker>.
+  timetracker:
+    image: 'timetracker'
+    container_name: 'timetracker'
+    hostname: 'diskstation'
+    ports:
+      - '3001:3000'
+    pull_policy: 'never'
+    restart: 'unless-stopped'
