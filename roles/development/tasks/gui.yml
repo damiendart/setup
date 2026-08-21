@@ -13,7 +13,7 @@
       - 'python3-psutil'
     state: 'present'
 
-- name: 'Ensure custom Gnome settings have been applied'
+- name: 'Ensure custom Gnome settings are applied'
   community.general.dconf:
     state: 'present'
     key: '{{ item.key }}'
@@ -21,16 +21,10 @@
   become: true
   become_user: '{{ development__user_username }}'
   loop:
-    - key: '/org/gnome/desktop/interface/enable-animations'
-      value: 'false'
     - key: '/org/gnome/mutter/center-new-windows'
       value: 'true'
     - key: '/org/gnome/settings-daemon/plugins/media-keys/max-screencast-length'
       value: 'uint32 1800'
-    - key: '/org/gnome/shell/extensions/desktop-icons/show-home'
-      value: 'false'
-    - key: '/org/gnome/shell/extensions/desktop-icons/show-trash'
-      value: 'false'
 
 # I use "xsel" for general clipboard wrangling (mainly out of habit),
 # but reach for "xclip" when dealing with slightly more elaborate data
