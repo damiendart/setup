@@ -46,9 +46,7 @@ tasks:
 
   lint:ansible:
     cmds:
-      - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-deploy-website.yml'
-      - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-package-maintainance.yml'
-      - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-provision.yml'
+      - cmd: '.venv/bin/ansible-lint -p --nocolor playbook-deploy-website.yml playbook-package-maintainance.yml playbook-provision.yml'
     desc: 'Lint Ansible-related files with Ansible Lint'
 
   lint:packer:
