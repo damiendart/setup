@@ -29,6 +29,10 @@ webserver__php_fpm_max_children: 12
 webserver__php_fpm_start_servers: 6
 webserver__php_fpm_min_spare_servers: 6
 webserver__php_fpm_max_spare_servers: 10
+#
+# A boolean value that specifies whether to run tasks that clean up
+# detritus from old virtual hosts.
+webserver__run_clean_up_tasks: false
 
 webserver__static_caching: true
 webserver__xdebug_versions: []

@@ -18,14 +18,11 @@
     use_regex: true
   register: __crontabs
 
-# Changes will only be made when the "lego__certificate_cleanup"
-# variable is set to a truthy value; that way you can perform a dry-run
-# to review what will get deleted.
-- name: "Ensure old and unused certificates and renewal crontab files no longer exist{{ ' (DRY RUN)' if not (lego__certificate_cleanup | default(False)) }}"
+- name: "Ensure old certificates and certificate-renewal crontab files no longer exist"
   ansible.builtin.file:
     path: '{{ item }}'
     state: 'absent'
-  when: lego__certificate_cleanup | default(False)
+  when: lego__run_clean_up_tasks
   loop: >
     {{
       __lego_certificates.files

@@ -19,14 +19,18 @@ lego__lego_archive_checksum: 'sha256:b3c71b122ee1947eacfe0b809b955647f6377239fe4
 # A string containing the version of lego to install.
 lego__lego_version: '5.3.1'
 
+# A boolean value that specifies if playbook execution needs pausing to
+# allow for manually running the lego configuration migration process.
+lego__needs_migrating: true
+
 # An string, or False, containing a post-renewal hook command that is
 # executed when a certificate is renewed. If the value is False, the
 # hook will be omitted from the certificate renewal cron job.
 lego__renewal_hook: 'service apache2 graceful'
 
-# A boolean value that specifies if playbook execution needs pausing to
-# allow for manually running the lego configuration migration process.
-lego__needs_migrating: true
+# A boolean value that specifies whether to run tasks that clean up
+# old certifcates and certificate-renewal crontab files.
+lego__run_clean_up_tasks: false
 
 
 # The following variables will have host-specific and/or sensitive

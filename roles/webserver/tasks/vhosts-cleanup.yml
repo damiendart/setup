@@ -33,15 +33,11 @@
     use_regex: true
   register: __crontabs
 
-# There is some gnarly Jinja filter usage here, so as a precaution
-# changes will only be made when the "webserver__vhosts_cleanup"
-# variable is set to a truthy value; that way you can use the dry-run to
-# review what gets deleted.
-- name: "Ensure old and unused virtual host configuration files no longer exists{{ ' (DRY RUN)' if not (webserver__vhosts_cleanup | default(False)) }}"
+- name: "Ensure old and unused virtual host configuration files no longer exists"
   ansible.builtin.file:
     path: '{{ item }}'
     state: 'absent'
-  when: webserver__vhosts_cleanup | default(False)
+  when: webserver__run_clean_up_tasks
   loop: >
     {{
       __vhost_conf_files.files
@@ -70,11 +66,11 @@
   ansible.builtin.meta: 'flush_handlers'
 
 # Crontab files are created by the "deploy_website" Ansible role.
-- name: "Ensure old and unused virtual host deployment files no longer exists{{ ' (DRY RUN)' if not (webserver__vhosts_cleanup | default(False)) }}"
+- name: "Ensure old and unused virtual host deployment files no longer exists"
   ansible.builtin.file:
     path: '{{ item }}'
     state: 'absent'
-  when: webserver__vhosts_cleanup | default(False)
+  when: webserver__run_clean_up_tasks
   loop: >
     {{
       __vhost_directories.files

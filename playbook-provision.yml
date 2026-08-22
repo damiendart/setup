@@ -25,8 +25,6 @@
     - 'virtualbox'
     - 'vuescan'
     - 'webserver'
-  vars:
-    webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
 
 # Work-related machines are provisioned by other means, so only run what
 # is necessary for things like dotfiles, miscellaneous utilities, etc.
@@ -54,9 +52,6 @@
     - 'monitoring'
     - 'tarsnap'
     - 'webserver'
-  vars:
-    lego__certificate_cleanup: '{{ cli__website_cleanup | default(False) }}'
-    webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
 
 - name: 'Provision servers for hosting websites'
   hosts: 'production'
@@ -69,6 +64,3 @@
     - 'tarsnap'
     - 'ubuntu_pro'
     - 'webserver'
-  vars:
-    lego__certificate_cleanup: '{{ cli__website_cleanup | default(False) }}'
-    webserver__vhosts_cleanup: '{{ cli__website_cleanup | default(False) }}'
