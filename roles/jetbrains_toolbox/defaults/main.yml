@@ -1,0 +1,21 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+# A string containing the checksum used to verify the integrity the
+# JetBrains Toolbox App archive "jetbrains-toolbox-3.7.2.87231.tar.gz".
+# Checksums are available by appending ".sha256" to the download URL.
+jetbrains_toolbox__toolbox_archive_checksum: 'sha256:f5a01f0b23843120c5137ae98b701c424761f813d8cfcd7965dad5c3c84bd396'
+
+# A string containing the build number of JetBrains Toolbox to install.
+jetbrains_toolbox__toolbox_version: '3.7.2.87231'
+
+
+# The following variables will have host-specific and/or sensitive
+# values and must be defined elsewhere (in an inventory, playbook, at
+# runtime, etc).
+
+# A string containing the directory where downloaded files are stored to
+# prevent unnecessary downloading when tasks are rerun.
+jetbrains_toolbox__download_cache_directory: '{{ undef() }}'

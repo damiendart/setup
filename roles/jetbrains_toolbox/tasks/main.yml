@@ -1,0 +1,69 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Set JetBrains Toolbox version variable to an empty string'
+  ansible.builtin.set_fact:
+    __toolbox_version: ''
+
+- name: 'Get status of existing JetBrains Toolbox binary'
+  ansible.builtin.stat:
+    path: '/opt/jetbrains-toolbox/bin/jetbrains-toolbox'
+  changed_when: false
+  register: __toolbox_binary
+
+- name: 'Ensure download cache directory exists'
+  ansible.builtin.file:
+    path: '{{ jetbrains_toolbox__download_cache_directory }}'
+    group: 'root'
+    mode: '0777'
+    owner: 'root'
+    state: 'directory'
+
+- name: 'Get version of existing JetBrains Toolbox installation'
+  when: __toolbox_binary.stat.exists
+  block:
+    - name: 'Get JetBrains Toolbox version output'
+      ansible.builtin.command: '/opt/jetbrains-toolbox/bin/jetbrains-toolbox --version'
+      changed_when: false
+      register: __toolbox_version_output
+
+    - name: 'Get the currently installed version of JetBrains Toolbox'
+      ansible.builtin.set_fact:
+        __toolbox_version: "{{ __toolbox_version_output.stdout | regex_search('Toolbox ([0-9.]*)', '\\1') | first | trim }}"
+
+- name: 'Ensure JetBrains Toolbox {{ jetbrains_toolbox__toolbox_version }} is installed' #noqa: name[template]
+  when: jetbrains_toolbox__toolbox_version != __toolbox_version
+  block:
+    - name: 'Ensure the JetBrains Toolbox binary archive is downloaded'
+      ansible.builtin.get_url:
+        checksum: '{{ jetbrains_toolbox__toolbox_archive_checksum }}'
+        dest: '{{ jetbrains_toolbox__download_cache_directory }}/jetbrains-toolbox-{{ jetbrains_toolbox__toolbox_version }}.tar.gz'
+        group: 'root'
+        mode: '0755'
+        owner: 'root'
+        url: 'https://download.jetbrains.com/toolbox/jetbrains-toolbox-{{ jetbrains_toolbox__toolbox_version }}.tar.gz'
+
+    - name: 'Ensure existing JetBrains Toolbox installation is removed'
+      ansible.builtin.file:
+        path: '/opt/jetbrains-toolbox/'
+        state: 'absent'
+
+    - name: 'Ensure JetBrains Toolbox installation directory is present'
+      ansible.builtin.file:
+        path: '/opt/jetbrains-toolbox/'
+        group: 'root'
+        mode: '0755'
+        owner: 'root'
+        state: 'directory'
+
+    - name: 'Ensure JetBrains Toolbox {{ jetbrains_toolbox__toolbox_version }} is installed' # noqa: name[template]
+      ansible.builtin.unarchive:
+        dest: '/opt/jetbrains-toolbox'
+        extra_opts:
+          - '--strip-components=1'
+        group: 'root'
+        owner: 'root'
+        remote_src: true
+        src: '{{ jetbrains_toolbox__download_cache_directory }}/jetbrains-toolbox-{{ jetbrains_toolbox__toolbox_version }}.tar.gz'
