@@ -1,0 +1,41 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+- name: 'Ensure the Mozilla repository is present in APT sources list'
+  ansible.builtin.deb822_repository:
+    components:
+      - 'main'
+    enabled: true
+    name: 'Mozilla'
+    signed_by: 'https://packages.mozilla.org/apt/repo-signing-key.gpg'
+    suites:
+      - 'mozilla'
+    state: 'present'
+    types:
+      - 'deb'
+    uris: 'https://packages.mozilla.org/apt'
+  register: __mozilla_repository
+
+- name: 'Ensure packages from the Mozilla repository have higher priority'
+  ansible.builtin.copy:
+    content: |
+      Package: *
+      Pin: origin packages.mozilla.org
+      Pin-Priority: 1000
+    dest: '/etc/apt/preferences.d/mozilla'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  register: __mozilla_preferences
+
+- name: 'Ensure Firefox is installed'
+  ansible.builtin.apt:
+    allow_downgrade: true
+    force_apt_get: true
+    name:
+      - 'firefox'
+      - 'firefox-l10n-en-gb'
+    state: 'present'
+    update_cache: '{{ __mozilla_repository is changed or __mozilla_preferences is changed }}'

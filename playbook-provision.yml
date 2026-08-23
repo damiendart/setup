@@ -13,6 +13,7 @@
     - 'composer'
     - 'development'
     - 'docker'
+    - 'firefox'
     - 'golang'
     - 'imagemagick'
     - 'nodejs'
