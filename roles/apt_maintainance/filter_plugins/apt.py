@@ -14,16 +14,17 @@ class FilterModule(object):
         output = []
 
         for line in lines:
+            words = line.split(" ")
+
             if line.startswith("Inst"):
-                words = line.split(" ")
-
-                new_line = "{0}: {1} => {2}".format(
-                    words[1], words[2][1:-1], words[3][1:]
+                output.append(
+                    "{0}: {1} => {2}".format(
+                        words[1],
+                        words[2][1:-1],
+                        words[3][1:],
+                    ),
                 )
-                output.append(new_line)
-
             elif line.startswith("Remv"):
-                words = line.split(" ")
-                output.append(words[1])
+                output.append("{0}: REMOVED".format(words[1]))
 
         return sorted(output)
