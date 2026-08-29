@@ -12,12 +12,12 @@
 lego__certificates: {}
 
 # A string containing a checksum used to verify the integrity of the
-# lego binary archive "lego_v5.3.1_linux_amd64.tar.gz". See
+# lego binary archive "lego_v5.4.0_linux_amd64.tar.gz". See
 # <https://github.com/go-acme/lego/releases> for archives and checksums.
-lego__lego_archive_checksum: 'sha256:b3c71b122ee1947eacfe0b809b955647f6377239fe4bfc49f73b1a091ae1252a'
+lego__lego_archive_checksum: 'sha256:d3adf89392d606ce84d485c1cc20832edd42ace6ff9ced9dd3670d9d8b8aca38'
 
 # A string containing the version of lego to install.
-lego__lego_version: '5.3.1'
+lego__lego_version: '5.4.0'
 
 # A boolean value that specifies if playbook execution needs pausing to
 # allow for manually running the lego configuration migration process.

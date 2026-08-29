@@ -7,10 +7,10 @@
 # Composer PHP archive download "composer.phar". See also
 # "composer__composer_version". Composer downloads and checksums are
 # available at <https://getcomposer.org/download/>.
-composer__composer_checksum: 'sha256:5ee7125f8a30a34d246cefdc0bc85b8a783b28f2aec968994118512350d28027'
+composer__composer_checksum: 'sha256:7a2d379d5b8ffdaa028580ef26494c36d2feef4b178d3dd1473a4dbc5e17c8d6'
 
 # A string containing the version of Composer to install.
-composer__composer_version: '2.10.2'
+composer__composer_version: '2.10.3'
 
 
 # The following variables will have host-specific and/or sensitive
