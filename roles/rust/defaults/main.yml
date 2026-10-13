@@ -8,7 +8,7 @@
 # ".sha256" to the binary download URL (for more information, see
 # <https://rust-lang.github.io/rustup/installation/other.html>). See
 # also "rust__rustup_init_url".
-rust__rustup_init_checksum: 'sha256:4acc9acc76d5079515b46346a485974457b5a79893cfb01112423c89aeb5aa10'
+rust__rustup_init_checksum: 'sha256:dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71'
 
 # A string containing the URL to the "rustup-init" binary.
 rust__rustup_init_url: 'https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init'

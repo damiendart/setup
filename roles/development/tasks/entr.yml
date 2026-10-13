@@ -58,12 +58,10 @@
         chdir: '{{ __entr_temp_directory.path }}/entr-{{ development__entr_version }}'
         # entr's README suggests running "make test" before installing,
         # but something about the test suite doesn't agree with Ansible
-        # and makes the command line all screwy afterwards. The
-        # "RELEASE" variable is overriden to fix the out-of-date version
-        # specified in "Makefile.bsd".
+        # and makes the command line all screwy afterwards.
         cmd: |
           ./configure
-          make RELEASE={{ development__entr_version }} install
+          make install
       changed_when: true
   always:
     - name: 'Remove temporary folder'

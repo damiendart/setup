@@ -4,12 +4,12 @@
 
 ---
 # A string containing the checksum used to verify the integrity the
-# JetBrains Toolbox App archive "jetbrains-toolbox-3.7.2.87231.tar.gz".
+# JetBrains Toolbox App archive "jetbrains-toolbox-3.8.1.88030.tar.gz".
 # Checksums are available by appending ".sha256" to the download URL.
-jetbrains_toolbox__toolbox_archive_checksum: 'sha256:f5a01f0b23843120c5137ae98b701c424761f813d8cfcd7965dad5c3c84bd396'
+jetbrains_toolbox__toolbox_archive_checksum: 'sha256:25cbe2ad027f5a5749bf8d8ae7c2215a8665403cfe94ff5d05cd48b25daac345'
 
 # A string containing the build number of JetBrains Toolbox to install.
-jetbrains_toolbox__toolbox_version: '3.7.2.87231'
+jetbrains_toolbox__toolbox_version: '3.8.1.88030'
 
 
 # The following variables will have host-specific and/or sensitive
