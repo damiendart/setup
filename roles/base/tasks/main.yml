@@ -117,4 +117,4 @@
   community.general.git_config:
     name: 'safe.directory'
     value: '*'
-  when: base__apply_git_safe_directory_kludge | default(false)
+  when: base__apply_git_safe_directory_kludge
