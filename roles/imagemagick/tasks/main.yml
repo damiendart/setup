@@ -3,7 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
-- name: 'Ensure ImageMagick 6 is installed'
+- name: 'Ensure ImageMagick is installed'
   ansible.builtin.apt:
     force_apt_get: true
     name:
@@ -15,6 +15,11 @@
     path: '/etc/ImageMagick-6/policy.xml'
   register: __imagemagick_six_policy
 
+- name: 'Get status of ImageMagick 7 policy configuration file'
+  ansible.builtin.stat:
+    path: '/etc/ImageMagick-7/policy.xml'
+  register: __imagemagick_seven_policy
+
 - name: 'Ensure ImageMagick 6 resource limits are adjusted for low-resource environments'
   ansible.builtin.lineinfile:
     dest: '/etc/ImageMagick-6/policy.xml'
@@ -24,4 +29,15 @@
   loop:
     - regex: 'name="memory"'
       line: '  <policy domain="resource" name="memory" value="32MiB"/>'
-  when: imagemagick__reduce_resource_limits
+  when: __imagemagick_six_policy.stat.exists and imagemagick__reduce_resource_limits
+
+- name: 'Ensure ImageMagick 7 resource limits are adjusted for low-resource environments'
+  ansible.builtin.lineinfile:
+    dest: '/etc/ImageMagick-7/policy.xml'
+    regexp: '{{ item.regex }}'
+    line: '{{ item.line }}'
+    state: 'present'
+  loop:
+    - regex: 'name="memory"'
+      line: '  <policy domain="resource" name="memory" value="32MiB"/>'
+  when: __imagemagick_seven_policy.stat.exists and imagemagick__reduce_resource_limits
