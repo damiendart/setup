@@ -84,8 +84,8 @@ source "virtualbox-iso" "debian-virtualbox" {
       ]
     )
   }
-  iso_checksum = "0b813535dd76f2ea96eff908c65e8521512c92a0631fd41c95756ffd7d4896dc"
-  iso_url = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.4.0-amd64-netinst.iso"
+  iso_checksum = "a7ef94ac2fb9a7fec454552abd629b7cc9d5155c886165a45649f5ce6167e355"
+  iso_url = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.7.0-amd64-netinst.iso"
   guest_os_type = "Debian_64"
   memory = 2048
   shutdown_command = "echo 'debian' | sudo -S shutdown -P now"
