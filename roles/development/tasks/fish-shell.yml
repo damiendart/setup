@@ -15,7 +15,7 @@
     types:
       - 'deb'
     uris: 'http://download.opensuse.org/repositories/shells:/fish:/release:/4/Debian_{{ ansible_distribution_major_version }}/'
-  register: __fish_shell_repository
+  register: __fish_shell_debian_repository
 
 - name: 'Ensure the fish shell Ubuntu repository is present in APT sources list'
   when: ansible_distribution == 'Ubuntu'
@@ -31,11 +31,11 @@
     types:
       - 'deb'
     uris: 'https://ppa.launchpadcontent.net/fish-shell/release-4/ubuntu'
-  register: __fish_shell_repository
+  register: __fish_shell_ubuntu_repository
 
 - name: 'Ensure fish shell is installed'
   ansible.builtin.apt:
     force_apt_get: true
     name: 'fish'
     state: 'present'
-    update_cache: '{{ __fish_shell_repository is changed }}'
+    update_cache: '{{ __fish_shell_debian_repository is changed or __fish_shell_ubuntu_repository is changed }}'

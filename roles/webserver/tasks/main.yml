@@ -23,6 +23,7 @@
   loop:
     - 'apache2'
     - 'php'
+  register: __deb_sury_org_debian_repositories
 
 - name: 'Ensure "deb.sury.org" Ubuntu repositories are present in APT source lists'
   when: ansible_distribution == 'Ubuntu'
@@ -32,6 +33,7 @@
   loop:
     - 'apache2'
     - 'php'
+  register: __deb_sury_org_ubuntu_repositories
 
 - name: 'Ensure webserver-related packages are installed'
   ansible.builtin.apt:
@@ -52,6 +54,7 @@
           | reject('match', 'php8.5-opcache')
       }}
     state: 'present'
+    update_cache: '{{ __deb_sury_org_debian_repositories is changed or __deb_sury_org_ubuntu_repositories is changed }}'
 
 - name: 'Ensure Apache and PHP-FPM are running and start on system boot'
   ansible.builtin.service:
