@@ -60,6 +60,18 @@
       - 'unzip'
     state: 'present'
 
+- name: 'Ensure custom "unattended-upgrades" configuration file exists'
+  ansible.builtin.blockinfile:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    block: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    create: true
+    mode: '0644'
+    owner: 'root'
+    group: 'root'
+  notify: 'Reconfigure "unattended-upgrades"'
+
 - name: 'Ensure OpenSSH Server and UFW are running and start on system boot'
   ansible.builtin.service:
     enabled: true

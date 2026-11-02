@@ -3,6 +3,11 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+- name: 'Reconfigure "unattended-upgrades"'
+  ansible.builtin.command:
+    cmd: 'dpkg-reconfigure -f noninteractive unattended-upgrades'
+  changed_when: true
+
 - name: 'Restart OpenSSH Server'
   ansible.builtin.service:
     name: 'ssh'
