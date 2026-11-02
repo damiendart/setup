@@ -87,6 +87,10 @@
     rule: 'limit'
   notify: 'Restart UFW'
 
+- name: 'Ensure UFW is enabled'
+  community.general.ufw:
+    state: 'enabled'
+
 - name: 'Ensure security-related OpenSSH Server options are configured'
   ansible.builtin.lineinfile:
     dest: '/etc/ssh/sshd_config'
