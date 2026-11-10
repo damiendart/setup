@@ -3,6 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+
 - name: 'Get certificate file status for "{{ item.key }}.crt"' # noqa: name[template]
   ansible.builtin.stat:
     path: '/etc/lego/certificates/{{ item.key }}.crt'

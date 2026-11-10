@@ -3,6 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+
 - name: 'Set JetBrains Toolbox version variable to an empty string'
   ansible.builtin.set_fact:
     __toolbox_version: ''

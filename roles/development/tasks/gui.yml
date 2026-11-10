@@ -3,6 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+
 # "psutil" is required by the "community.general.dconf" Ansible module.
 - name: 'Ensure the "psutil" Python package is installed for system Python'
   ansible.builtin.apt:

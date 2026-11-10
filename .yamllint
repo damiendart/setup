@@ -3,6 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+
 extends: default
 
 ignore: |
@@ -24,9 +25,12 @@ rules:
     level: error
   comments: disable
   comments-indentation: disable
-  document-start: disable
+  document-start:
+    present: true
   empty-lines:
-    max: 3
+    max: 2
+    max-end: 0
+    max-start: 0
     level: error
   hyphens:
     level: error

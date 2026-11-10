@@ -3,6 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+
 # The following repository details are from
 # <https://pkgs.tailscale.com/stable/>.
 - name: 'Ensure the Tailscale repository is present in APT sources list'

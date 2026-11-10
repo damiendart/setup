@@ -3,6 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+
 - name: 'Load variables from release artifact metadata YAML document'
   ansible.builtin.include_vars:
     file: '{{ deploy_website__release_artifact_folder }}/release.yml'

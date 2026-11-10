@@ -3,6 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+
 # When editing this file, ensure that the Python version installed by
 # this Ansible role matches the version installed by the "bootstrap.sh"
 # Shell script.

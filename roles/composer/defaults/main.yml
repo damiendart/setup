@@ -3,6 +3,7 @@
 # more information, please refer to the accompanying "UNLICENCE" file.
 
 ---
+
 # A string containing a checksum used to verify the integrity of the
 # Composer PHP archive download "composer.phar". See also
 # "composer__composer_version". Composer downloads and checksums are
