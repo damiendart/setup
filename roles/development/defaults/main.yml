@@ -70,8 +70,8 @@ development__download_cache_directory: '{{ undef() }}'
 
 # A string containing the Pushover application key to be used by the
 # "po" utility script from the "toolbox" Git repository.
-development__po_application_key: '{{ unset() }}'
+development__po_application_key: '{{ undef() }}'
 #
 # A string containing the Pushover user key to be used by the "po"
 # utility script from the "toolbox" Git repository.
-development__po_user_key: '{{ unset() }}'
+development__po_user_key: '{{ undef() }}'
