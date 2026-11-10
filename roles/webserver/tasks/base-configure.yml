@@ -106,15 +106,3 @@
     src: 'php-fpm-pool.conf.j2'
   loop: '{{ webserver__php_versions }}'
   notify: 'Reload PHP-FPM'
-
-- name: 'Ensure Node Exporter password file exists'
-  community.general.htpasswd:
-    group: 'www-data'
-    mode: '0640'
-    name: '{{ webserver__status_path_node_exporter_username }}'
-    owner: 'root'
-    password: '{{ webserver__status_path_node_exporter_password }}'
-    path: '/etc/apache2/node-exporter.htpasswd'
-  when: webserver__status_path_node_exporter is defined
-  notify: 'Reload Apache'
-  no_log: true

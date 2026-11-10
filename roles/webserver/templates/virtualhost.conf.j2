@@ -62,22 +62,6 @@
       Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     </IfModule>
 
-    {% if
-      item.key == webserver__server_name
-      and webserver__status_path_node_exporter is defined
-    %}
-      <Location "/{{ webserver__status_path_node_exporter }}">
-        AuthName "Authentication Required"
-        AuthType Basic
-        AuthUserFile "/etc/apache2/node-exporter.htpasswd"
-        Require valid-user
-
-        ProxyPreserveHost On
-        ProxyPass http://localhost:9100/metrics
-        ProxyPassReverse http://localhost:9100/metrics
-      </Location>
-    {% endif %}
-
     # Please see the "deploy-website" Ansible role for more information
     # on how websites are deployed.
     <IfFile "/var/www/{{ item.key }}/deployment.apache2.conf">

@@ -94,6 +94,3 @@
 
 - name: 'Include Tarsnap monitoring installation and configuration tasks'
   ansible.builtin.include_tasks: 'tarsnap.yml'
-
-- name: 'Include Prometheus Node Exporter installation and configuration tasks'
-  ansible.builtin.include_tasks: 'node-exporter.yml'

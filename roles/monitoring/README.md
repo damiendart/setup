@@ -4,7 +4,7 @@ monitoring
 Sets up a bunch of monitoring-related stuff, including:
 
 -   Installing and configuring [Fail2Ban][], [logrotate][],
-    [Logwatch][], [Monit][], and [Prometheus Node Exporter][]; and
+    [Logwatch][], and [Monit][]; and
 -   installing various custom notification scripts.
 
 Generally, any notifications will be set up to be sent via email. With
@@ -16,7 +16,6 @@ notifications will be sent as a fallback.)
   [logrotate]: <https://linux.die.net/man/8/logrotate>
   [Logwatch]: <https://sourceforge.net/projects/logwatch/>
   [Monit]: <https://mmonit.com/monit/>
-  [Prometheus Node Exporter]: <https://github.com/prometheus/node_exporter>
   [Pushover]: <https://pushover.net/>
 
 
