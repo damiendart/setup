@@ -1,0 +1,15 @@
+# This file was written by Damien Dart, <damiendart@pobox.com>. This is
+# free and unencumbered software released into the public domain. For
+# more information, please refer to the accompanying "UNLICENCE" file.
+
+---
+
+deploy_website__administrator_email: '{{ undef() }}'
+deploy_website__administrator_username: '{{ undef() }}'
+deploy_website__github_auth_token: '{{ undef() }}'
+deploy_website__php_versions: '{{ undef() }}'
+deploy_website__release_artifact_folder: '{{ undef() }}'
+deploy_website__sentry_auth_token: '{{ undef() }}'
+deploy_website__sentry_organisation: '{{ undef() }}'
+deploy_website__site_domain: '{{ undef() }}'
+deploy_website__vhosts: '{{ undef() }}'

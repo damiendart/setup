@@ -36,5 +36,7 @@ scratch are incredible rare.)
 
 ``` shell
 $ export ANSIBLE_VAULT_PASSWORD_FILE=/path/to/.vault-password
-$ ansible-playbook -i ../secret/ansible --limit development playbook-provision.yml
+$ ansible-playbook -i path/to/inventory --limit development playbook-provision.yml
+$ ansible-playbook -i path/to/inventory --limit development -e "{ 'lego__run_clean_up_tasks': true, 'webserver__run_clean_up_tasks': true }" --limit development playbook-provision.yml
+$ ansible-playbook -i path/to/inventory --limit development -e "{ 'deploy_website__site_domain': 'www.example.com', 'deploy_website__release_artifact_folder': '../example/release' }" playbook-deploy-website.yml
 ```

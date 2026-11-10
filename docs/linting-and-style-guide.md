@@ -19,8 +19,6 @@ style guide][] with the following additions/changes:
 - Variable names should be prefixed with:
   - `{{ ROLE_NAME }}__` for role variables defined in the *defaults* and
     *vars* folders,
-  - `cli__` if the variable is defined in a playbook and should be set
-    through the command-line interface, or
   - `__` if the variable is a “local” variable: one that is registered
     during a play and is not meant to be defined anywhere else.
 
